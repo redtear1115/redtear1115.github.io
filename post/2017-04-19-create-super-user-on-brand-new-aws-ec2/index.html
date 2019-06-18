@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" >
 
-<title>About | Southern Light</title>
+<title>Create Super User on Brand New AWS EC2 | Southern Light</title>
 <meta name="description" content="Lovin&#39; Programming!">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -98,15 +98,47 @@
       <div class="main-container">
         <div class="content-container" data-aos="fade-up">
           <div class="post-detail">
-            <h2 class="post-title">About</h2>
-            <div class="post-date">2019-01-25</div>
+            <h2 class="post-title">Create Super User on Brand New AWS EC2</h2>
+            <div class="post-date">2017-04-19</div>
             
             <div class="post-content">
-              <p>Ray Lee
-Cloud Platform Engineer &amp; Team Leader for www.kdanmobile.com</p>
+              <h2 id="intro">Intro</h2>
+<p>Say, I just create a new machine and want to deploy some projects on it.
+But we only get the super user ubuntu. How can I do to create new user deployer?</p>
+<h2 id="environment">Environment</h2>
+<ul>
+<li>OS: Ubuntu 16.04.2 LTS</li>
+</ul>
+<h2 id="create-user">Create User</h2>
+<pre><code>  sudo adduser deployer
+</code></pre>
+<h2 id="grant-sudo">Grant sudo</h2>
+<pre><code>  sudo usermod -aG sudo deployer
+</code></pre>
+<h2 id="set-sudo-without-password">Set sudo without password</h2>
+<pre><code>  sudo vi /etc/sudoers.d/90-cloud-init-users
+</code></pre>
+<p>copy the line and change user ubuntu to deployer</p>
+<h2 id="generate-ssh-key">generate ssh key</h2>
+<pre><code>  su deployer
+  ssh-keygen -t rsa
+  touch ~/.ssh/authorized_keys
+</code></pre>
+<p>paste your ssh key into ~/.ssh/authorized_keys, and then you can remote ssh with deployer</p>
+<h2 id="ending">Ending</h2>
+<p>Thanks for reading! Feel free to leave questions, I am willing to reply.</p>
 
             </div>
             
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://redtear1115.github.io/post/2017-01-05-nginx-setup">
+                  <h3 class="post-title">
+                    Nginx Setup
+                  </h3>
+                </a>
+              </div>
             
 
             

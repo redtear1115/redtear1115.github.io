@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" >
 
-<title>About | Southern Light</title>
+<title>Postgres Setup | Southern Light</title>
 <meta name="description" content="Lovin&#39; Programming!">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -98,15 +98,77 @@
       <div class="main-container">
         <div class="content-container" data-aos="fade-up">
           <div class="post-detail">
-            <h2 class="post-title">About</h2>
-            <div class="post-date">2019-01-25</div>
+            <h2 class="post-title">Postgres Setup</h2>
+            <div class="post-date">2016-12-22</div>
             
             <div class="post-content">
-              <p>Ray Lee
-Cloud Platform Engineer &amp; Team Leader for www.kdanmobile.com</p>
+              <h2 id="intro">Intro</h2>
+<p>Postgres is an open source database management software. It has been widely using on lots projects.
+This post will introduce some useful notes such as install, create user and remote access.</p>
+<h2 id="environment">Environment</h2>
+<ul>
+<li>OS: Ubuntu 16.04.1 LTS</li>
+<li>Postgres: 9.5</li>
+</ul>
+<h2 id="install">Install</h2>
+<pre><code>  sudo apt-get install postgresql
+</code></pre>
+<h2 id="very-first-login">Very first login</h2>
+<p>After installation, you will have a new service named postgresql, which will autorun after reboot.
+If you have a user named postgres in your OS, you could login as postgres and simply run</p>
+<pre><code>  bash&gt; psql
+</code></pre>
+<p>If you doesn't want to create an user for postgres, follow below steps.</p>
+<h4 id="let-postgres-login-with-trust">let postgres login with trust</h4>
+<p>Find out pg_hba.conf. It would be /etc/postgresql/9.5/main/pg_hba.conf by default. Modify following line: peer =&gt; trust</p>
+<pre><code>  # Database administrative login by Unix domain socket
+  local   all             postgres                                trust
+</code></pre>
+<h4 id="restart-serveice">restart serveice</h4>
+<pre><code>  bash&gt; sudo service postgresql restart
+</code></pre>
+<h4 id="login-psql-locally">login psql locally</h4>
+<pre><code>  bash&gt; psql -U postgres -t postgres
+</code></pre>
+<h4 id="alter-password">alter password</h4>
+<p>Since it's insecure for let database admin login without any password. We should setup password for postgres by following sql.</p>
+<pre><code>  psql&gt; ALTER USER postgres PASSWORD 'YOUR_PASSWORD';
+</code></pre>
+<h4 id="let-postgres-login-with-password">let postgres login with password</h4>
+<p>Back to pg_hba.conf. Modify following line: trust =&gt; md5. <strong>Don't forget to restart service</strong></p>
+<pre><code>  # Database administrative login by Unix domain socket
+  local   all             postgres                                md5
+</code></pre>
+<h4 id="login-psql-with-password">login psql with password</h4>
+<pre><code>  bash&gt; psql -U postgres -t postgres -W
+</code></pre>
+<h2 id="remote-access">Remote Access</h2>
+<p>PostgreSQL default only accept local connection. If you want to access it by remote, follow below steps.</p>
+<h4 id="let-postgres-listen-all-addresses-or-certain-address">let postgres listen all addresses (or certain address)</h4>
+<p>Find out postgresql.conf. It would be /etc/postgresql/9.5/main/postgresql.conf by default. Unmark and modify following line: localhost ==&gt; *</p>
+<pre><code>  listen_addresses = '*'
+</code></pre>
+<h4 id="let-postgres-accept-remote-access">let postgres accept remote access</h4>
+<p>Go to pg_hba.conf. Add following line.  <strong>Don't forget to restart service</strong></p>
+<pre><code>  host    all             postgres        YOUR_IP/32          md5
+</code></pre>
+<h4 id="login-psql-remotely">login psql remotely</h4>
+<pre><code>  bash&gt; psql -h SERVER_IP -p 5432 -U postgres -t postgres -W
+</code></pre>
+<h2 id="ending">Ending</h2>
+<p>Thanks for reading! See you next time. haha</p>
 
             </div>
             
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://redtear1115.github.io/post/2016-12-22-get-start">
+                  <h3 class="post-title">
+                    Get Start!!
+                  </h3>
+                </a>
+              </div>
             
 
             
