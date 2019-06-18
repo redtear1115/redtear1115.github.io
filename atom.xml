@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://redtear1115.github.io</id>
     <title>Southern Light</title>
-    <updated>2019-06-18T09:28:21.298Z</updated>
+    <updated>2019-06-18T10:03:30.461Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://redtear1115.github.io"/>
     <link rel="self" href="https://redtear1115.github.io/atom.xml"/>
@@ -16,6 +16,10 @@
         <link href="https://redtear1115.github.io/post/hello-world-for-gridea">
         </link>
         <updated>2019-06-18T09:26:47.000Z</updated>
+        <summary type="html"><![CDATA[<p>決定重新寫博客啦...</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>決定重新寫博客啦...</p>
+]]></content>
     </entry>
     <entry>
         <title type="html"><![CDATA[Hello Gridea]]></title>
@@ -36,6 +40,14 @@
         <link href="https://redtear1115.github.io/post/2017-04-19-create-super-user-on-brand-new-aws-ec2">
         </link>
         <updated>2017-04-19T07:00:00.000Z</updated>
+        <summary type="html"><![CDATA[<h2 id="intro">Intro</h2>
+<p>Say, I just create a new machine and want to deploy some projects on it.
+But we only get the super user ubuntu. How can I do to create new user deployer?</p>
+]]></summary>
+        <content type="html"><![CDATA[<h2 id="intro">Intro</h2>
+<p>Say, I just create a new machine and want to deploy some projects on it.
+But we only get the super user ubuntu. How can I do to create new user deployer?</p>
+]]></content>
     </entry>
     <entry>
         <title type="html"><![CDATA[Nginx Setup]]></title>
@@ -43,6 +55,14 @@
         <link href="https://redtear1115.github.io/post/2017-01-05-nginx-setup">
         </link>
         <updated>2017-01-05T03:00:00.000Z</updated>
+        <summary type="html"><![CDATA[<h2 id="intro">Intro</h2>
+<p>Nginx is a web server, which can also be used as a reverse proxy, load balancer and HTTP cache...
+This post will introduce some useful notes such as install, setup ssl and block certain route by IP address</p>
+]]></summary>
+        <content type="html"><![CDATA[<h2 id="intro">Intro</h2>
+<p>Nginx is a web server, which can also be used as a reverse proxy, load balancer and HTTP cache...
+This post will introduce some useful notes such as install, setup ssl and block certain route by IP address</p>
+]]></content>
     </entry>
     <entry>
         <title type="html"><![CDATA[Future Plan for Jan, 2017]]></title>
@@ -57,6 +77,14 @@
         <link href="https://redtear1115.github.io/post/2016-12-22-postgres-setup">
         </link>
         <updated>2016-12-22T03:00:00.000Z</updated>
+        <summary type="html"><![CDATA[<h2 id="intro">Intro</h2>
+<p>Postgres is an open source database management software. It has been widely using on lots projects.
+This post will introduce some useful notes such as install, create user and remote access.</p>
+]]></summary>
+        <content type="html"><![CDATA[<h2 id="intro">Intro</h2>
+<p>Postgres is an open source database management software. It has been widely using on lots projects.
+This post will introduce some useful notes such as install, create user and remote access.</p>
+]]></content>
     </entry>
     <entry>
         <title type="html"><![CDATA[Get Start!!]]></title>
