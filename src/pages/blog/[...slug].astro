@@ -18,6 +18,6 @@ const { post } = Astro.props;
 const { Content } = await post.render();
 const { title, pubDate, tags } = post.data;
 ---
-<PostLayout title={`${title} — Southern Light`} pubDate={pubDate} tags={tags}>
+<PostLayout title={title} pubDate={pubDate} tags={tags}>
   <Content />
 </PostLayout>
