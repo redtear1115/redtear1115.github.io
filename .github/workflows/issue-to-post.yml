@@ -1,0 +1,100 @@
+name: Issue to Post
+
+on:
+  issues:
+    types: [labeled]
+
+jobs:
+  publish:
+    if: github.event.label.name == 'published'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Build post file
+        id: build
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            const issue = context.payload.issue;
+            const title = (issue.title || '').trim();
+            const body = (issue.body || '').replace(/\r\n/g, '\n');
+            const createdAt = new Date(issue.created_at);
+            const pubDate = createdAt.toISOString().slice(0, 10);
+
+            const tags = (issue.labels || [])
+              .map((l) => (typeof l === 'string' ? l : l.name))
+              .filter((n) => typeof n === 'string' && n.startsWith('tag:'))
+              .map((n) => n.slice(4));
+
+            const slug = title
+              .toLowerCase()
+              .normalize('NFKD')
+              .replace(/[̀-ͯ]/g, '')
+              .replace(/[^a-z0-9\s-]/g, '')
+              .trim()
+              .replace(/\s+/g, '-')
+              .replace(/-+/g, '-');
+
+            if (!slug) {
+              core.setFailed(`Could not derive a slug from title: "${title}"`);
+              return;
+            }
+
+            const yamlString = (s) => JSON.stringify(s);
+            const yamlArray = (arr) =>
+              `[${arr.map((t) => JSON.stringify(t)).join(', ')}]`;
+
+            const frontmatter = [
+              '---',
+              `title: ${yamlString(title)}`,
+              `pubDate: ${yamlString(pubDate)}`,
+              `tags: ${yamlArray(tags)}`,
+              `draft: false`,
+              '---',
+              '',
+            ].join('\n');
+
+            const dir = 'src/content/blog';
+            fs.mkdirSync(dir, { recursive: true });
+            const filePath = path.join(dir, `${slug}.md`);
+            fs.writeFileSync(filePath, frontmatter + body + '\n');
+
+            core.setOutput('slug', slug);
+            core.setOutput('title', title);
+            core.setOutput('file', filePath);
+
+      - name: Commit and push
+        env:
+          POST_TITLE: ${{ steps.build.outputs.title }}
+          POST_FILE: ${{ steps.build.outputs.file }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add "$POST_FILE"
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "post: $POST_TITLE"
+          git push origin HEAD:main
+
+      - name: Comment on issue
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GH_PAT }}
+          script: |
+            const file = '${{ steps.build.outputs.file }}';
+            const slug = '${{ steps.build.outputs.slug }}';
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.issue.number,
+              body: `Published: \`${file}\` → https://southern-light.dev/blog/${slug}`,
+            });
