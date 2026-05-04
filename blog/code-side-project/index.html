@@ -1,0 +1,23 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Astro v4.16.19"><meta name="color-scheme" content="dark"><title>我幾乎沒寫任何 code，但這個 side project 的每個架構決策都是我的 — Southern Light</title><meta name="description" content="Notes on systems, tools, and side projects."><link rel="canonical" href="https://southern-light.dev/blog/code-side-project"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="sitemap" href="/sitemap-index.xml"><meta property="og:type" content="website"><meta property="og:title" content="我幾乎沒寫任何 code，但這個 side project 的每個架構決策都是我的 — Southern Light"><meta property="og:description" content="Notes on systems, tools, and side projects."><meta property="og:url" content="https://southern-light.dev/blog/code-side-project"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="我幾乎沒寫任何 code，但這個 side project 的每個架構決策都是我的 — Southern Light"><meta name="twitter:description" content="Notes on systems, tools, and side projects."><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"><link rel="stylesheet" href="/_astro/_slug_.BFI2vgup.css"></head> <body> <header class="site-header"> <a href="/" class="site-name">southern-light</a> <nav> <a href="/blog">blog</a> <a href="/about">about</a> </nav> </header> <main>  <article> <header class="post-header"> <h1>我幾乎沒寫任何 code，但這個 side project 的每個架構決策都是我的</h1> <div class="meta"> <time datetime="2026-05-04">2026-05-04</time>  </div> </header> <div class="prose">  <h1 id="我幾乎沒寫任何-code但這個-side-project-的每個架構決策都是我的">我幾乎沒寫任何 code，但這個 side project 的每個架構決策都是我的</h1>
+<p>我是後端工程師，最近做了第一個前端 side project——<a href="https://vanishwhisper.web.app">VanishWhisper</a>，一個端對端加密的閱後即焚聊天 app。整個開發過程我幾乎沒有親手打過任何 code，commit message 也是 Claude 寫的，測試也是，我頂多負責在手機上戳一戳看有沒有壞掉。</p>
+<p>但這不代表我只是在旁邊看。</p>
+<hr>
+<h2 id="ai-是實作手不是架構師">AI 是實作手，不是架構師</h2>
+<p>開始之前我就決定好幾件事：不要任何 backend、不要 identity provider、私鑰絕對不能離開瀏覽器。這些限制塑造了整個系統。</p>
+<p>Claude 一開始的本能是「我們需要一個登入頁面」，然後「登入完要有註冊流程」。我喊停了。因為我的問題根本不是「讓用戶登入」，而是「讓 Firestore security rules 有一個可以驗證的 identity，同時完全不知道用戶是誰」。Firebase Anonymous Auth 剛好夠用，不多不少。</p>
+<p><strong>AI 很擅長把常見問題解決得很完整，但它不知道你的問題不是那個常見問題。</strong> 你要自己知道。</p>
+<hr>
+<h2 id="被-claude-嚇到">被 Claude 嚇到</h2>
+<p>app 基本功能全部做完，我也實際用了幾天、跟朋友傳了幾封訊息之後，才想到要加「換裝置」的功能。</p>
+<p>然後我才意識到——我他媽完全不知道這個 app 的加密是怎麼運作的。</p>
+<p>我知道有 E2E 加密，知道私鑰在瀏覽器裡，但實作細節我從來沒看懂過，全是 Claude 寫的。我理所當然地以為換裝置就是要把 RSA private key 搬過去，跟 Claude 說了這個方向。</p>
+<p>Claude 的解法完全不一樣。架構裡每個 session 本來就有一把 AES key，分別用兩個人的 RSA public key 包起來。換裝置時，舊裝置把 AES key 解出來，立刻用新裝置的 public key 重新包一次，寫回 Firestore。新裝置就能正常解密，private key 從頭到尾沒有離開過任何地方。</p>
+<p>我看完這個解法，坐在那邊想了一分鐘。我用了自己做的東西好幾天，完全不知道它底層是怎麼運作的，然後 Claude 用一個比我預想的更漂亮的方式解決了問題。</p>
+<p>這個感覺很奇妙，有點荒謬，但也有點爽。</p>
+<hr>
+<h2 id="真正的價值在取捨">真正的價值在取捨</h2>
+<p>前端框架選 Vue 是因為聽說好上手，TypeScript 是 Claude 建議的，Firestore 是因為免費又不需要 backend。選型沒有什麼深思熟慮。</p>
+<p>AI coding 把實作成本壓得很低，低到「會不會寫 Vue」根本不重要。但<strong>知道要不要做某個功能、Claude 給的方案是不是你真正需要的、什麼時候要說不</strong>——這些沒辦法外包。</p>
+<p>我在這個 project 裡做最多的事，是說「不」。</p>
+<hr>
+<p>如果你也想試試看，歡迎來玩：<a href="https://vanishwhisper.web.app">vanishwhisper.web.app</a> — 不用註冊，打開就能用，訊息讀完自動消失。有興趣的話可以把連結丟給朋友，跟他開一個 session 試試看。</p>  </div> </article>  </main> <footer class="site-footer"> <span>© 2026 Ray Lee</span> <span> <a href="https://github.com/redtear1115">github</a> </span> </footer> </body></html>
