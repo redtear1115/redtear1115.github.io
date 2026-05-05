@@ -60,11 +60,11 @@ Futari 從一開始就放棄這條路。
 
 那些你們一起在意、一起花錢的對象，每一筆支出都能「關聯」到具體的愛物——買油記在這台車上，掛號費記在那個孩子底下。不是 spreadsheet，是有溫度的帳本。
 
-<img width="443" height="761" alt="Image" src="https://github.com/user-attachments/assets/aefcf89e-7147-42d7-8002-3d7944b5aa29" />
+<img width="443" height="761" alt="Image" src="https://github.com/user-attachments/assets/0d949529-d07c-4755-a8ab-3a6f60ae4cbc" />
 
 點進去一台車，本月花費、累積總額、加油記錄，全在一頁。
 
-<img width="439" height="778" alt="Image" src="https://github.com/user-attachments/assets/7f2737e4-259a-44c0-91cc-5800d4f8ad10" />
+<img width="439" height="778" alt="Image" src="https://github.com/user-attachments/assets/52af3ba7-e9d2-490e-83bf-1f2060f67bc8" />
 
 ---
 
