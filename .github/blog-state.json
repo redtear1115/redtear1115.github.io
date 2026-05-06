@@ -1,0 +1,8 @@
+{
+  "repos": {
+    "oikos":         { "last_sha": "a823bfe274fd7a98d500662d7f1ef3e4a35c3d54", "last_selected": "2026-05-07T00:00:00Z" },
+    "vanishwhisper": { "last_sha": "", "last_selected": "" },
+    "wildcard":      { "last_sha": "", "last_selected": "" },
+    "nebula":        { "last_sha": "", "last_selected": "" }
+  }
+}
