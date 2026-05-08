@@ -4,7 +4,7 @@ pubDate: "2026-05-08"
 tags: []
 draft: false
 ---
-說來有點荒謬——我寫了好幾天的 Futari，結果連 `/robots.txt` 都被自己的 middleware 一腳踢去 `/sign-in`。對，**整站 SEO 等於零**。Google bot 來敲門，被我 307 redirect 到登入頁，看一眼就走了，連 sitemap 都沒機會吃到。一個對外行銷靠 organic 的 PWA，這真的不行。
+說來有點荒謬——我寫了好幾個月的 Futari，結果連 `/robots.txt` 都被自己的 middleware 一腳踢去 `/sign-in`。對，**整站 SEO 等於零**。Google bot 來敲門，被我 307 redirect 到登入頁，看一眼就走了，連 sitemap 都沒機會吃到。一個對外行銷靠 organic 的 PWA，這真的不行。
 
 更荒謬的是，把 children 的身分證／健保卡寫進 DB 時，我居然**忘了呼叫 `encrypt()`**——欄位早就規劃好要做端到端加密，schema 也設計成 ciphertext-only，結果 server action 那邊一路 plaintext 灌進去。讀的時候更妙：直接把 plaintext 丟回 client，前端拿來 render `●●●` 假裝有遮蔽。typeof 安全劇場。被自己的 RLS 救下來（至少不是其他 group 的人能看），但那不是重點，重點是這條路徑根本就不該 plaintext 出現在 wire 上。
 
@@ -39,5 +39,3 @@ draft: false
 ## 收尾
 
 72 個 commit 一天清完。SEO 修好之後我去看 `next start` 出來的 `/sign-in` HTML——title、description、keywords、canonical、4 個 hreflang、JSON-LD 全部就位，那一刻有種**「啊原來這才是別人 default 的樣子」**的感覺。早知道就不要讓 middleware 一開始就把 `/robots.txt` 也吃掉了。
-
-*這段 code 寫於 2026 年 5 月，文章整理於 2026 年 5 月。*
