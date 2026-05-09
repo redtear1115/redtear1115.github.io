@@ -1,6 +1,6 @@
 {
   "repos": {
-    "oikos":        { "last_sha": "7f730adfdf91ec05891e876d8a637503836f9315", "last_selected": "2026-05-07T14:30:00Z" },
+    "oikos":        { "last_sha": "f4ff75a7fbad3c5e11ee68a0d351e200a0d209fc", "last_selected": "2026-05-09T01:06:18Z" },
     "vanishwhisper":{ "last_sha": "2d68b23ab4a62133354dcd3f1aa100ac8c6bd6ac", "last_selected": "2026-05-07T22:00:00Z" },
     "wildcard":     { "last_sha": "aeccd7d66d49672a235a7b5b8a2e842cc1bc620d", "last_selected": "2026-05-08T01:05:32Z" },
     "nebula":       { "last_sha": "e07111a495cd5b8a815c20a233d538068c8e1c4b", "last_selected": "2026-05-07T12:00:00Z" }
