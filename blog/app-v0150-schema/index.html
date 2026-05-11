@@ -1,0 +1,46 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Astro v4.16.19"><meta name="color-scheme" content="dark"><title>「如果有一天你們分開了，這個 app 會怎樣？」——v0.15.0 把這題寫進 schema — Southern Light</title><meta name="description" content="Notes on systems, tools, and side projects."><link rel="canonical" href="https://southern-light.dev/blog/app-v0150-schema"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="sitemap" href="/sitemap-index.xml"><meta property="og:type" content="website"><meta property="og:title" content="「如果有一天你們分開了，這個 app 會怎樣？」——v0.15.0 把這題寫進 schema — Southern Light"><meta property="og:description" content="Notes on systems, tools, and side projects."><meta property="og:url" content="https://southern-light.dev/blog/app-v0150-schema"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="「如果有一天你們分開了，這個 app 會怎樣？」——v0.15.0 把這題寫進 schema — Southern Light"><meta name="twitter:description" content="Notes on systems, tools, and side projects."><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"><link rel="stylesheet" href="/_astro/_slug_.BFI2vgup.css"></head> <body> <header class="site-header"> <a href="/" class="site-name">southern-light</a> <nav> <a href="/blog">blog</a> <a href="/about">about</a> </nav> </header> <main>  <article> <header class="post-header"> <h1>「如果有一天你們分開了，這個 app 會怎樣？」——v0.15.0 把這題寫進 schema</h1> <div class="meta"> <time datetime="2026-05-11">2026-05-11</time>  </div> </header> <div class="prose">  <p>老實說我以前刻意不去想這題。Futari 是給兩個人用的家計簿——伴侶、夫妻——可是<strong>伴侶會分開</strong>啊。我之前的設計裡，「離開群組」這個 action <strong>根本不存在</strong>：你不能離開、不能把對方踢掉、不能換 partner。要嘛繼續用、要嘛兩個人各自把帳號棄掉。<strong>這對「兩個人的信任」這個 pitch 來說，是個很尷尬的盲點</strong>——你說你們是兩個人的家計簿，結果只支援「永遠在一起」這一種狀態？</p>
+<p>更荒謬的是，我自己的 onboarding 雙向確認儀式才剛 ship 沒幾天（v0.13.0 那個「○○ 已經承諾了這些 → 我也是」）——承諾儀式做了，分手協議沒做。<strong>婚禮辦了沒寫遺囑</strong>。</p>
+<p>所以這趟把 <code>#79 leave group</code> 拆成四個 PR、一口氣 ship 完，同時順手把 <code>#49 pending 紀錄</code>、<code>#50 結構化篩選器</code>、保險強化跟分紅生存金都收進來。一個 27 commit 的星期一。</p>
+<h2 id="pr-14swap--leave-的-server-actions">PR 1/4：swap + leave 的 server actions</h2>
+<p>最底層是兩個 server action：<code>confirmSwap</code> 跟 <code>leaveGroup</code>——配上一張 migration <code>0028</code>，幫 <code>OikosGroups</code> 加了 <code>pending_swap_proposed_by</code> / <code>pending_swap_expires_at</code> / <code>current_epoch_started_at</code>，外加兩個 CHECK constraint（proposer 必須是 member、pending 欄位要嘛全 NULL 要嘛全有值）。<strong>CHECK constraint 是這種 multi-column invariant 最後一道防線</strong>——business logic 在 server action 寫得再嚴，總有一天會有人從別條路徑（pgAdmin、未來的 batch job、自己寫 SQL 修 bug）動到這欄。DB 自己會擋。</p>
+<p><code>confirmSwap</code> 是 atomic transaction：原子地 <code>swap member_a / member_b</code>、把所有 weighted transaction 跟 recurring rule 的 <code>split_ratio_a</code> 從 <code>x</code> 翻成 <code>100 - x</code>、<code>recalcGroupBalance</code>（這欄是 signed，從 <code>member_a</code> 視角，所以人換了正負號就要翻）。<strong>這條 swap 不會切割 epoch</strong>——因為 swap 只是「重新貼標籤」，不是新章節。</p>
+<p><code>leaveGroup</code> 才是真正的拆分手術。<code>member_b</code> 離開時 balance 必須是 0（<strong>有未結算的錢不准走</strong>——這條規則寫在 server action 最前面），然後把整個 ledger 按 ownership 切兩半：</p>
+<ul>
+<li><strong>Cash / income / settlement / rules / pending / monthly review messages</strong> → partition by owner</li>
+<li><strong>Assets</strong>：<code>house</code> / <code>car</code> / <code>insurance</code> 按 owner 切；<code>child</code> / <code>pet</code> / <code>plant</code> 留在原 group（你不會「拿走小孩」）</li>
+<li><strong>Invoice credentials</strong> → 跟著走</li>
+<li>留下來那邊<strong>指向被拿走 assets 的 <code>asset_id</code> 全 clear 成 NULL</strong></li>
+<li>兩邊都 bump <code>current_epoch_started_at</code></li>
+<li>pending invites 一律 revoke</li>
+</ul>
+<p>這條 transaction 大概是我寫過最緊張的 server action——<strong>一個 commit 解體一段關係</strong>。寫完跑了 7 個整合測試（雙向 leave、leave 時還有未結 balance、leave 後 invite 別人、leave 後又 leave……）才敢 merge。</p>
+<h2 id="pr-24danger-zone-ui-跟-4-card-flow">PR 2/4：danger zone UI 跟 4-card flow</h2>
+<p>Settings 加了一塊 <strong>danger zone</strong>（紅底、跟其他 setting 視覺隔開——這是 GitHub 那個 pattern 抄來的，但<strong>用在感情關係上有種奇怪的合適</strong>）。點「離開帳本」會進 4-card flow：</p>
+<ol>
+<li><strong>這會發生什麼</strong>（你的資料怎麼分、什麼留下、什麼跟你走）</li>
+<li><strong>餘額確認</strong>（如果 balance != 0，這頁直接擋）</li>
+<li><strong>打字確認</strong>（要打對方的 display name 才能繼續——<strong>比 checkbox 嚴</strong>，因為這動作不可逆）</li>
+<li><strong>最後一頁</strong>（一個按鈕、warm 文案、不要把它寫得像辦離婚）</li>
+</ol>
+<p><code>swap</code> 邀請也有自己的 banner——「○○ 想跟你交換身份」+ 接受 / 拒絕 / 7 天自動過期。這個 7 天是寫在 <code>pending_swap_expires_at</code> 欄、靠 pg_cron 跑 cleanup，<strong>而不是靠 client 算「現在時間 vs 過期時間」</strong>。client 時鐘不可信，這條規則做過幾次了。</p>
+<h2 id="pr-34epoch-slicing我們的關係章節">PR 3/4：epoch slicing——「我們的關係章節」</h2>
+<p>這版最 fundamental 的設計決策——一個 ledger 可能會活過好幾段關係：<code>a+b → b 離開 → a solo → a 邀請 c → a+c</code>。新增 <code>GroupEpochs</code> 表，每一段都記成一個 row（<code>started_at</code> / <code>ended_at</code> / <code>member_a_id</code> / <code>member_b_id</code>）。</p>
+<p>關鍵 invariant：<strong>每個 group 同時只能有一個 open epoch</strong>——用 partial unique index <code>WHERE ended_at IS NULL</code> 守。<code>acceptInvite</code> 跟 <code>leaveGroup</code> 兩個 server action 都要 hook 進去（close 舊的、open 新的）。<code>confirmSwap</code> 不動這張表——swap 只是 relabel，不是新章節。</p>
+<p>然後是 <code>resolveViewerEpochWindow(groupId)</code>——這個 helper 是所有「viewer-facing 聚合」的入口：dashboard balance、records feed、stats、月度回顧通通要先過它，預設只看當前 epoch 的資料。為什麼？因為<strong>前任在帳本裡的支出，不應該預設 surface 給現任看</strong>——這不只是 UX，這是基本的關係界線。</p>
+<p>要看過去？有一個 <code>/past-times</code> 頁面（這個命名我糾結蠻久——<code>/history</code> 太 cold、<code>/archive</code> 太檔案夾——<code>/past-times</code> 帶點懷舊但不沉重），列出歷史 epochs、點進去 read-only 看那段時間的資料。</p>
+<h2 id="pr-44兩張過渡卡">PR 4/4：兩張過渡卡</h2>
+<p>純 UI 收尾、沒新 schema：</p>
+<ul>
+<li><strong>PartnerLeftCard</strong>（留下的人看到）—— SSR 偵測「currently solo + 最近 closed epoch 有 memberB」就 surface，「⟂ ○○ 已離開」+ 一段 brand-tone 文案。dismiss 寫 <code>localStorage</code> key 帶 epoch_id——下次再有人離開（新 epoch），卡片會重新跳。</li>
+<li><strong>WelcomeSoloCard</strong>（離開的人看到）—— pure client，靠 <code>LeaveGroupFlow</code> 在 server action 回傳新 group id 後寫的 <code>futari_just_left_${groupId}</code> flag 觸發。dismiss 時同時清 marker 跟寫 <code>*_dismissed_*</code>，避免將來 flag reset 重跳。</li>
+</ul>
+<p>兩張卡都用 realtime 既有 channel 自動 refresh，<strong>不寫新的 subscription</strong>——能不開新 connection 就不開，PWA 行動裝置的 socket 維護成本不便宜。</p>
+<h2 id="順手清的pending--settled結構化篩選器保險強化">順手清的：pending / settled、結構化篩選器、保險強化</h2>
+<p><strong><code>#49 pending / settled</code> 紀錄狀態</strong>——新增 <code>record_status</code> enum + <code>CashTransactions.status</code> 欄、預設 <code>settled</code>、<code>pending</code> 不算進 <code>GroupBalance</code>。場景：信用卡刷卡待結帳、預授權、IOU。狀態轉換沿用既有 edit path（<strong>soft-delete + insert 而非 UPDATE</strong>——這是 Futari 從 day 1 的 immutable row 哲學，每次「編輯」都是新 row、舊 row 標 deleted）。realtime publication 因為是 <code>FOR ALL COLUMNS</code> 自動吃到新欄位，<strong>這條免費的</strong>。</p>
+<p><strong><code>#50 結構化篩選器</code></strong>——<code>/records</code> 加上 date range × 愛物 × 誰付的 × 分攤 × 分類，state 全部 URL-encode。對方手機點同一條 link 看到一樣的 filter，<strong>「我們一起在看同一份東西」這個 mental model 比技術上的 query string 更重要</strong>。直接回應 CWMoney 那個丟搜尋功能的用戶反饋。後來下午又補了一輪：收入分類 multi-select + cross-kind cut rules（從支出切到收入時哪些 filter 要 reset）、header reorganize（篩選 next to tabs、<code>⚙ 定期</code> popover）、stats card 也跟著 filter 走。</p>
+<p><strong>保險強化（#127）+ 分紅生存金（#132）</strong>——<code>AssetCard</code> 對保險類型有 type-specific 行為（壽險 / 醫療 / 儲蓄分流顯示），分紅與生存金可以記為「已拿回」並從未來投入扣除——<strong>儲蓄險的真實 IRR 才看得出來</strong>。配 contract progress bar 視覺化（後來踩到一個 hydration mismatch 用 <code>suppressHydrationWarning</code> + 確保 SSR / CSR 都用相同 Asia/Taipei 時區算寬度才修掉）。</p>
+<p><strong><code>#126 PWA 離線回前景 auto refresh</code></strong>——使用者把 app 切到背景一段時間再回來，原本要手動下拉 refresh。改成監聽 <code>online</code> + <code>visibilitychange</code> event、auto <code>router.refresh()</code>。<strong>這個 bug 看起來小但其實是 PWA 體感差距的關鍵</strong>——「為什麼資料看起來舊舊的」就是 churn 起點。</p>
+<h2 id="收尾">收尾</h2>
+<p>27 個 commit、一個關係章節系統、一份分手協議、一個我幾天前還說「不打算做」的功能。寫完 <code>leaveGroup</code> 的 atomic transaction 之後我有個奇怪的感觸——<strong>這是我唯一一個寫的時候希望它永遠不會被 user 觸發的 server action</strong>。但它必須存在。一個聲稱「兩個人的信任」的產品，<strong>不該假設這份信任永遠不變</strong>——能離開、能離開乾淨、能離開之後還想得起這段時光，這才是完整的信任。</p>
+<p>至於那張 <code>GroupEpochs</code> 表，我自己默默叫它「<strong>關係的 git log</strong>」。每個 epoch 是一個 commit，每段關係是一段歷史，never overwritten——很適合一個用 immutable row 哲學寫的 ledger。</p>
+<p><em>這段 code 寫於 2026 年 5 月，文章整理於 2026 年 5 月。</em></p>  </div> </article>  </main> <footer class="site-footer"> <span>© 2026 Ray Lee</span> <span> <a href="https://github.com/redtear1115">github</a> </span> </footer> </body></html>
