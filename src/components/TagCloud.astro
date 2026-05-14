@@ -1,0 +1,34 @@
+---
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('blog', ({ data }) => !data.draft);
+
+const counts = new Map<string, number>();
+for (const post of posts) {
+  for (const tag of post.data.tags) {
+    counts.set(tag, (counts.get(tag) ?? 0) + 1);
+  }
+}
+
+function sizeClass(count: number): string {
+  if (count >= 5) return 'size-xl';
+  if (count >= 3) return 'size-lg';
+  if (count >= 2) return 'size-md';
+  return 'size-sm';
+}
+
+const tags = [...counts.entries()].sort((a, b) => b[1] - a[1]);
+---
+
+<aside class="page-sidebar">
+  <div class="sidebar-panel">
+    <div class="sidebar-title">// tags</div>
+    <div class="tag-cloud">
+      {tags.map(([tag, count]) => (
+        <a class={`tag-chip ${sizeClass(count)}`} href={`/tags/${tag}`}>
+          {tag}
+        </a>
+      ))}
+    </div>
+  </div>
+</aside>
