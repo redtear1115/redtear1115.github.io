@@ -114,9 +114,9 @@ img {
 }
 
 main {
-  max-width: var(--max-width);
-  margin: 0 auto;
-  padding: 4rem 1.5rem;
+  max-width: unset;
+  margin: 0;
+  padding: 0;
   position: relative;
   z-index: 1;
 }
@@ -494,4 +494,53 @@ main {
   border-color: var(--accent) !important;
   background: #5ba3d915 !important;
   box-shadow: 0 0 10px #5ba3d940 !important;
+}
+
+/* ----- Aurora bands (fixed overlay) ----- */
+.aurora-wrap {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 300px;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.aurora-band {
+  position: absolute;
+  left: -15%; right: -15%;
+  height: 200px;
+  border-radius: 50%;
+}
+
+.aurora-band.aurora-green {
+  top: -70px;
+  background: linear-gradient(180deg,
+    transparent 0%,
+    #00d4a015 30%,
+    #00c8b825 55%,
+    #00b8d415 75%,
+    transparent 100%
+  );
+  animation: aurora-drift 10s ease-in-out infinite;
+}
+
+.aurora-band.aurora-purple {
+  top: -20px;
+  background: linear-gradient(180deg,
+    transparent 0%,
+    #6040c012 25%,
+    #4060c020 55%,
+    transparent 100%
+  );
+  animation: aurora-drift2 14s ease-in-out infinite;
+}
+
+/* ----- Site wrapper (centers content at max-width) ----- */
+.site-wrapper {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  position: relative;
+  z-index: 1;
 }
