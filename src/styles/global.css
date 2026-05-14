@@ -350,3 +350,88 @@ main {
   .page-sidebar { display: none; }
   .page-layout { padding: 2.5rem 0 4rem; }
 }
+
+/* ----- Sidebar panel ----- */
+.sidebar-panel {
+  background: linear-gradient(145deg, #0d1522cc, #0a111e99);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1.1rem 1rem;
+  backdrop-filter: blur(6px);
+  position: relative;
+  overflow: hidden;
+}
+
+.sidebar-panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #00d4a030 40%, #00b8d430 60%, transparent);
+}
+
+.sidebar-title {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--aurora-teal);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  margin-bottom: 0.9rem;
+  opacity: 0.85;
+}
+
+/* ----- Tag cloud chips ----- */
+.tag-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.tag-chip {
+  display: inline-block;
+  font-family: var(--font-mono);
+  padding: 3px 9px;
+  border-radius: 12px;
+  border: 1px solid;
+  text-decoration: none;
+  transition: all 0.2s;
+  line-height: 1.4;
+}
+
+.tag-chip.size-xl {
+  font-size: 0.78rem;
+  color: var(--accent-hover);
+  border-color: var(--accent);
+  background: #5ba3d912;
+  box-shadow: 0 0 8px #5ba3d935, inset 0 0 8px #5ba3d910;
+  animation: chip-pulse 3s ease-in-out infinite;
+}
+
+.tag-chip.size-lg {
+  font-size: 0.70rem;
+  color: var(--accent);
+  border-color: #2a4060;
+  background: #5ba3d908;
+  box-shadow: 0 0 5px #5ba3d920;
+}
+
+.tag-chip.size-md {
+  font-size: 0.65rem;
+  color: #4a7a9b;
+  border-color: #1e2d4a;
+  background: transparent;
+}
+
+.tag-chip.size-sm {
+  font-size: 0.60rem;
+  color: #2a4a65;
+  border-color: #162030;
+  background: transparent;
+}
+
+.tag-chip:hover {
+  color: var(--accent-hover) !important;
+  border-color: var(--accent) !important;
+  background: #5ba3d915 !important;
+  box-shadow: 0 0 10px #5ba3d940 !important;
+}
