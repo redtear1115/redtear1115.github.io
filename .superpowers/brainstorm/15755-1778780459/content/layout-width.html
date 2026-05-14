@@ -1,0 +1,194 @@
+<style>
+  .demo-page {
+    background: #0a0e1a;
+    border: 1px solid #1e2d4a;
+    border-radius: 8px;
+    overflow: hidden;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 11px;
+    color: #e8eef7;
+    position: relative;
+  }
+  .demo-page::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(-55deg, transparent 0px, transparent 60px, #ffffff04 60px, #ffffff04 61px);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .topbar {
+    background: #06091388;
+    backdrop-filter: blur(4px);
+    border-bottom: 1px solid #1e2d4a;
+    padding: 6px 12px;
+    display: flex;
+    justify-content: space-between;
+    font-family: monospace;
+    font-size: 9px;
+    color: #8aa0bc;
+    position: relative;
+    z-index: 1;
+  }
+  .topbar .logo { color: #e8eef7; }
+  .page-body {
+    display: flex;
+    position: relative;
+    z-index: 1;
+  }
+  /* ruler */
+  .ruler {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-family: monospace;
+    font-size: 8px;
+    color: #3a5a78;
+    margin-top: 4px;
+    padding: 0 2px;
+  }
+  .ruler-line { flex: 1; height: 1px; background: #1e2d4a60; }
+  /* post block */
+  .main-block { padding: 10px 12px; }
+  .post-entry { margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid #1e2d4a40; }
+  .pl { height: 7px; background: #e8eef720; border-radius: 2px; margin: 4px 0; }
+  .pl.title { height: 9px; background: #e8eef740; width: 88%; }
+  .pl.short { width: 50%; }
+  /* sidebar */
+  .sb {
+    border-left: 1px solid #1e2d4a;
+    background: #060a1480;
+    backdrop-filter: blur(2px);
+    padding: 10px 8px;
+    flex-shrink: 0;
+  }
+  .sb-lbl { font-size: 7px; font-family: monospace; color: #5ba3d9; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
+  .chip {
+    display: inline-block; font-size: 7px; font-family: monospace;
+    padding: 2px 6px; border-radius: 10px; border: 1px solid; margin: 2px 1px;
+  }
+  .chip.xl { color: #7dc0f0; border-color: #5ba3d9; background: #5ba3d912; box-shadow: 0 0 5px #5ba3d930; font-size: 8px; }
+  .chip.lg { color: #5ba3d9; border-color: #2a4060; background: #5ba3d908; }
+  .chip.sm { color: #2a4a60; border-color: #162030; font-size: 6px; }
+  /* width label */
+  .width-info {
+    display: flex;
+    justify-content: space-between;
+    font-family: monospace;
+    font-size: 8px;
+    color: #3a5a78;
+    padding: 4px 8px;
+    border-top: 1px solid #1e2d4a40;
+    position: relative;
+    z-index: 1;
+  }
+  .w-main { color: #5ba3d9; }
+  .w-side { color: #4a8a6a; }
+  .card-image { padding: 12px; background: #05080f; }
+</style>
+
+<div style="margin-bottom:1.5rem">
+  <h2>側邊欄的版面比例？</h2>
+  <p class="subtitle">側邊欄加進來後，整體的寬度與比例怎麼配置</p>
+</div>
+
+<div class="cards">
+
+  <div class="card" data-choice="narrow" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="demo-page">
+        <div class="topbar"><span class="logo">southern_light</span><span>blog · tags · about · rss</span></div>
+        <div class="page-body">
+          <div class="main-block" style="flex:1; min-width:0">
+            <div class="post-entry"><div class="pl title"></div><div class="pl short"></div></div>
+            <div class="post-entry"><div class="pl title"></div><div class="pl short"></div></div>
+            <div class="post-entry"><div class="pl title"></div><div class="pl"></div></div>
+          </div>
+          <div class="sb" style="width:64px">
+            <div class="sb-lbl">// tags</div>
+            <div><span class="chip xl">astro</span></div>
+            <div><span class="chip lg">react</span></div>
+            <div><span class="chip lg">ts</span></div>
+            <div><span class="chip sm">drizzle</span></div>
+            <div><span class="chip sm">rls</span></div>
+          </div>
+        </div>
+        <div class="width-info">
+          <span>整體維持 <span class="w-main">720px</span></span>
+          <span>側邊 <span class="w-side">160px</span> / 主文 <span class="w-main">~540px</span></span>
+        </div>
+      </div>
+      <div class="ruler"><span class="ruler-line"></span><span>720 px total</span><span class="ruler-line"></span></div>
+    </div>
+    <div class="card-body">
+      <h3>A — 緊湊型（720px 不變）</h3>
+      <p>側邊欄嵌入現有寬度，文章列寬略縮，版面最省空間</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="medium" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="demo-page">
+        <div class="topbar"><span class="logo">southern_light</span><span>blog · tags · about · rss</span></div>
+        <div class="page-body">
+          <div class="main-block" style="flex:1; min-width:0">
+            <div class="post-entry"><div class="pl title"></div><div class="pl short"></div></div>
+            <div class="post-entry"><div class="pl title"></div><div class="pl short"></div></div>
+            <div class="post-entry"><div class="pl title"></div><div class="pl"></div></div>
+          </div>
+          <div class="sb" style="width:78px">
+            <div class="sb-lbl">// tags</div>
+            <div><span class="chip xl">astro</span></div>
+            <div><span class="chip lg">react</span></div>
+            <div><span class="chip lg">typescript</span></div>
+            <div><span class="chip sm">drizzle</span></div>
+            <div><span class="chip sm">rls</span></div>
+          </div>
+        </div>
+        <div class="width-info">
+          <span>整體擴展至 <span class="w-main">920px</span></span>
+          <span>側邊 <span class="w-side">200px</span> / 主文 <span class="w-main">720px</span></span>
+        </div>
+      </div>
+      <div class="ruler"><span class="ruler-line"></span><span>920 px total</span><span class="ruler-line"></span></div>
+    </div>
+    <div class="card-body">
+      <h3>B — 標準型（920px，推薦）</h3>
+      <p>主文保留 720px 不變，側邊欄另外加在右側，寬螢幕效果最佳</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="wide" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="demo-page">
+        <div class="topbar"><span class="logo">southern_light</span><span>blog · tags · about · rss</span></div>
+        <div class="page-body">
+          <div class="main-block" style="flex:1; min-width:0">
+            <div class="post-entry"><div class="pl title"></div><div class="pl short"></div></div>
+            <div class="post-entry"><div class="pl title"></div><div class="pl short"></div></div>
+            <div class="post-entry"><div class="pl title"></div><div class="pl"></div></div>
+          </div>
+          <div class="sb" style="width:96px">
+            <div class="sb-lbl">// tags</div>
+            <div><span class="chip xl">astro</span></div>
+            <div><span class="chip lg">react</span></div>
+            <div><span class="chip lg">typescript</span></div>
+            <div><span class="chip sm">firebase</span></div>
+            <div><span class="chip sm">drizzle</span></div>
+            <div><span class="chip sm">security</span></div>
+          </div>
+        </div>
+        <div class="width-info">
+          <span>整體擴展至 <span class="w-main">1100px</span></span>
+          <span>側邊 <span class="w-side">260px</span> / 主文 <span class="w-main">720px+</span></span>
+        </div>
+      </div>
+      <div class="ruler"><span class="ruler-line"></span><span>1100 px total</span><span class="ruler-line"></span></div>
+    </div>
+    <div class="card-body">
+      <h3>C — 寬闊型（1100px）</h3>
+      <p>側邊欄更寬敞，標籤展示更完整，適合 1440px+ 大螢幕</p>
+    </div>
+  </div>
+
+</div>

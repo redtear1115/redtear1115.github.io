@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Southern Light — Full Design Mockup</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  @keyframes aurora-drift {
+    0%   { transform: translateX(-4%) scaleX(1);    opacity: 0.22; }
+    50%  { transform: translateX(4%)  scaleX(1.06); opacity: 0.32; }
+    100% { transform: translateX(-4%) scaleX(1);    opacity: 0.22; }
+  }
+  @keyframes aurora-drift2 {
+    0%   { transform: translateX(3%) scaleX(1.08); opacity: 0.10; }
+    55%  { transform: translateX(-3%) scaleX(0.94); opacity: 0.18; }
+    100% { transform: translateX(3%) scaleX(1.08); opacity: 0.10; }
+  }
+  @keyframes ice-shimmer {
+    0%,100% { opacity: 0.03; }
+    50%     { opacity: 0.07; }
+  }
+  @keyframes chip-pulse {
+    0%,100% { box-shadow: 0 0 6px #5ba3d930, inset 0 0 6px #5ba3d910; }
+    50%     { box-shadow: 0 0 12px #5ba3d950, inset 0 0 10px #5ba3d920; }
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0e1a;
+    --surface: #0f1629;
+    --border: #1e2d4a;
+    --text: #e8eef7;
+    --text-muted: #8aa0bc;
+    --accent: #5ba3d9;
+    --accent-hover: #7dc0f0;
+    --aurora-green: #00d4a0;
+    --aurora-teal: #00b8d4;
+    --aurora-purple: #6040c0;
+    --code-bg: #0d1522;
+    --font-body: 'Inter', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    --max-width: 920px;
+    --sidebar-width: 200px;
+    --content-width: 680px;
+    --radius: 4px;
+  }
+
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* ── Background layers ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    /* Ice ocean gradient */
+    background:
+      radial-gradient(ellipse 200% 50% at 50% -5%, #00a8e018 0%, transparent 55%),
+      radial-gradient(ellipse 120% 70% at 5%  60%, #004a9010 0%, transparent 55%),
+      linear-gradient(160deg, #060a14 0%, #0a0e1a 45%, #070b17 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    /* Ice crystal lines */
+    background-image: repeating-linear-gradient(
+      -55deg,
+      transparent 0px, transparent 70px,
+      #ffffff05 70px, #ffffff05 71px
+    );
+    pointer-events: none;
+    z-index: 0;
+    animation: ice-shimmer 7s ease-in-out infinite;
+  }
+
+  /* Aurora bands (in header area) */
+  .aurora-wrap {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 280px;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .aurora-band {
+    position: absolute;
+    left: -15%; right: -15%;
+    height: 180px;
+    border-radius: 50%;
+  }
+  .aurora-band.green {
+    top: -60px;
+    background: linear-gradient(180deg,
+      transparent 0%,
+      #00d4a015 30%,
+      #00c8b825 55%,
+      #00b8d415 75%,
+      transparent 100%
+    );
+    animation: aurora-drift 10s ease-in-out infinite;
+  }
+  .aurora-band.purple {
+    top: -20px;
+    background: linear-gradient(180deg,
+      transparent 0%,
+      #6040c012 25%,
+      #4060c020 55%,
+      transparent 100%
+    );
+    animation: aurora-drift2 14s ease-in-out infinite;
+  }
+
+  /* ── Layout ── */
+  .site-wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  /* ── Header ── */
+  .site-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 0 0;
+    position: relative;
+  }
+  .site-header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border) 20%, var(--border) 80%, transparent);
+  }
+  .site-name {
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    color: var(--text);
+    letter-spacing: 0.03em;
+    text-shadow: 0 0 12px #5ba3d930;
+  }
+  .site-name span { color: var(--aurora-teal); text-shadow: 0 0 10px #00b8d440; }
+  nav a {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    margin-left: 1.5rem;
+    font-family: var(--font-mono);
+    transition: color 0.15s;
+  }
+  nav a:hover { color: var(--accent-hover); }
+
+  /* ── Page body: main + sidebar ── */
+  .page-body {
+    display: flex;
+    gap: 2.5rem;
+    padding: 3.5rem 0 5rem;
+    align-items: flex-start;
+  }
+  .page-main { flex: 1; min-width: 0; }
+  .page-sidebar {
+    width: var(--sidebar-width);
+    flex-shrink: 0;
+    position: sticky;
+    top: 2rem;
+  }
+
+  /* ── Section title ── */
+  .section-title {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    margin-bottom: 1.5rem;
+  }
+
+  /* ── Post card ── */
+  .post-card {
+    padding: 1.4rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .post-card:last-child { border-bottom: none; }
+  .post-card h2 { font-size: 1.1rem; font-weight: 500; margin-bottom: 0.3rem; }
+  .post-card h2 a { color: var(--text); text-decoration: none; transition: color 0.15s; }
+  .post-card h2 a:hover { color: var(--accent-hover); }
+  .post-card .meta {
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    color: var(--text-muted);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.35rem;
+  }
+  .post-card .meta a { color: var(--text-muted); text-decoration: none; }
+  .post-card .meta a:hover { color: var(--accent); }
+
+  /* ── Sidebar: Tag cloud ── */
+  .sidebar-panel {
+    background: linear-gradient(145deg, #0d1522cc, #0a111e99);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1.1rem 1rem;
+    backdrop-filter: blur(6px);
+    position: relative;
+    overflow: hidden;
+  }
+  .sidebar-panel::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #00d4a030 40%, #00b8d430 60%, transparent);
+  }
+  .sidebar-title {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--aurora-teal);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    margin-bottom: 0.9rem;
+    opacity: 0.85;
+  }
+  .tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  .tag-chip {
+    display: inline-block;
+    font-family: var(--font-mono);
+    padding: 3px 9px;
+    border-radius: 12px;
+    border: 1px solid;
+    text-decoration: none;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .tag-chip.size-xl {
+    font-size: 0.78rem;
+    color: var(--accent-hover);
+    border-color: var(--accent);
+    background: #5ba3d912;
+    box-shadow: 0 0 8px #5ba3d935, inset 0 0 8px #5ba3d910;
+    animation: chip-pulse 3s ease-in-out infinite;
+  }
+  .tag-chip.size-lg {
+    font-size: 0.7rem;
+    color: var(--accent);
+    border-color: #2a4060;
+    background: #5ba3d908;
+    box-shadow: 0 0 5px #5ba3d920;
+  }
+  .tag-chip.size-md {
+    font-size: 0.65rem;
+    color: #4a7a9b;
+    border-color: #1e2d4a;
+    background: transparent;
+  }
+  .tag-chip.size-sm {
+    font-size: 0.6rem;
+    color: #2a4a65;
+    border-color: #162030;
+    background: transparent;
+  }
+  .tag-chip:hover {
+    color: var(--accent-hover) !important;
+    border-color: var(--accent) !important;
+    background: #5ba3d915 !important;
+    box-shadow: 0 0 10px #5ba3d940 !important;
+  }
+
+  /* ── Footer ── */
+  .site-footer {
+    border-top: 1px solid var(--border);
+    padding: 1.5rem 0 2.5rem;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* ── Design notes overlay ── */
+  .design-note {
+    position: absolute;
+    background: #1a3a5c;
+    border: 1px solid #2a5a8a;
+    color: #7dc0f0;
+    font-size: 10px;
+    font-family: monospace;
+    padding: 4px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    z-index: 100;
+  }
+  .design-note::before { content: '▶ '; }
+  .note-aurora { top: 60px; right: -10px; }
+  .note-sidebar { top: 120px; right: -10px; }
+  .note-ice { bottom: 200px; right: -10px; }
+
+</style>
+</head>
+<body>
+
+<div class="aurora-wrap">
+  <div class="aurora-band green"></div>
+  <div class="aurora-band purple"></div>
+</div>
+
+<div class="site-wrapper">
+  <header class="site-header">
+    <div class="site-name">southern<span>_light</span></div>
+    <nav>
+      <a href="#">blog</a>
+      <a href="#">tags</a>
+      <a href="#">about</a>
+      <a href="#">rss</a>
+    </nav>
+  </header>
+
+  <div class="page-body">
+    <!-- Main content -->
+    <main class="page-main">
+      <h2 class="section-title">All posts</h2>
+
+      <article class="post-card">
+        <h2><a href="#">AES-256-GCM Encryption in Node.js — Buffer & Key Management</a></h2>
+        <div class="meta">
+          <time>2025-04-12</time>
+          <span>~6 min</span>
+          <a href="#">#security</a>
+          <a href="#">#crypto</a>
+          <a href="#">#nodejs</a>
+        </div>
+      </article>
+
+      <article class="post-card">
+        <h2><a href="#">Drizzle ORM Migration & RLS — Production Infra Notes</a></h2>
+        <div class="meta">
+          <time>2025-03-28</time>
+          <span>~8 min</span>
+          <a href="#">#drizzle</a>
+          <a href="#">#supabase</a>
+          <a href="#">#rls</a>
+        </div>
+      </article>
+
+      <article class="post-card">
+        <h2><a href="#">Firebase Vision API + Wildcard Matching</a></h2>
+        <div class="meta">
+          <time>2025-02-15</time>
+          <span>~5 min</span>
+          <a href="#">#firebase</a>
+          <a href="#">#vision-api</a>
+        </div>
+      </article>
+
+      <article class="post-card">
+        <h2><a href="#">Futari — Building a Private E2E Encrypted Messenger</a></h2>
+        <div class="meta">
+          <time>2025-01-20</time>
+          <span>~12 min</span>
+          <a href="#">#astro</a>
+          <a href="#">#react</a>
+          <a href="#">#e2e</a>
+        </div>
+      </article>
+
+      <article class="post-card">
+        <h2><a href="#">Astro + React useAssetSheet — State Management Pattern</a></h2>
+        <div class="meta">
+          <time>2024-12-05</time>
+          <span>~4 min</span>
+          <a href="#">#astro</a>
+          <a href="#">#react</a>
+        </div>
+      </article>
+    </main>
+
+    <!-- Sidebar -->
+    <aside class="page-sidebar">
+      <div class="sidebar-panel" style="position:relative">
+        <div class="sidebar-title">// tags</div>
+        <div class="tag-cloud">
+          <a class="tag-chip size-xl" href="#">astro</a>
+          <a class="tag-chip size-xl" href="#">typescript</a>
+          <a class="tag-chip size-lg" href="#">react</a>
+          <a class="tag-chip size-lg" href="#">security</a>
+          <a class="tag-chip size-md" href="#">firebase</a>
+          <a class="tag-chip size-md" href="#">supabase</a>
+          <a class="tag-chip size-md" href="#">drizzle</a>
+          <a class="tag-chip size-sm" href="#">rls</a>
+          <a class="tag-chip size-sm" href="#">crypto</a>
+          <a class="tag-chip size-sm" href="#">nodejs</a>
+          <a class="tag-chip size-sm" href="#">e2e</a>
+          <a class="tag-chip size-sm" href="#">vision-api</a>
+        </div>
+
+        <!-- Design annotations -->
+        <div class="design-note" style="position:relative;margin-top:14px;left:auto;right:auto;display:block;font-size:9px;background:#0a1a2a;border-color:#1e3a5a;color:#4a7a9b">
+          熱門標籤有脈動發光動畫
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <footer class="site-footer">
+    <span>© 2025 southern_light</span>
+    <span>built with astro</span>
+  </footer>
+</div>
+
+<!-- Design notes -->
+<div style="position:fixed;top:16px;left:16px;z-index:200;display:flex;flex-direction:column;gap:6px;max-width:220px">
+  <div style="background:#05080fcc;border:1px solid #1e2d4a;border-radius:6px;padding:10px 12px;font-family:monospace;font-size:10px;color:#8aa0bc;backdrop-filter:blur(4px)">
+    <div style="color:#00d4a0;margin-bottom:6px;font-size:9px;letter-spacing:0.1em">// DESIGN NOTES</div>
+    <div style="margin-bottom:4px;color:#5ba3d9">▸ 極光帶</div>
+    <div style="margin-bottom:8px;color:#4a6a7a;font-size:9px">頂部青綠 + 深紫光帶緩慢飄移</div>
+    <div style="margin-bottom:4px;color:#5ba3d9">▸ 冰晶背景</div>
+    <div style="margin-bottom:8px;color:#4a6a7a;font-size:9px">斜向細線 + 閃爍動畫</div>
+    <div style="margin-bottom:4px;color:#5ba3d9">▸ 標籤雲</div>
+    <div style="margin-bottom:8px;color:#4a6a7a;font-size:9px">熱門標籤脈動發光，hover 有外暈</div>
+    <div style="margin-bottom:4px;color:#5ba3d9">▸ 版面</div>
+    <div style="color:#4a6a7a;font-size:9px">920px 總寬，主文 680px + 側邊 200px</div>
+  </div>
+</div>
+
+</body>
+</html>

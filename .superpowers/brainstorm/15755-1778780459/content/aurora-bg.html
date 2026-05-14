@@ -1,0 +1,248 @@
+<style>
+  @keyframes aurora-drift {
+    0%   { transform: translateX(-5%) translateY(0) scaleX(1); opacity: 0.18; }
+    50%  { transform: translateX(5%)  translateY(-8px) scaleX(1.05); opacity: 0.28; }
+    100% { transform: translateX(-5%) translateY(0) scaleX(1); opacity: 0.18; }
+  }
+  @keyframes aurora-drift2 {
+    0%   { transform: translateX(3%) scaleX(1.1); opacity: 0.12; }
+    60%  { transform: translateX(-3%) scaleX(0.95); opacity: 0.22; }
+    100% { transform: translateX(3%) scaleX(1.1); opacity: 0.12; }
+  }
+  @keyframes shimmer {
+    0%   { opacity: 0.04; }
+    50%  { opacity: 0.09; }
+    100% { opacity: 0.04; }
+  }
+
+  .demo-wrap {
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #1e2d4a;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 11px;
+    color: #e8eef7;
+    position: relative;
+    min-height: 170px;
+  }
+  .demo-header {
+    padding: 6px 12px;
+    border-bottom: 1px solid #1e2d4a;
+    font-family: monospace;
+    font-size: 9px;
+    color: #8aa0bc;
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    z-index: 2;
+  }
+  .demo-content {
+    padding: 12px 14px;
+    position: relative;
+    z-index: 2;
+    display: flex;
+    gap: 10px;
+  }
+  .demo-main { flex: 1; }
+  .demo-sidebar { width: 72px; }
+  .post-line { height: 7px; background: #e8eef720; border-radius: 2px; margin: 5px 0; }
+  .post-line.title { height: 9px; background: #e8eef740; width: 85%; }
+  .post-line.short { width: 55%; }
+  .post-entry { margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #1e2d4a30; }
+  .chip {
+    display: inline-block;
+    font-size: 8px;
+    font-family: monospace;
+    padding: 2px 7px;
+    border-radius: 10px;
+    margin: 2px;
+    border: 1px solid;
+  }
+  .chip.xl { color: #7dc0f0; border-color: #5ba3d9; background: #5ba3d912; box-shadow: 0 0 6px #5ba3d930; font-size: 9px; }
+  .chip.lg { color: #5ba3d9; border-color: #2a4060; background: #5ba3d908; }
+  .chip.sm { color: #2a4a60; border-color: #162030; font-size: 7px; }
+  .sidebar-lbl { font-size: 7px; font-family: monospace; color: #5ba3d9; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 5px; }
+
+  /* BG: Option A — static subtle gradient */
+  .bg-a {
+    background:
+      radial-gradient(ellipse 120% 40% at 60% 0%, #00e5a015 0%, transparent 70%),
+      radial-gradient(ellipse 80% 30% at 80% 20%, #00b8d430 0%, transparent 60%),
+      linear-gradient(180deg, #090e1c 0%, #0a0e1a 100%);
+  }
+  .bg-a .demo-header { background: #0a0e1acc; }
+
+  /* BG: Option B — animated aurora bands */
+  .bg-b { background: #0a0e1a; }
+  .bg-b .aurora-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .bg-b .band1 {
+    position: absolute;
+    top: -20%;
+    left: -10%;
+    right: -10%;
+    height: 60%;
+    background: linear-gradient(180deg,
+      transparent 0%,
+      #00e5a018 30%,
+      #00c8b830 50%,
+      #00b8d420 70%,
+      transparent 100%
+    );
+    border-radius: 50%;
+    animation: aurora-drift 8s ease-in-out infinite;
+  }
+  .bg-b .band2 {
+    position: absolute;
+    top: 10%;
+    left: -15%;
+    right: -15%;
+    height: 50%;
+    background: linear-gradient(180deg,
+      transparent 0%,
+      #7040e015 20%,
+      #4060c025 50%,
+      transparent 100%
+    );
+    border-radius: 50%;
+    animation: aurora-drift2 11s ease-in-out infinite;
+  }
+  .bg-b .demo-header { background: #0a0e1acc; }
+
+  /* BG: Option C — ice texture + deep ocean gradient */
+  .bg-c {
+    background:
+      radial-gradient(ellipse 200% 60% at 50% -10%, #00a8e015 0%, transparent 50%),
+      radial-gradient(ellipse 100% 80% at 10% 50%, #0050a010 0%, transparent 60%),
+      linear-gradient(160deg, #060a14 0%, #0a0e1a 40%, #080c18 100%);
+  }
+  .bg-c::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(
+        -55deg,
+        transparent 0px,
+        transparent 60px,
+        #ffffff04 60px,
+        #ffffff04 61px
+      );
+    z-index: 1;
+    animation: shimmer 6s ease-in-out infinite;
+  }
+  .bg-c .demo-header { background: #06091388; backdrop-filter: blur(4px); }
+  .bg-c .demo-content { position: relative; z-index: 2; }
+
+  .card-image { padding: 12px; background: #05080f; }
+</style>
+
+<div style="margin-bottom:1.5rem">
+  <h2>極光背景的效果強度？</h2>
+  <p class="subtitle">三種極光 + 冰洋主題的背景方案，hover 可感受動態效果</p>
+</div>
+
+<div class="cards">
+
+  <div class="card" data-choice="static" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="demo-wrap bg-a">
+        <div class="demo-header"><span>southern_light</span><span>blog · tags · about</span></div>
+        <div class="demo-content">
+          <div class="demo-main">
+            <div class="post-entry">
+              <div class="post-line title"></div>
+              <div class="post-line short"></div>
+            </div>
+            <div class="post-entry">
+              <div class="post-line title"></div>
+              <div class="post-line short"></div>
+            </div>
+          </div>
+          <div class="demo-sidebar">
+            <div class="sidebar-lbl">// tags</div>
+            <div><span class="chip xl">astro</span></div>
+            <div><span class="chip lg">react</span></div>
+            <div><span class="chip lg">typescript</span></div>
+            <div><span class="chip sm">drizzle</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — 靜態輝光</h3>
+      <p>頂部放射狀青綠漸層，低調優雅，不影響閱讀</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="animated" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="demo-wrap bg-b">
+        <div class="aurora-layer">
+          <div class="band1"></div>
+          <div class="band2"></div>
+        </div>
+        <div class="demo-header"><span>southern_light</span><span>blog · tags · about</span></div>
+        <div class="demo-content">
+          <div class="demo-main">
+            <div class="post-entry">
+              <div class="post-line title"></div>
+              <div class="post-line short"></div>
+            </div>
+            <div class="post-entry">
+              <div class="post-line title"></div>
+              <div class="post-line short"></div>
+            </div>
+          </div>
+          <div class="demo-sidebar">
+            <div class="sidebar-lbl">// tags</div>
+            <div><span class="chip xl">astro</span></div>
+            <div><span class="chip lg">react</span></div>
+            <div><span class="chip lg">typescript</span></div>
+            <div><span class="chip sm">drizzle</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — 動態極光帶</h3>
+      <p>青綠 + 深紫光帶緩慢飄移，有南極極光的空靈感</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="ice" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="demo-wrap bg-c">
+        <div class="demo-header"><span>southern_light</span><span>blog · tags · about</span></div>
+        <div class="demo-content">
+          <div class="demo-main">
+            <div class="post-entry">
+              <div class="post-line title"></div>
+              <div class="post-line short"></div>
+            </div>
+            <div class="post-entry">
+              <div class="post-line title"></div>
+              <div class="post-line short"></div>
+            </div>
+          </div>
+          <div class="demo-sidebar">
+            <div class="sidebar-lbl">// tags</div>
+            <div><span class="chip xl">astro</span></div>
+            <div><span class="chip lg">react</span></div>
+            <div><span class="chip lg">typescript</span></div>
+            <div><span class="chip sm">drizzle</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — 冰晶紋理</h3>
+      <p>斜向細線模擬冰層折射，深邃的冰洋底色，閃爍動畫</p>
+    </div>
+  </div>
+
+</div>

@@ -32,8 +32,8 @@
   100% { transform: translateX(3%)  scaleX(1.08); opacity: 0.10; }
 }
 @keyframes ice-shimmer {
-  0%, 100% { opacity: 0.03; }
-  50%      { opacity: 0.07; }
+  0%, 100% { opacity: 0.07; }
+  50%      { opacity: 0.20; }
 }
 @keyframes chip-pulse {
   0%, 100% { box-shadow: 0 0 6px #5ba3d930, inset 0 0 6px #5ba3d910; }
@@ -71,9 +71,9 @@ body::before {
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(ellipse 200% 50% at 50% -5%, #00a8e018 0%, transparent 55%),
-    radial-gradient(ellipse 120% 70% at 5%  60%, #004a9010 0%, transparent 55%),
-    linear-gradient(160deg, #060a14 0%, #0a0e1a 45%, #070b17 100%);
+    radial-gradient(ellipse 200% 50% at 50% -5%, #00a8e040 0%, transparent 55%),
+    radial-gradient(ellipse 120% 70% at 5%  60%, #004a9028 0%, transparent 55%),
+    linear-gradient(160deg, #040918 0%, #0a0e1a 45%, #050c16 100%);
   pointer-events: none;
   z-index: 0;
 }
@@ -86,7 +86,7 @@ body::after {
   background-image: repeating-linear-gradient(
     -55deg,
     transparent 0px, transparent 70px,
-    #ffffff05 70px, #ffffff05 71px
+    #ffffff12 70px, #ffffff12 71px
   );
   pointer-events: none;
   z-index: 0;
@@ -521,9 +521,9 @@ main {
   top: -70px;
   background: linear-gradient(180deg,
     transparent 0%,
-    #00d4a015 30%,
-    #00c8b825 55%,
-    #00b8d415 75%,
+    #00d4a030 30%,
+    #00c8b850 55%,
+    #00b8d430 75%,
     transparent 100%
   );
   animation: aurora-drift 10s ease-in-out infinite;
@@ -533,8 +533,8 @@ main {
   top: -20px;
   background: linear-gradient(180deg,
     transparent 0%,
-    #6040c012 25%,
-    #4060c020 55%,
+    #6040c028 25%,
+    #4060c045 55%,
     transparent 100%
   );
   animation: aurora-drift2 14s ease-in-out infinite;
