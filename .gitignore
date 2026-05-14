@@ -8,3 +8,4 @@ dist
 !.env.example
 blog-bot-token
 blog-bot-token-org
+.claude
