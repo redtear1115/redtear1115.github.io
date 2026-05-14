@@ -8,9 +8,10 @@ interface Props {
   tags: string[];
   prev?: { slug: string; title: string };
   next?: { slug: string; title: string };
+  readingTime?: number;
 }
 
-const { title, description, pubDate, tags, prev, next } = Astro.props;
+const { title, description, pubDate, tags, prev, next, readingTime } = Astro.props;
 const dateStr = pubDate.toISOString().slice(0, 10);
 ---
 <BaseLayout title={`${title} — Southern Light`} description={description}>
@@ -19,6 +20,7 @@ const dateStr = pubDate.toISOString().slice(0, 10);
       <h1>{title}</h1>
       <div class="meta">
         <time datetime={dateStr}>{dateStr}</time>
+        {readingTime && <span>~{readingTime} min</span>}
         {tags.map((tag) => <a class="tag" href={`/tags/${tag}`}>#{tag}</a>)}
       </div>
     </header>

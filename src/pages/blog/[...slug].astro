@@ -2,6 +2,12 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import PostLayout from '../../layouts/PostLayout.astro';
 
+function estimateReadingTime(text: string): number {
+  const cjk = (text.match(/[　-鿿가-힯豈-﫿]/g) ?? []).length;
+  const words = (text.match(/[a-zA-Z]+/g) ?? []).length;
+  return Math.max(1, Math.ceil((cjk + words) / 300));
+}
+
 export async function getStaticPaths() {
   const posts = (await getCollection('blog', ({ data }) => !data.draft))
     .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
@@ -29,7 +35,8 @@ interface Props {
 const { post, prev, next } = Astro.props;
 const { Content } = await post.render();
 const { title, pubDate, tags } = post.data;
+const readingTime = estimateReadingTime(post.body);
 ---
-<PostLayout title={title} pubDate={pubDate} tags={tags} prev={prev} next={next}>
+<PostLayout title={title} pubDate={pubDate} tags={tags} prev={prev} next={next} readingTime={readingTime}>
   <Content />
 </PostLayout>
