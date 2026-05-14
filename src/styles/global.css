@@ -146,6 +146,10 @@ main {
 .site-header nav a:hover {
   color: var(--accent);
 }
+.site-name-accent {
+  color: var(--aurora-teal);
+  text-shadow: 0 0 10px #00b8d440;
+}
 
 /* ----- Footer ----- */
 .site-footer {
