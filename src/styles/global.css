@@ -22,18 +22,18 @@
 }
 
 @keyframes aurora-drift {
-  0%   { transform: translateX(-4%) scaleX(1);    opacity: 0.22; }
-  50%  { transform: translateX(4%)  scaleX(1.06); opacity: 0.32; }
-  100% { transform: translateX(-4%) scaleX(1);    opacity: 0.22; }
+  0%   { transform: translateX(-4%) scaleX(1);    opacity: 0.55; }
+  50%  { transform: translateX(4%)  scaleX(1.06); opacity: 0.80; }
+  100% { transform: translateX(-4%) scaleX(1);    opacity: 0.55; }
 }
 @keyframes aurora-drift2 {
-  0%   { transform: translateX(3%)  scaleX(1.08); opacity: 0.10; }
-  55%  { transform: translateX(-3%) scaleX(0.94); opacity: 0.18; }
-  100% { transform: translateX(3%)  scaleX(1.08); opacity: 0.10; }
+  0%   { transform: translateX(3%)  scaleX(1.08); opacity: 0.35; }
+  55%  { transform: translateX(-3%) scaleX(0.94); opacity: 0.55; }
+  100% { transform: translateX(3%)  scaleX(1.08); opacity: 0.35; }
 }
 @keyframes ice-shimmer {
-  0%, 100% { opacity: 0.07; }
-  50%      { opacity: 0.20; }
+  0%, 100% { opacity: 0.18; }
+  50%      { opacity: 0.40; }
 }
 @keyframes chip-pulse {
   0%, 100% { box-shadow: 0 0 6px #5ba3d930, inset 0 0 6px #5ba3d910; }
@@ -86,7 +86,7 @@ body::after {
   background-image: repeating-linear-gradient(
     -55deg,
     transparent 0px, transparent 70px,
-    #ffffff12 70px, #ffffff12 71px
+    #ffffff22 70px, #ffffff22 72px
   );
   pointer-events: none;
   z-index: 0;
@@ -504,7 +504,7 @@ main {
 .aurora-wrap {
   position: fixed;
   top: 0; left: 0; right: 0;
-  height: 300px;
+  height: 60vh;
   pointer-events: none;
   z-index: 0;
   overflow: hidden;
@@ -512,29 +512,28 @@ main {
 
 .aurora-band {
   position: absolute;
-  left: -15%; right: -15%;
-  height: 200px;
-  border-radius: 50%;
+  left: -10%; right: -10%;
 }
 
 .aurora-band.aurora-green {
-  top: -70px;
-  background: linear-gradient(180deg,
-    transparent 0%,
-    #00d4a030 30%,
-    #00c8b850 55%,
-    #00b8d430 75%,
+  top: 0;
+  height: 220px;
+  background: radial-gradient(ellipse 100% 100% at 50% 0%,
+    #00d4a070 0%,
+    #00c8b855 30%,
+    #00b8d435 60%,
     transparent 100%
   );
   animation: aurora-drift 10s ease-in-out infinite;
 }
 
 .aurora-band.aurora-purple {
-  top: -20px;
-  background: linear-gradient(180deg,
-    transparent 0%,
-    #6040c028 25%,
-    #4060c045 55%,
+  top: 60px;
+  height: 200px;
+  background: radial-gradient(ellipse 90% 100% at 50% 0%,
+    #8050e065 0%,
+    #6040c850 30%,
+    #5050d030 60%,
     transparent 100%
   );
   animation: aurora-drift2 14s ease-in-out infinite;
