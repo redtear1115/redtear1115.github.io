@@ -294,3 +294,27 @@ main {
   font-family: var(--font-mono);
   font-size: 0.85em;
 }
+
+/* ----- Post navigation (prev / next) ----- */
+.post-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-top: 4rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.9rem;
+}
+.post-nav-prev {
+  flex: 1;
+}
+.post-nav-next {
+  flex: 1;
+  text-align: right;
+}
+.post-nav a {
+  color: var(--text-muted);
+}
+.post-nav a:hover {
+  color: var(--accent);
+}
