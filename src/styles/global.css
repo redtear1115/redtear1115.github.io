@@ -169,6 +169,12 @@ main {
 .post-card .meta .tag {
   margin-left: 0.75rem;
 }
+.meta a.tag {
+  color: var(--text-muted);
+}
+.meta a.tag:hover {
+  color: var(--accent);
+}
 
 /* ----- Post header ----- */
 .post-header {

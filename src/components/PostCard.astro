@@ -13,6 +13,6 @@ const dateStr = pubDate.toISOString().slice(0, 10);
   <h2><a href={`/blog/${post.slug}`}>{title}</a></h2>
   <div class="meta">
     <time datetime={dateStr}>{dateStr}</time>
-    {tags.map((tag) => <span class="tag">#{tag}</span>)}
+    {tags.map((tag) => <a class="tag" href={`/tags/${tag}`}>#{tag}</a>)}
   </div>
 </li>
