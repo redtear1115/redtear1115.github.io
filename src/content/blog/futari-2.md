@@ -1,5 +1,5 @@
 ---
-title: "Futari 開發日誌（中）：從定期收入到加權分攤落地"
+title: "Futari 開發日誌 2：從定期收入到加權分攤落地"
 pubDate: "2026-05-14"
 tags: []
 draft: false
