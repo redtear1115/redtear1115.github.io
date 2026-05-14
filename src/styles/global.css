@@ -324,3 +324,29 @@ main {
 .post-nav a:hover {
   color: var(--accent);
 }
+
+/* ----- Page layout (main + sidebar) ----- */
+.page-layout {
+  display: flex;
+  gap: 2.5rem;
+  align-items: flex-start;
+  padding: 3.5rem 0 5rem;
+}
+
+.page-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.page-sidebar {
+  width: var(--sidebar-width);
+  flex-shrink: 0;
+  position: sticky;
+  top: 2rem;
+}
+
+/* hide sidebar on mobile */
+@media (max-width: 767px) {
+  .page-sidebar { display: none; }
+  .page-layout { padding: 2.5rem 0 4rem; }
+}
