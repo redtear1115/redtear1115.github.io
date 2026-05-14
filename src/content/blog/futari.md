@@ -1,69 +1,65 @@
 ---
-title: "Futari 開發日誌（上）：從零開始，到定期收入落地"
+title: "Futari 開發日誌（中）：從定期收入到加權分攤落地"
 pubDate: "2026-05-14"
 tags: []
 draft: false
 ---
-### 2026-05-02 — 2026-05-07 · v0.0.0 → v0.8.0
+### 2026-05-07 — 2026-05-11 · v0.9.0 → v0.14.2
 
 ---
 
-五月二號，我坐下來開始動手。
+v0.8.0 剛出，我沒有停下來。
 
-其實這個想法在腦子裡轉了很久了。我跟太太一直找不到一個真的適合我們兩個人用的記帳工具——不是功能不夠，而是那些 app 的設計假設都不太對。Honeydue 看起來最接近，但介面老了，帳戶能見度分級的設計讓我很不舒服，好像預設兩個人之間有什麼需要防備的。MOZE、CWMoney 做得很好，但那是一個人的記帳工具，硬塞進兩個人只會彆扭。
+下一個要做的是保險細節頁。我一直覺得保險在記帳工具裡是被忽略的一塊——你知道你每年繳多少保費，但你不知道這張保單現在值多少、還剩幾年、當初買的原因是什麼。v0.9.0 的目標是讓儲蓄險有一個真正有意義的詳情頁：合約期間進度條、保費繳了幾年還剩幾年、累計保費、預計滿期金額。SavingsHero 元件就是這個版本生的。
 
-所以我決定自己做。叫 Futari，日文「兩個人」的意思。codebase 叫 Oikos，希臘文「家」。
-
-第一天我做了很多很多事，但其實那一天嚴格說起來算 v0.0.0，只是 scaffold——Next.js、Supabase、Drizzle、Vitest 全部架好，Google OAuth 接上，middleware 保護 dashboard 路由，PWA manifest 寫好，schema 定義出來，balance 計算的核心數學也寫了。我把那天所有的 commit 都往 main 推，感覺有點亂，但我當時只想先讓整個骨架站起來。
-
-重要的設計決定有幾個在那天就定下來了：金額只存台幣整數，不搞小數；balance 計算每次寫入後全量重算，cache 在 `GroupBalance`，不做增量；「編輯」等於 soft delete 加上 insert，DB 層不提供 UPDATE——這個決定後來省掉我很多麻煩，因為所有的 audit trail 都自然保留了下來。
+同時，v0.8.0 出來之後我做了一輪 design critique，整理出一批 P0 跟 P1 的視覺問題。底部 sheet 的圓角要統一到 24px，EditTextSheet 要從底部 fixed 改成有 keyboard push-up 行為，排版用的 `--fs-*` typography scale token 要從 inline style 搬進 CSS variable 再接 Tailwind utility class。這些事情瑣碎，但做完之後整個介面的一致性明顯好很多。
 
 ---
 
-然後是連續兩天的高密度開發，把 Phase 1 的東西一層一層往上疊。
+5/8 那天的 commit 量很大，因為有很多事情同時在跑。
 
-登入流程、setup 流程、邀請對方的 token 機制，這些都要做對，因為這是兩個人才能用的工具。solo 模式也要支援——在對方還沒加入之前，你一個人也要能記帳。這個設計花了一些時間想清楚：`member_b` nullable 就代表 solo 模式，`isSolo` 這個 flag 從 member context 推導出來，整個 UI 的分攤邏輯、payer toggle、篩選器都根據這個 flag 分叉。
+一個是安全性。Supabase advisor 跑出來的 InitPlan 問題，RLS policy 有幾個設計不夠緊的地方，我補了 REVOKE PUBLIC、調整 RLS 讓它走 Index 而不是 Seq Scan。然後是孩子的 PII 加密——v0.10.0，把 ChildDetails 裡的姓名、身份證字號這類欄位全部 AES-256-GCM 加密，key 從 user's session 推導，伺服器端看不到明文。這個做起來不難，但要想清楚 key 推導的路徑，以及測試裡怎麼 mock crypto。
 
-Records 頁、dashboard 頁、filter sheet、settlement 流程，都在 5/3 那幾天完成。settlement 的符號慣例踩了一個坑：`GroupBalance.balance` 是「member_a 欠 member_b 的金額」，正數 A 欠 B，負數 B 欠 A，站在不同人的角度看數字的方向不一樣，這個 viewer-flipped perspective 的計算要寫對才不會顯示錯誤。realtime 也在那時候接上了——Supabase postgres_changes subscribe，TransactionFeed 在 INSERT 時 prepend highlight，soft-delete 時 fade out，balance hero cross-fade 在 partner mutation 時觸發。
+另一個是 i18n。v0.11.0、v0.11.1、v0.11.2 三個版本都在 5/8 出了。
 
-看著 realtime 第一次在兩個瀏覽器分頁之間同步的時候，我覺得這個東西真的活了。
+我原本只有中文（繁體），這次加了簡體中文跟日文，後來又加了英文，共 4 語。架構是 server 端用 `getTranslations()`，dashboard layout 包一個 `<TranslationsProvider>`，client 端用 `useTranslations()`，locale 存在 cookie 裡讓 middleware 讀取。
 
----
+翻譯字典整個展開來很嚇人——dashboard、records、settings、assets 全部頁面大約 80 個以上的 key，乘以 4 語。日文的翻譯我自己沒把握，但先放進去，之後有機會再找 native speaker review。date helper 也在這個版本改掉了，從自己寫的格式化函式換成 `Intl.DateTimeFormat`，讓日期顯示自然配合 locale。
 
-5/4，設計師交付了素材，我把 icon、favicon、OG image 全部換上去。這算是 v0.1.0——第一個「有樣子」的版本。
-
-然後馬上開始做 v0.2.0 的東西：Phase 2 第一個 slice，車輛。
-
-我一開始沒預期「愛物」這個概念會變得這麼複雜。原本想的是就做一個資產清單，讓帳目可以跟資產關聯。但當我開始想「兩個人養的貓怎麼記？一棵植物呢？孩子的奶粉錢要怎麼跟這個孩子連在一起？」的時候，我意識到這個東西的語意跟一般的「資產管理」完全不同。
-
-所以我把它叫做愛物（aibutsu）。
-
-愛物有一個 base table `Assets`，`type` enum 分 `car` / `house` / `child` / `pet` / `plant` / `insurance`，各自有 1:1 的子表存細節。車有 `CarDetails`，裡面放品牌、車色、年份、初始里程；孩子有 `ChildDetails`，有些欄位存 PII，後來 v0.10.0 做了 AES-256-GCM 加密；保險有 `InsuranceDetails`，可以 FK 回車輛或孩子當被保標的。
-
-5/5 到 5/6 是連續兩天在疊愛物的功能。加油紀錄要雙寫——`FuelLogs` 跟 `CashTransactions` 透過 `fuel_log_id` 關聯，刪掉一筆加油紀錄要原子地刪掉兩邊。車主切換影響預設 paidBy 跟 splitType。植物要記澆水頻率，寵物的性別有三種（加了「不明」）。每一個愛物類型都有自己的 detail page，header 的顏色跟愛物的色票對應，list 頁用左側 accent stripe 加色點識別。
-
-愛物清單的分群顯示也是在這時候定下來的：財產（車、房）、生命體（孩子、寵物、植物）、保障（保險）。不只是分類，也是一種價值觀的表達——這些東西對我們而言的意義是不一樣的。
-
-v0.3.0 在 5/6 發布，引入了完整的愛物概念。
+v0.11.3 是 SEO 基礎：robots.txt、sitemap.xml、keyword-rich metadata、JSON-LD structured data。v0.11.4 是愛物清單的色點識別——每種愛物類型有自己的 primary color，list item 左側 accent stripe 的色調由 `color-mix()` 從主色推導出來，跟 detail page header 用同一個 hue family。
 
 ---
 
-然後進帳功能接著來。這個在設計上跟支出是不同的東西——進帳不影響 balance，它是「某個人拿到了一筆錢」，跟「我們共同花了多少」是分開的。IncomeTransactions 有自己的 schema、自己的分類色票（薄荷綠系），dashboard 有 mode toggle 切換支出／進帳視角，records 頁有 tab bar 切換全部／支出／進帳。
+5/9 是很密集的一天，有很多功能同時 merge 進來。
 
-月度統計也在這時候加上去：月 section header 顯示「進帳 − 支出」的月淨額。
+CSV 匯出（#37）這個需求我掛在 backlog 很久了，原因在市場觀察裡有說——「資料會不會消失」是用戶的底層焦慮，Spendee 曾經刪過用戶資料，Honeydue 衰退的時候很多人在問怎麼把資料帶走。所以 CSV 匯出不只是功能，也是信任的一部分。實作上就是把 active 的 CashTransactions 轉成標準 CSV 格式，讓用戶下載。
 
-v0.4.0 加油紀錄，v0.5.0 孩子寵物植物，v0.6.0 房屋保險，v0.7.0 進帳——這幾個版本跑得很快，因為骨架都已經在了，每次加新的愛物類型或功能就是把 pattern 複製一遍，調整細節。
+信任宣示頁（#48）也在這天出了。一個靜態頁面，說清楚 Futari 怎麼對待你的資料——不會賣、不會消失、你可以隨時帶走。這個頁面不是法律文件，是一種承諾的展示。
+
+定期支出（#18）的四個 PR 在 5/9 全部 merge：foundation schema 跟 cron、server actions 跟 DB queries、Settings 子頁跟 Dashboard pending stack、AddSheet 的「改一下」流程跟 Records 的快捷入口。RecurringExpenseRules 跟 RecurringIncomeRules 的邏輯 90% 一樣，我做了一次 dedupe 把共用邏輯抽出來，不然兩邊各自維護一份會很痛。
+
+v0.12.0（陪伴×信任）、v0.13.0（定期支出）在 5/9 出了。v0.13.1 加了哲學卡——在 group setup 之前插入幾張卡片，說我們是誰、這個工具的立場是什麼。這個功能很小，但我很在意它，因為它說的是「進到 Futari 的東西就是兩個人共同的」這件事。
 
 ---
 
-5/7 是個大日子。v0.8.0，定期收入。
+5/10，v0.14.0，月度回顧跟 PWA 離線支援同天落地。
 
-定期收入（RecurringIncomeRules）的設計是：你設一條規則，說「每個月 5 號我會收到薪水 X 元」，然後 pg_cron 每天跑，把到期的規則轉成 `PendingIncomeOccurrences`。你看到 pending stack 之後，可以直接確認（落地成真實 income transaction），也可以「改一下」（調整金額或日期再確認），或是跳過這次。
+月度回顧（#44）：月初 pg_cron 凍結上個月的雙人資料，存成 `MonthlyReviewSnapshots`，配一些系統生成的 `MonthlyReviewMessages`。離線的時候你還是看得到上個月的數字。這個設計跟離線策略的關係很緊：我不想讓整個 app 都離線可用（太複雜），但回顧資料是靜態快照，非常適合 cache。
 
-這個流程設計起來比我想的複雜很多。`computeNextOccurrence` 要處理月份邊界（31 號的規則在 2 月要 snap 到哪？），`snapToFuture` 要確保 resume 一條暫停的規則時下次觸發日不會在過去。pending 的 realtime 事件要拆成兩種——新增跟更新——不然 IncomeSheet 在 race condition 下會有問題。
+PWA 離線瀏覽（#19）是 opt-in，用 Settings toggle 開啟。SW 的 precache 設定踩了幾個坑——`manifest.json` 不能放進 explicit precacheEntries（Next.js 自己管），`/offline` 要有 build-time revision 不然 workbox 會警告，sw.js 本身要設 `Cache-Control: no-store` 防止 CDN 快取到舊版。還有一個問題是 LINE/Instagram/Facebook 的內建 WebView 不支援某些 Web API，我加了一個偵測機制，在這些環境下顯示引導畫面要求用戶用外部瀏覽器開啟（#97）。
 
-DayPicker 是個小元件，讓你選每個月第幾號觸發，我做了一個 3×10+2 的視覺格子，觸控寬度要夠，每個格子有 aria-pressed 跟 aria-label。
+加權分攤（weighted split）是 v0.14.1 的主角。
 
-v0.8.0 在 5/7 落地的時候，我坐在那邊看著第一條定期收入規則跑起來，pending card 出現在 dashboard 上，我點確認，它消失、income transaction 出現、月淨額更新——感覺很對。
+在這之前，分攤模式只有三種：我全付、對方全付、各半。但有時候你們的收入比例不是 1:1，各半就不公平。加權分攤讓你設一個 group-level 的預設比例（比如 60:40），然後每筆帳可以繼承這個比例，也可以個別調整。
 
-這個工具的輪廓，在這一週裡逐漸清楚了。
+Schema 加了 `split_ratio_a` 欄位，balance 計算的 SQL 加了 weighted case，`SplitTypeSelector` 裡 half 的位置換成帶 slider 的 weighted 選項，`SplitGlyph` 的視覺也支援動態比例填色。Settings 頁加了 group 預設比例的 slider，snap 到 10% 增量。遞送路徑是 dashboard page → AddSheet → createTransaction / editTransaction → balance recalc，定期支出的流程也要同步接上去。
+
+這個功能做起來改的地方很多，但改完之後覺得很值——這才是兩個人真實生活的樣子，不是每件事都五五開。
+
+v0.14.2 在 5/11 落地，Records 的描述自動完成（從歷史紀錄推薦）跟統計圖表的點擊篩選在這個版本加回來（之前曾經 revert 過，因為跟其他功能有衝突，這次解決衝突後重新 merge）。
+
+---
+
+這四天，Futari 從一個記帳工具的骨架，長成了一個比較完整的產品。
+
+回頭看，最花時間的不是寫 code，是想清楚「這個功能對兩個人一起生活有什麼意義」。定期收入是「不必再記住薪水」，加權分攤是「依比例分擔，不強迫對半」，月度回顧是「斷線了也記得這個月我們發生了什麼」——每個功能背後都有一個真實的場景在支撐著它。
