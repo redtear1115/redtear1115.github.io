@@ -8,11 +8,36 @@
   --accent-hover: #7dc0f0;
   --code-bg: #0d1522;
 
+  /* aurora */
+  --aurora-green: #00d4a0;
+  --aurora-teal: #00b8d4;
+  --aurora-purple: #6040c0;
+
   --font-body: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-  --max-width: 720px;
+  --max-width: 920px;
+  --sidebar-width: 200px;
   --radius: 4px;
+}
+
+@keyframes aurora-drift {
+  0%   { transform: translateX(-4%) scaleX(1);    opacity: 0.22; }
+  50%  { transform: translateX(4%)  scaleX(1.06); opacity: 0.32; }
+  100% { transform: translateX(-4%) scaleX(1);    opacity: 0.22; }
+}
+@keyframes aurora-drift2 {
+  0%   { transform: translateX(3%)  scaleX(1.08); opacity: 0.10; }
+  55%  { transform: translateX(-3%) scaleX(0.94); opacity: 0.18; }
+  100% { transform: translateX(3%)  scaleX(1.08); opacity: 0.10; }
+}
+@keyframes ice-shimmer {
+  0%, 100% { opacity: 0.03; }
+  50%      { opacity: 0.07; }
+}
+@keyframes chip-pulse {
+  0%, 100% { box-shadow: 0 0 6px #5ba3d930, inset 0 0 6px #5ba3d910; }
+  50%      { box-shadow: 0 0 12px #5ba3d950, inset 0 0 10px #5ba3d920; }
 }
 
 *,
@@ -40,6 +65,35 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/* ice ocean gradient */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 200% 50% at 50% -5%, #00a8e018 0%, transparent 55%),
+    radial-gradient(ellipse 120% 70% at 5%  60%, #004a9010 0%, transparent 55%),
+    linear-gradient(160deg, #060a14 0%, #0a0e1a 45%, #070b17 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ice crystal lines */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    -55deg,
+    transparent 0px, transparent 70px,
+    #ffffff05 70px, #ffffff05 71px
+  );
+  pointer-events: none;
+  z-index: 0;
+  animation: ice-shimmer 7s ease-in-out infinite;
+  will-change: opacity;
+}
+
 a {
   color: var(--accent);
   text-decoration: none;
@@ -63,6 +117,8 @@ main {
   max-width: var(--max-width);
   margin: 0 auto;
   padding: 4rem 1.5rem;
+  position: relative;
+  z-index: 1;
 }
 
 /* ----- Header ----- */
@@ -73,6 +129,8 @@ main {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
+  z-index: 1;
 }
 .site-header .site-name {
   font-family: var(--font-mono);
@@ -101,6 +159,8 @@ main {
   justify-content: space-between;
   align-items: center;
   font-family: var(--font-mono);
+  position: relative;
+  z-index: 1;
 }
 
 /* ----- Hero (home intro) ----- */
