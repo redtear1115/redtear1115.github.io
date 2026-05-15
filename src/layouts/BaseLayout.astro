@@ -15,6 +15,17 @@ const { title, description } = Astro.props;
 <html lang="en">
   <head>
     <BaseHead title={title} description={description} />
+    <script>
+      // Sync aurora animations to wall-clock time so page navigation doesn't restart them.
+      // Negative animation-delay jumps each animation to where it "should" be right now.
+      (function () {
+        const t = Date.now();
+        const s = document.documentElement.style;
+        s.setProperty('--phase-aurora-green',  `-${(t % 8000)  / 1000}s`);
+        s.setProperty('--phase-aurora-purple', `-${(t % 13000) / 1000}s`);
+        s.setProperty('--phase-ice',           `-${(t % 6000)  / 1000}s`);
+      })();
+    </script>
   </head>
   <body>
     <!-- Aurora bands (fixed, behind content) -->

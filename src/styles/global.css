@@ -90,6 +90,7 @@ body::after {
   pointer-events: none;
   z-index: 0;
   animation: ice-shimmer 6s ease-in-out infinite;
+  animation-delay: var(--phase-ice, 0s);
   will-change: opacity;
 }
 
@@ -526,6 +527,7 @@ main {
     transparent 75%
   );
   animation: aurora-drift 8s ease-in-out infinite;
+  animation-delay: var(--phase-aurora-green, 0s);
 }
 
 .aurora-band.aurora-purple {
@@ -537,6 +539,7 @@ main {
     transparent 75%
   );
   animation: aurora-drift2 13s ease-in-out infinite;
+  animation-delay: var(--phase-aurora-purple, 0s);
 }
 
 /* ----- Site wrapper (centers content at max-width) ----- */
