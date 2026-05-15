@@ -1,7 +1,7 @@
 ---
 title: "Futari 的地基：從 Drizzle migration 到 RLS，一天搭完的 infra 紀錄"
 pubDate: "2026-05-07"
-tags: []
+tags: ["futari", "database", "infra", "rls"]
 draft: false
 ---
 說真的，「先把 auth 搞定再說」這句話我講了多少次，然後就跳過去——直到 Futari 真正要送出第一個 commit 的那天。

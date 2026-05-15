@@ -1,7 +1,7 @@
 ---
 title: "我幾乎沒寫任何 code，但這個 side project 的每個架構決策都是我的"
 pubDate: "2026-05-04"
-tags: []
+tags: ["vanishwhisper", "firebase"]
 draft: false
 ---
 我是後端工程師，最近做了第一個前端 side project——[VanishWhisper](https://vanishwhisper.web.app)，一個端對端加密的閱後即焚聊天 app。整個開發過程我幾乎沒有親手打過任何 code，commit message 也是 Claude 寫的，測試也是，我頂多負責在手機上戳一戳看有沒有壞掉。

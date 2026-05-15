@@ -1,7 +1,7 @@
 ---
 title: "VanishWhisper：兩年前的 Firebase 空殼，現在有了完整的 E2E 加密和消失訊息"
 pubDate: "2026-05-06"
-tags: []
+tags: ["vanishwhisper", "firebase", "security"]
 draft: false
 ---
 兩年前我在 Firestore 建了個 repo，然後什麼都沒發生——直到最近。

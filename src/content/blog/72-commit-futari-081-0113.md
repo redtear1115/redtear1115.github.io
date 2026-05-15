@@ -1,7 +1,7 @@
 ---
 title: "# 一天 72 個 commit 的後遺症：把 Futari 從 0.8.1 推到 0.11.3"
 pubDate: "2026-05-08"
-tags: []
+tags: ["futari", "devlog", "release"]
 draft: false
 ---
 說來有點荒謬——我寫了好幾個月的 Futari，結果連 `/robots.txt` 都被自己的 middleware 一腳踢去 `/sign-in`。對，**整站 SEO 等於零**。Google bot 來敲門，被我 307 redirect 到登入頁，看一眼就走了，連 sitemap 都沒機會吃到。一個對外行銷靠 organic 的 PWA，這真的不行。

@@ -1,7 +1,7 @@
 ---
 title: "Futari 開發日誌 3：離開也保留陪伴，守護成為自己的模組"
 pubDate: "2026-05-14"
-tags: []
+tags: ["futari", "devlog", "indie-dev"]
 draft: false
 ---
 ### 2026-05-11 — 2026-05-14 · v0.15.0 → v0.16.1

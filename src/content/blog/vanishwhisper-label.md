@@ -1,7 +1,7 @@
 ---
 title: "換了裝置，名字全消失了——VanishWhisper 的加密 label 搬家"
 pubDate: "2026-05-07"
-tags: []
+tags: ["vanishwhisper", "encryption", "devlog"]
 draft: false
 ---
 以前換新手機之後，VanishWhisper 裡每個聊天都變回冷冰冰的 UID prefix——「你幫我取名叫 Alice 的那個人」變成 `a9f3c2…`，要你自己想起來那是誰。Sessions 搬過去了，名字沒有。這根本是在整自己。
