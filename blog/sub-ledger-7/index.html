@@ -1,0 +1,83 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Astro v4.16.19"><meta name="color-scheme" content="dark"><title>為什麼旅行不能用主帳本記？——一條 sub-ledger 在 7 版內長出來的全紀錄 — Southern Light</title><meta name="description" content="Notes on systems, tools, and side projects."><link rel="canonical" href="https://southern-light.dev/blog/sub-ledger-7"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="sitemap" href="/sitemap-index.xml"><link rel="alternate" type="application/rss+xml" title="Southern Light" href="/rss.xml"><meta property="og:type" content="website"><meta property="og:title" content="為什麼旅行不能用主帳本記？——一條 sub-ledger 在 7 版內長出來的全紀錄 — Southern Light"><meta property="og:description" content="Notes on systems, tools, and side projects."><meta property="og:url" content="https://southern-light.dev/blog/sub-ledger-7"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="為什麼旅行不能用主帳本記？——一條 sub-ledger 在 7 版內長出來的全紀錄 — Southern Light"><meta name="twitter:description" content="Notes on systems, tools, and side projects."><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"><link rel="stylesheet" href="/_astro/_slug_.V6pldb3M.css"><script type="module">(function(){const e=Date.now(),t=document.documentElement.style;t.setProperty("--phase-aurora-green",`-${e%8e3/1e3}s`),t.setProperty("--phase-aurora-purple",`-${e%13e3/1e3}s`),t.setProperty("--phase-ice",`-${e%6e3/1e3}s`)})();
+</script></head> <body> <!-- Aurora bands (fixed, behind content) --> <div class="aurora-wrap" aria-hidden="true"> <div class="aurora-band aurora-green"></div> <div class="aurora-band aurora-purple"></div> </div> <header class="site-header"> <a href="/" class="site-name">southern<span class="site-name-accent">_light</span></a> <nav> <a href="/blog">blog</a> <a href="/about">about</a> <a href="/rss.xml">rss</a> </nav> </header> <div class="site-wrapper"> <div class="page-layout"> <main class="page-main">  <article> <header class="post-header"> <h1>為什麼旅行不能用主帳本記？——一條 sub-ledger 在 7 版內長出來的全紀錄</h1> <div class="meta"> <time datetime="2026-05-16">2026-05-16</time> <span>~11 min</span>  </div> </header> <div class="prose">  <p>老實說，「旅行」這題我一開始想當鴕鳥。Futari 是個記帳工具，旅行支出<strong>理論上</strong>就是普通 transaction、加個 tag 不就好了？兩週前我還這樣覺得。</p>
+<p>直到有一天兩個測試使用者一句話打醒我：「<strong>我們下個月去東京，每筆心算 ÷ 4.5 寫成台幣嗎</strong>？」<strong>對啊。然後回國一個月後想看「那趟北海道花了多少」，要對著日期區間在 records feed 滑半天 + 翻計算機</strong>。再認真的伴侶過兩個月都會放棄、退回 Excel。我本來想直接用「分類 = 旅行」+ 「日期 filter」，但這條 quick fix 卡在一個 schema-level 的事實：<strong>主帳本是台幣 integer</strong>，外幣根本進不去。</p>
+<p>所以這條 issue 在 backlog 躺了一個月——我知道做下去會痛、但卡在那也痛。直到上週一個 brainstorm 撞出一個結論：<strong>多幣別 (#68) 跟旅行帳本 (#42) 不該分開做</strong>。旅行 99% 用外幣、外幣 95% 場景是旅行——schema 跟 form 共用同一片地皮，<strong>分兩次做等於把 migration window 開兩次、痛兩次</strong>。決定 bundle 起來、一個 sprint 寫穿。</p>
+<p>接下來 7 個版本（v0.17.0 → v0.17.6）的故事。</p>
+<h2 id="v0170架構先行-bundle">v0.17.0：架構先行 bundle</h2>
+<p>第一條動作不是寫 code、是寫 spec——<code>docs/superpowers/specs/multi-currency-trip-design.md</code>、342 行，鎖了 5 個架構決策：</p>
+<ol>
+<li><strong>Snapshot rate semantics</strong> —— <code>CashTransactions</code> / <code>TripExpenses</code> 寫入時 freeze 當下匯率到 <code>rate_snapshot</code>，<strong>未來改匯率不會回頭重算歷史 record</strong>。這條是整套設計的承重牆——「我們去東京那週 1 JPY = 0.22 TWD」這件事就是歷史事實、跟現在匯率多少完全無關。</li>
+<li><strong>Trip 強制單一 epoch</strong> —— <code>Trips.epoch_id</code> FK to <code>GroupEpochs</code>、<code>start_date >= currentEpochStartedAt</code>、進行中 trip <strong>阻止 epoch 結束</strong>（<code>leaveGroup</code> 偵測到 active trip 直接 reject）。<strong>Trip 不能跨章節</strong>——「2023 那段關係的東京之旅」跟「2024 這段關係」是兩件事、不能混。</li>
+<li><strong>Settlement base-only</strong> —— 結算永遠用主幣別、避免「我給你 100 USD 還 350 TWD」這種事務局面。</li>
+<li><strong>Trip 結束時 fold-back 主帳本</strong> —— 這是 sub-ledger 的核心保證，後面講。</li>
+<li><strong>Income multi-currency schema 加、UI 暫不接</strong> —— 留架構缺口避免 sprint 撐爆。</li>
+</ol>
+<p>Schema migration 0038 一條打掉：<code>currency_code</code> enum、<code>trip_status</code> enum、<code>CurrencyRates</code>（per-group 心理匯率、只存當前不存歷史）、<code>Trips</code>、<code>CashTransactions</code> 加三欄 <code>original_currency</code> / <code>original_amount</code> / <code>rate_snapshot</code> + <code>trip_id</code> FK、CHECK constraint 強制 <code>original_*</code> 三欄 all-or-nothing。<strong>additive only</strong>——既有資料一行不動、backfill 邏輯藏在 <code>formatAmount</code> helper 看到 NULL 就 fall back base，DB 不動。</p>
+<p>接著 7 個 phase：currency lib（<code>formatAmount</code> / <code>convertAmount</code> / <code>currencyPrecision</code>，cent-aware——日圓無小數、美金兩位、台幣整數，每種幣別 rounding 規則寫死在 helper、callsite 不用知道）、<code>/settings/currency</code> 頁、Trip CRUD（4 個 server actions、290 行測試先寫）、AddSheet wire currency + trip selector、records dual-currency display、E2E golden path test。</p>
+<p>v0.17.0 23:31 release。一切看起來很美好。<strong>14 小時後我自己 dogfood 把它收一半回來</strong>。</p>
+<h2 id="v0171--v0172把-trip-end-fold-back-寫穿">v0.17.1 → v0.17.2：把 trip-end fold-back 寫穿</h2>
+<p>凌晨 ship 完 v0.17.1 polish——隔天中午記第一筆主帳本，<strong>第一個動作</strong>是「我幹嘛在記帳的時候要選幣別？我又不出國」。每筆 transaction 多一個 picker、就算 default 是 base currency 也要看著它<strong>意識到自己可以選</strong>——這個認知負擔對日常記帳是純粹的噪音。<strong>為了 5% 出國場景，把 95% 日常變吵</strong>——不划算。</p>
+<p>於是 v0.17.2 同一天分兩個 phase：</p>
+<p><strong>Phase 1 收 UI</strong>——AddSheet 的 <code>CurrencySelector</code> <strong>只在 <code>tripId</code> set 的時候 render</strong>。主帳本完全看不到 picker、amount hero 直接顯示 baseCurrency 符號、零決策。「<strong>不該決定的時候不要假裝給你決定權</strong>」——這條 UX 原則寫起來簡單、做起來常常違反。</p>
+<p>順手寫了一條 docs commit 把這個取捨用一句話鎖死：「<strong>Complexity at the boundary, simplicity in daily use</strong>」——產品外圍接 reality 的地方該複雜就複雜（多幣別、跨章節歷史、leave/swap），但使用者<strong>每天碰</strong>的入口必須認知負擔極低。把這條哲學寫進 spec 的價值在於——<strong>將來再有「為什麼不在主帳本也加 picker」這種建議時、這條 spec 是擋下來的理由</strong>。</p>
+<p><strong>Phase 2 寫 sub-ledger fold-back</strong>——這條才是整個 sub-ledger 的核心保證。</p>
+<p>旅行進行中 <code>TripExpenses</code> 表自己玩自己的——多幣別、<code>splitRatioA</code> 可以每筆不同、<strong>完全不影響 GroupBalance</strong>。但旅行結束的瞬間，<strong>這趟旅行的「淨額」必須回到主帳本</strong>——不然 balance 永遠對不齊。怎麼 fold？</p>
+<p>答：<strong>最多兩條 <code>CashTransactions</code></strong>（每個 paying member 一條），代表「整趟旅行的綜合結果」。實作 <code>lib/tripSummary.ts</code> 的 <code>buildTripSummaries()</code>：</p>
+<ol>
+<li>對每個 paying member 算 <code>out-of-pocket total</code> + <code>A-share total</code></li>
+<li><strong>暴力搜尋 integer <code>splitRatioA</code></strong>——逐一試 0..100、看哪個比例下 <code>lib/balance.ts</code> 算出的 delta 最接近真正的 per-expense exact delta</li>
+<li>邊界 collapse：0% → <code>all_theirs</code>、100% → <code>all_mine</code>、其他用 <code>weighted</code></li>
+<li>回 0–2 rows</li>
+</ol>
+<p>為什麼暴力搜尋 ratio？因為旅行裡 100 筆 transaction 每筆都可能用不同 splitRatioA、不同幣別、不同 paying member。<strong>真實的「平均」是無理數</strong>、但 <code>splitRatioA</code> 在 schema 是 0–100 integer——<strong>整數空間只有 101 個、暴力搜尋比寫精算公式快寫又好懂</strong>。誤差吸進那條 summary 的 amount。</p>
+<p><code>endTrip</code> 寫成 atomic transaction：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>UPDATE Trips SET status='ended' WHERE status='active'  -- conditional, idempotent</span></span>
+<span class="line"><span>↓ (若 0 rows updated → throw '找不到進行中的旅行')</span></span>
+<span class="line"><span>SELECT live TripExpenses</span></span>
+<span class="line"><span>↓</span></span>
+<span class="line"><span>INSERT 0-2 summary CashTransactions</span></span>
+<span class="line"><span>↓</span></span>
+<span class="line"><span>COMMIT → trigger recalcGroupBalance</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>第一行的 <code>WHERE status='active'</code> 是 idempotent guard——同一個 trip 被 race condition 連續 <code>endTrip</code> 兩次、第二次 affected rows = 0、throw error、後面 select / insert 完全不會跑。<strong>單一 SQL conditional 取代分布式鎖、DB row update 本身就是 atomic</strong>。</p>
+<h2 id="v0173心理匯率搬家">v0.17.3：心理匯率搬家</h2>
+<p>v0.17.2 release 完繼續 dogfood，<strong>又</strong>發現一個錯誤——<strong>「心理匯率」這顆 Settings Row 在每個 user 面前都存在、但 99% 人從不碰</strong>。匯率只在記旅行帳的時候有意義、平常它出現在 Settings top-level 是純噪音。</p>
+<p>改動：<code>/settings/currency</code> 整個頁面保留（onboarding 還需要設 base currency）、但<strong>心理匯率編輯</strong>從 Settings top-level 拔掉、改成 TripDetailClient 加一條 tertiary link「<strong>調整心理匯率</strong>」、放在 edit/end-trip CTA 下面。<strong>使用者剛好想著「這趟旅行的匯率合不合理」的瞬間、入口就在那</strong>——這是 v0.15.2 那種「contextual surfacing」哲學的延續。</p>
+<p>順手又補：<strong>dashboard 加 <code>ActiveTripBanner</code></strong>——之前 dashboard 已經 SSR-fetch <code>activeTrips</code> 給 AddSheet 的 TripSelector 用、但<strong>沒有任何視覺 surface</strong>。要知道哪趟旅行進行中只能去 Settings 翻。banner 補上、點進去直接 trip detail。<strong>這就是「資料已經在 client 上、只是沒有對應 UI」的典型 leftover</strong>——v0.17.0 衝架構先行的代價、第三天回來收。</p>
+<h2 id="v0174trip-scoped-self-serve-currencies">v0.17.4：trip-scoped self-serve currencies</h2>
+<p>到這版 trip 表上的 currency 還鎖死在 enum——<code>currency_code</code> 只有 4 個值（TWD/CNY/USD/JPY）。然後測試使用者問：「<strong>我們要去越南、VND 怎麼辦</strong>？」<strong>靠</strong>。</p>
+<p>這條改動把整套 currency model 從 enum 翻成 free-text + per-trip snapshot：</p>
+<p><code>Trips.rate_snapshot</code> 從 legacy <code>${FROM}_${TO}</code> shape <strong>升級成 jsonb</strong>：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="jsonc"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#79B8FF">  "default"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"TWD"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "entries"</span><span style="color:#E1E4E8">: [{ </span><span style="color:#79B8FF">"code"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"VND"</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">"label"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"越南盾"</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">"rate"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">0.00121</span><span style="color:#E1E4E8"> }]</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<ul>
+<li>Trip 相關 currency columns 從 <code>currency_code</code> enum 改成 free-text、<strong>user-defined codes 全開</strong>（VND、EUR、CHF、想塞 BTC 也行）</li>
+<li><strong>主帳本 stays enum-bound</strong>——維持「主帳本 = 限定幣別、trip = 自由幣別」的分層</li>
+<li>Migration 0040 in-place 轉換既有 <code>rate_snapshot</code> rows、uppercases column values（不要 <code>usd</code> 跟 <code>USD</code> 同時存在那種精神分裂）</li>
+<li><code>lib/trip-currency.ts</code> 統一 parse / validate / build helpers、<strong>兩種 shape read-tolerant、writes 一律走 <code>validate()</code></strong>——這條 read-tolerant write-strict 是 schema migration 期間最好的妥協</li>
+</ul>
+<p>UI 端 trip 自己挑要用哪些幣別——TripSheet 開幾筆 entries 就只能用幾筆、不會跳出 4 種預設幣別在那干擾。AddSheet currency dropdown 接 trip 的 <code>entries</code> 列表 limit options、conversion preview 從 deprecated group-wide <code>CurrencyRates</code> 切到 <code>convertViaSnapshot(amount, from, base, trip.rate_snapshot)</code>——<strong>展示給使用者看的數字 = 真的會落 DB 的數字</strong>。</p>
+<h2 id="v0174-fu兩條-user-feedback-follow-up">v0.17.4 fu：兩條 user feedback follow-up</h2>
+<p>ship 完 self-serve currencies 不到 2 小時，使用者撞出兩個事：</p>
+<p><strong>1. 「為什麼 trip 還要選 default currency？」</strong>—— 對。trip 結束 fold 永遠是 base、<code>rate_snapshot.default</code> 為什麼還要選？拔掉。<code>rate_snapshot.default</code> 一律 = group 的 <code>base_currency</code>、trip 表面再也不問這個問題。<strong>一個 picker 拔掉等於一條決策樹砍掉</strong>。</p>
+<p><strong>2. 「為什麼匯率不能改？」</strong>—— 之前 lock：rate 一旦被任何 TripExpense 用過就不能改。我以為這條保護的是「歷史 record 不被改變」——<strong>結果根本不是</strong>。<code>TripExpenses.amount</code> 是 base integer 寫入時就 freeze、lock 保護的是空氣、只擋住使用者「估錯匯率」的合理修正。</p>
+<p>改成：<strong>rate 隨時可改、舊 TripExpenses 完全不變、只有未來新增的 record 用新 rate</strong>。UI 不再 disable controls、改顯示 soft hint「{n} 筆；改匯率不影響舊紀錄」。<strong>這就是 snapshot semantics 的力量</strong>——歷史是歷史、現在改現在的、兩者完全 decoupled。</p>
+<h2 id="v0175--v0176收尾的小東西">v0.17.5 / v0.17.6：收尾的小東西</h2>
+<p>剩下兩版偏 polish：</p>
+<ul>
+<li><strong>trip detail 重排</strong>——fold preview 拉到頂部、per-currency × per-member breakdown 放下面。原本 layout 把「最關鍵的『這趟結果如何』」埋在第三屏，使用者要 scroll 才看到——<strong>最重要的數字應該在最上面</strong>，這是個我以為自己懂、但仍然會犯錯的設計常識。</li>
+<li><strong>router.back() 修正</strong>——trip detail 用 <code>router.back()</code> 取代 hardcoded <code>/trips</code>，從 dashboard banner 點進去再 back 不會回到 list、會回 dashboard。<strong>back navigation 應該回到使用者來的地方、不是程式設計師覺得「合理」的地方</strong>。</li>
+<li><strong>TripSheet a11y/touch pass</strong>——所有 strings i18n hoisted、tap targets 統一 44px+、rate direction 文案再清楚（「1 JPY = ? TWD」vs 反向、之前要看半秒才確定）</li>
+<li><strong>end-trip destructive flow</strong>——edit 按鈕從 sheet bottom 搬去 header 鉛筆 icon、end-trip 改 destructive 紅色配 confirmation step。<strong>「結束旅行」是不可逆 + 會寫 0-2 條主帳本 transaction、值得一個 destructive UI 等級</strong>。</li>
+</ul>
+<h2 id="一個有趣的踩坑snapshot-semantics-我自己也搞混過">一個有趣的踩坑：snapshot semantics 我自己也搞混過</h2>
+<p>整套 sub-ledger 最反直覺的地方是 v0.17.4 fu 那個 rate lock 解開——<strong>我自己第一版實作就把 lock 寫上去了</strong>、commit message 還寫「protect historical records」。直到使用者問「為什麼不能改」，我去 git blame 自己、看到那條 <code>TripExpenses.amount</code> 是 base integer 寫入時 freeze、<strong>lock 在保護一個本來就 immutable 的欄位</strong>——保護空氣。</p>
+<p>這就是 schema 設計足夠嚴謹之後的副作用：<strong>舊邏輯會自己過時、但 code 不會自己知道</strong>。如果不是使用者撞到、那條 lock 大概會一直留著、繼續擋著合理的修正。<strong>「審視自己的程式碼」這件事最難的不是讀懂、是相信它原本的假設可能已經不成立</strong>——而我寫的那個假設只有兩個版本前才成立過。</p>
+<h2 id="收尾">收尾</h2>
+<p>7 個版本、一條 sub-ledger 從 schema-first bundle 寫穿、UI 收了再放兩次、心理匯率搬了家、currency model 從 enum 升級到 free-text snapshot、自己撞自己的 rate lock。</p>
+<p>回頭看 v0.17.0 那條 migration——<strong>那 342 行 spec 跟 migration SQL 沒有一行需要 rollback</strong>。UI 大改三次、entry point 搬三次、currency picker 進出兩次、rate lock 砍掉——schema 通通沒動。<strong>這就是 architecture-first 的真實價值：schema 是承重牆，UI 是裝潢</strong>。</p>
+<p>至於那個暴力搜尋 splitRatioA 的 <code>buildTripSummaries</code>？我每次想到「在 0..100 之間挑誤差最小的整數」這種土法煉鋼的解法竟然是對的，就覺得有點好笑——精算系畢業的人看了大概會崩潰。但 it works、it’s readable、it’s fast。<strong>這趟旅行的綜合結果</strong>最後落到主帳本就是 0–2 條整數 transaction、誤差吸進 1 元的精度——剛剛好。</p>
+<p><em>這段 code 寫於 2026 年 5 月，文章整理於 2026 年 5 月。</em></p>  </div> </article> <nav class="post-nav"> <div class="post-nav-prev"> <a href="/blog/futari-1">← Futari 開發日誌 1：從零開始，到定期收入落地</a> </div> <div class="post-nav-next">  </div> </nav> </main> <aside class="page-sidebar"> <div class="sidebar-panel"> <div class="sidebar-title">// tags</div> <div class="tag-cloud"> <a class="tag-chip size-xl" href="/tags/futari"> futari </a><a class="tag-chip size-xl" href="/tags/devlog"> devlog </a><a class="tag-chip size-xl" href="/tags/release"> release </a><a class="tag-chip size-lg" href="/tags/vanishwhisper"> vanishwhisper </a><a class="tag-chip size-lg" href="/tags/security"> security </a><a class="tag-chip size-lg" href="/tags/encryption"> encryption </a><a class="tag-chip size-lg" href="/tags/firebase"> firebase </a><a class="tag-chip size-lg" href="/tags/indie-dev"> indie-dev </a><a class="tag-chip size-md" href="/tags/wildcard"> wildcard </a><a class="tag-chip size-md" href="/tags/google-cloud"> google-cloud </a><a class="tag-chip size-sm" href="/tags/react"> react </a><a class="tag-chip size-sm" href="/tags/refactor"> refactor </a><a class="tag-chip size-sm" href="/tags/database"> database </a><a class="tag-chip size-sm" href="/tags/infra"> infra </a><a class="tag-chip size-sm" href="/tags/rls"> rls </a><a class="tag-chip size-sm" href="/tags/meta"> meta </a><a class="tag-chip size-sm" href="/tags/game"> game </a> </div> </div> </aside> </div> </div> <footer class="site-footer"> <span>© 2026 Ray Lee</span> <span> <a href="https://github.com/redtear1115">github</a> </span> </footer> </body></html>
