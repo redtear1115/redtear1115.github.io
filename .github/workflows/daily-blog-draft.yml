@@ -291,12 +291,45 @@ Ray 是 Staff Backend Engineer，同時在做幾個 side project：
               `-->`,
             ].join('\n');
 
+            const repoTagMap = {
+              oikos: ['tag:futari', 'tag:devlog', 'tag:release'],
+              vanishwhisper: ['tag:vanishwhisper', 'tag:devlog'],
+              wildcard: ['tag:wildcard', 'tag:devlog'],
+              nebula: ['tag:nebula', 'tag:devlog'],
+            };
+            const tagLabels = repoTagMap[repo] || [];
+
+            // Detect technology tags from article body
+            const techTagRules = [
+              { keywords: ['Drizzle', 'drizzle'], tag: 'tag:drizzle' },
+              { keywords: ['Supabase', 'supabase'], tag: 'tag:supabase' },
+              { keywords: ['RLS', 'Row Level Security', 'row level security'], tag: 'tag:rls' },
+              { keywords: ['Server Action', 'server action', 'Server Actions', 'server actions'], tag: 'tag:server-actions' },
+              { keywords: ['PostgreSQL', 'Postgres', 'postgres'], tag: 'tag:postgresql' },
+              { keywords: ['Firebase', 'firebase'], tag: 'tag:firebase' },
+              { keywords: ['migration', 'Migration', '0038', '0039', '0040'], tag: 'tag:migration' },
+              { keywords: ['Next.js', 'Next 16', 'nextjs'], tag: 'tag:nextjs' },
+              { keywords: ['React', 'react'], tag: 'tag:react' },
+              { keywords: ['TypeScript', 'typescript'], tag: 'tag:typescript' },
+              { keywords: ['vitest', 'Vitest', 'E2E', 'e2e', 'test coverage'], tag: 'tag:testing' },
+              { keywords: ['PWA', 'pwa', 'service worker', 'manifest'], tag: 'tag:pwa' },
+              { keywords: ['Redis', 'redis'], tag: 'tag:redis' },
+              { keywords: ['GraphQL', 'graphql'], tag: 'tag:graphql' },
+              { keywords: ['Docker', 'docker'], tag: 'tag:docker' },
+              { keywords: ['Vercel', 'vercel'], tag: 'tag:vercel' },
+              { keywords: ['Vue', 'vue'], tag: 'tag:vue' },
+              { keywords: ['Tailwind', 'tailwind'], tag: 'tag:tailwind' },
+            ];
+            const techTags = techTagRules
+              .filter(({ keywords }) => keywords.some(kw => body.includes(kw)))
+              .map(({ tag }) => tag);
+
             const issue = await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: title,
               body: issueBody,
-              labels: ['draft'],
+              labels: ['draft', ...tagLabels, ...techTags],
             });
 
             core.setOutput('issue_number', issue.data.number);
