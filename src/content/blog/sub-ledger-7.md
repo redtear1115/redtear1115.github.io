@@ -1,7 +1,7 @@
 ---
 title: "為什麼旅行不能用主帳本記？——一條 sub-ledger 在 7 版內長出來的全紀錄"
 pubDate: "2026-05-16"
-tags: ["futari", "devlog", "release"]
+tags: ["futari", "devlog", "release", "feature"]
 draft: false
 ---
 

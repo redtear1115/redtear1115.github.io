@@ -1,7 +1,7 @@
 ---
 title: "我把兩個 PR ship 出去又自己 revert 回來——v0.14.x 的長日"
 pubDate: "2026-05-10"
-tags: ["futari", "devlog", "release"]
+tags: ["futari", "devlog", "release", "day-summary"]
 draft: false
 ---
 老實說這天的 git log 看起來像**我發了 v0.14.1，半小時後又 reverted 兩個 feature，然後改成 release v0.14.2**——對，就是這麼荒謬。如果你只看 tag history 大概會以為我在玩什麼版本號疊疊樂，但實情是：兩個明明測過會動的 feature，merge 進 main 之後跟其他 PR 的 race condition 撞出莫名 bug，與其熬夜 hotfix 不如先 revert 回穩定狀態，第二天再以乾淨的姿態重新 land。產品節奏 > 自尊。

@@ -1,7 +1,7 @@
 ---
 title: "Futari 開發日誌 1：從零開始，到定期收入落地"
 pubDate: "2026-05-14"
-tags: ["futari", "devlog", "indie-dev"]
+tags: ["futari", "devlog", "indie-dev", "zero-to-one"]
 draft: false
 ---
 ### 2026-05-02 — 2026-05-07 · v0.0.0 → v0.8.0

@@ -1,7 +1,7 @@
 ---
 title: "VanishWhisper 在 Threads 裡開，會把使用者的身分整個吃掉"
 pubDate: "2026-05-10"
-tags: ["vanishwhisper", "devlog"]
+tags: ["vanishwhisper", "devlog", "murmur"]
 draft: false
 ---
 

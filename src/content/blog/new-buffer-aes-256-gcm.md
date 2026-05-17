@@ -1,7 +1,7 @@
 ---
 title: "從 `new Buffer()` 的陰影走出來：用 AES-256-GCM 保護家庭帳本的敏感欄位"
 pubDate: "2026-05-07"
-tags: ["security", "encryption", "futari"]
+tags: ["security", "encryption", "futari", "feature"]
 draft: false
 ---
 一個記帳 app，不加密也沒人在乎——直到你意識到你把伴侶的消費明細明文存在資料庫裡，然後默默把那個念頭壓下去。

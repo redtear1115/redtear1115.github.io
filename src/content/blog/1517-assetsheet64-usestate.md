@@ -1,7 +1,7 @@
 ---
 title: "一個 1517 行的 AssetSheet、64 個 useState、跟一條走丟的章節線"
 pubDate: "2026-05-12"
-tags: ["react", "refactor", "futari"]
+tags: ["react", "refactor", "futari", "murmur"]
 draft: false
 ---
 說真的——昨天才剛 ship `GroupEpochs`、把「關係章節」這個概念寫進 schema，結果**今天打開自己的 `/past-times` 頁面，看到的不是完整的人生**。`#138` 上線之後，從 X 邀請別人組 group 的角度看歷史是 ok 的：X 的過去章節、X 的現在章節，都在。**但 Y 的角度——那個被留下後又拿到新 solo group 的人——看到的是空白頁**。
