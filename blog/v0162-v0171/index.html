@@ -1,14 +1,14 @@
 <!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Astro v4.16.19"><meta name="color-scheme" content="dark"><title>一天發四個版本、外加把多幣別跟旅行帳本一次寫穿——v0.16.2 到 v0.17.1 的長日 — Southern Light</title><meta name="description" content="Notes on systems, tools, and side projects."><link rel="canonical" href="https://southern-light.dev/blog/v0162-v0171"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="sitemap" href="/sitemap-index.xml"><link rel="alternate" type="application/rss+xml" title="Southern Light" href="/rss.xml"><meta property="og:type" content="website"><meta property="og:title" content="一天發四個版本、外加把多幣別跟旅行帳本一次寫穿——v0.16.2 到 v0.17.1 的長日 — Southern Light"><meta property="og:description" content="Notes on systems, tools, and side projects."><meta property="og:url" content="https://southern-light.dev/blog/v0162-v0171"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="一天發四個版本、外加把多幣別跟旅行帳本一次寫穿——v0.16.2 到 v0.17.1 的長日 — Southern Light"><meta name="twitter:description" content="Notes on systems, tools, and side projects."><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"><link rel="stylesheet" href="/_astro/_slug_.V6pldb3M.css"><script type="module">(function(){const e=Date.now(),t=document.documentElement.style;t.setProperty("--phase-aurora-green",`-${e%8e3/1e3}s`),t.setProperty("--phase-aurora-purple",`-${e%13e3/1e3}s`),t.setProperty("--phase-ice",`-${e%6e3/1e3}s`)})();
-</script></head> <body> <!-- Aurora bands (fixed, behind content) --> <div class="aurora-wrap" aria-hidden="true"> <div class="aurora-band aurora-green"></div> <div class="aurora-band aurora-purple"></div> </div> <header class="site-header"> <a href="/" class="site-name">southern<span class="site-name-accent">_light</span></a> <nav> <a href="/blog">blog</a> <a href="/about">about</a> <a href="/rss.xml">rss</a> </nav> </header> <div class="site-wrapper"> <div class="page-layout"> <main class="page-main">  <article> <header class="post-header"> <h1>一天發四個版本、外加把多幣別跟旅行帳本一次寫穿——v0.16.2 到 v0.17.1 的長日</h1> <div class="meta"> <time datetime="2026-05-14">2026-05-14</time> <span>~9 min</span>  </div> </header> <div class="prose">  <p>說真的，「Futari 不支援多幣別」這個事實一直讓我有點難解釋。我自己住台北、用台幣，<strong>邏輯上沒問題</strong>——可是兩個禮拜前測試使用者一句「我們下個月要去東京，所有 JPY 開銷怎麼記？」當場把我問住。<strong>寫成台幣 ÷ 4.5、心算成日圓</strong>？再認真的伴侶過兩個月都會放棄、回去用 Excel。Futari 一直定位是「兩個人的家計簿」、可是**「兩個人」的常見場景之一就是一起出國**，這條 schema-level 的缺口卡很久了。</p>
+</script></head> <body> <!-- Aurora bands (fixed, behind content) --> <div class="aurora-wrap" aria-hidden="true"> <div class="aurora-band aurora-green"></div> <div class="aurora-band aurora-purple"></div> </div> <header class="site-header"> <a href="/" class="site-name">southern<span class="site-name-accent">_light</span></a> <nav> <a href="/blog">blog</a> <a href="/about">about</a> <a href="/rss.xml">rss</a> </nav> </header> <div class="site-wrapper"> <div class="page-layout"> <main class="page-main">  <article> <header class="post-header"> <h1>一天發四個版本、外加把多幣別跟旅行帳本一次寫穿——v0.16.2 到 v0.17.1 的長日</h1> <div class="meta"> <time datetime="2026-05-14">2026-05-14</time> <span>~8 min</span> <a class="tag" href="/tags/futari">#futari</a><a class="tag" href="/tags/devlog">#devlog</a><a class="tag" href="/tags/release">#release</a> </div> </header> <div class="prose">  <p>說真的，「Futari 不支援多幣別」這個事實一直讓我有點難解釋。我自己住台北、用台幣，<strong>邏輯上沒問題</strong>——可是兩個禮拜前測試使用者一句「我們下個月要去東京，所有 JPY 開銷怎麼記？」當場把我問住。<strong>寫成台幣 ÷ 4.5、心算成日圓</strong>？再認真的伴侶過兩個月都會放棄、回去用 Excel。Futari 一直定位是「兩個人的家計簿」、可是**「兩個人」的常見場景之一就是一起出國**，這條 schema-level 的缺口卡很久了。</p>
 <p>旅行子帳本（#42）也是類似的痛點——「這趟北海道五天花了多少」之類，<strong>對著一筆一筆 transaction 翻日期區間心算</strong>這種事不應該存在於 2026 的軟體裡。</p>
 <p>兩個 issue 各自我都評估過、各自單獨做都不便宜。然後上週 brainstorm 的時候靈光一閃：<strong>它們應該綁在一起做</strong>——旅行 99% 時候用外幣、外幣 95% 場景就是旅行；schema 跟 form 都共用同一片地皮。<strong>單獨做兩次等於把同一個 migration window 開兩次</strong>，會痛兩次。</p>
 <p>所以這天決定：<strong>一個 sprint 寫穿 #68 + #42</strong>，發 v0.17.0 標記「架構先行」、第二天 v0.17.1 收 UX。順便把上週積的 v0.16.x 收尾（perf / SEO / a11y）一次清掉。</p>
 <p>12 個 PR、62 個 commit、<strong>四個 release tag</strong>（v0.16.2 / v0.16.3 / v0.17.0 / v0.17.1）落在同一天。</p>
-<h2>上午：v0.16.2 收 perf + 三種 toggle 統一</h2>
+<h2 id="上午v0162-收-perf--三種-toggle-統一">上午：v0.16.2 收 perf + 三種 toggle 統一</h2>
 <p>開場是 <strong><code>#289</code> font subset</strong>——之前 <code>Noto Sans TC weight 600</code> 整個塞進 render-blocking CSS、<strong>−93 KB</strong>。直接拔掉 weight 600（只保留 400 / 500 / 700），ship。</p>
 <p>接著 <code>#290</code> <strong><code>React.cache()</code> 去重 + dashboard <code>Promise.all</code> 合併</strong>——dashboard 那一頁 SSR 期間同一個 <code>getCurrentUser</code> / <code>resolveViewerEpochContext</code> 被四五個地方各自 call，<strong>同一份資料每個 request 重抓五次</strong>。包進 <code>React.cache()</code> per-request 去重、剩下獨立 query 用 <code>Promise.all</code> 攤平。<strong>這條改完 RSC time 砍掉 ~40%</strong>——之前慢不是 query 慢，是被自己 cascade 拖死。</p>
 <p>然後是 <code>#293</code> 三種 toggle 統一——<code>switch</code> / <code>chip</code> / <code>segment</code> 三種視覺長得不一樣、但語意上都是「選一個」。設計層收斂成同一組 token 之後好看多了。<strong>接著 ship 完一個小時後就發現 <code>#293</code> regression</strong>——<code>Switch</code> 元件背景色 token 接錯、暗色背景上整顆 switch 直接隱形。<code>#294</code> hotfix、release v0.16.2 才能 ship。<strong>這是這天第一次「ship → hotfix → ship」的循環</strong>，當天還會再來幾次。</p>
-<h2>v0.16.3：SEO 收斂 + records dual-currency 預備</h2>
+<h2 id="v0163seo-收斂--records-dual-currency-預備">v0.16.3：SEO 收斂 + records dual-currency 預備</h2>
 <p><code>#305 #306 #307 #308</code> 一次 close 四個 SEO issue——<strong>Google Search Console 的 LHR 一直 fail to render</strong>。挖根因找到一個經典的「訊號矛盾」：</p>
 <ul>
 <li><code>sitemap.ts</code> 沒列 <code>/</code>、<code>/sign-in</code> 卻是 priority 1.0</li>
@@ -19,7 +19,7 @@
 </ul>
 <p><strong>這五個 signal 互相打架</strong>：crawler 看 sitemap 指 <code>/sign-in</code>、看 canonical 又指 <code>/</code>、看 middleware 被 307、看 manifest 又指 <code>/dashboard</code>。<strong>Google 完全不知道你想被 index 的是哪一頁</strong>，乾脆放棄。修法是把所有訊號對齊：<code>/</code> 升 priority 1.0、canonical 從全站宣告改成每頁各自宣告、middleware 排除 SW / manifest / fonts、public path Cache-Control 覆寫成 <code>public, s-maxage=...</code>、<code>start_url</code> 改 <code>/</code>。<strong>SEO 修起來 80% 是把 signal 對齊、20% 才是加東西</strong>。</p>
 <p>順手 ship 一條 records list dual-currency display preview——<code>#68</code> Phase 1 預備、把基礎設施先擺到 production 上待用。</p>
-<h2>下午到晚上：v0.17.0 — 多幣別 × 旅行子帳本架構先行 bundle</h2>
+<h2 id="下午到晚上v0170--多幣別--旅行子帳本架構先行-bundle">下午到晚上：v0.17.0 — 多幣別 × 旅行子帳本架構先行 bundle</h2>
 <p>這是整天主菜。架構先行 bundle 一份 design doc（<code>docs/superpowers/specs/multi-currency-trip-design.md</code>，342 行），鎖了 <strong>5 個核心架構決策</strong>：</p>
 <ol>
 <li><strong>Snapshot rate semantics</strong> —— 歷史 record 鎖定當時匯率，未來改匯率不會回頭改 record。<code>CashTransactions</code> 加 <code>original_currency</code> / <code>original_amount</code> / <code>rate_snapshot</code> 三欄、CHECK constraint 強制 all-or-nothing（NULL 代表 base 幣別 native record）。<strong>balance 計算永遠看 base 幣別 amount、外幣只是顯示語意</strong>。</li>
@@ -31,13 +31,13 @@
 <p>實作分 6 個 Phase，全部當天 ship：</p>
 <p><strong>Phase 1：<code>lib/currency.ts</code> foundation</strong>（4 個 commit）—— <code>CurrencyCode</code> type、<code>CURRENCIES</code> constant（TWD/CNY/USD/JPY symbols + precision）、<code>currencyPrecision</code> helper、<code>formatAmount</code>、<code>convertAmount</code>（cent-aware precision handling——日圓沒小數、美金兩位、台幣整數，<strong>每種幣別的 rounding 規則寫死在 helper、callsite 不用知道</strong>）。</p>
 <p><strong>Phase 2：<code>formatAmount</code> callsites migration</strong>（1 個 commit）—— 14 個 inline <code>NT$</code> 字串通通換成 <code>formatAmount</code>。</p>
-<p><strong>Phase 3：Schema migration 0038</strong>（1 個 commit）—— <code>currency_code</code> enum、<code>trip_status</code> enum、<code>CurrencyRates</code> 表（per-group 心理匯率表、只存當前匯率不存歷史）、<code>Trips</code> 表、<code>CashTransactions</code> / <code>IncomeTransactions</code> 加 original_* 三欄、<code>CashTransactions.trip_id</code>、<code>OikosGroups.base_currency</code> default 'twd'、CHECK constraint 強制 original_* 三欄 all-or-nothing。<strong>additive only，不動既有資料</strong>——backfill 邏輯藏在 <code>formatAmount</code> 看到 NULL 就 fall back base，DB 不動。</p>
+<p><strong>Phase 3：Schema migration 0038</strong>（1 個 commit）—— <code>currency_code</code> enum、<code>trip_status</code> enum、<code>CurrencyRates</code> 表（per-group 心理匯率表、只存當前匯率不存歷史）、<code>Trips</code> 表、<code>CashTransactions</code> / <code>IncomeTransactions</code> 加 original_* 三欄、<code>CashTransactions.trip_id</code>、<code>OikosGroups.base_currency</code> default ‘twd’、CHECK constraint 強制 original_* 三欄 all-or-nothing。<strong>additive only，不動既有資料</strong>——backfill 邏輯藏在 <code>formatAmount</code> 看到 NULL 就 fall back base，DB 不動。</p>
 <p><strong>Phase 4：Currency Settings 頁</strong>（4 個 commit）—— <code>defaultRatesFor</code> / <code>listRatesForGroup</code> / <code>upsertRate</code> query、<code>setBaseCurrency</code> lock rule action、<code>setRate</code> action、<code>/settings/currency</code> 頁面（rate 編輯 + base picker）、Settings nav 加「貨幣」entry + 4 語 i18n。</p>
 <p><strong>Phase 5：Trip CRUD</strong>（7 個 commit）—— <code>lib/db/queries/trip.ts</code> query helpers、<code>createTrip</code> / <code>endTrip</code> / <code>updateTrip</code> / <code>softDeleteTrip</code> 4 個 server action（290 行測試先寫）、<code>leaveGroup</code> 加 active trip guard、<code>/trips</code> list page + <code>TripList</code>、<code>TripSheet</code> create form、<code>/trips/[id]</code> detail page、Settings nav + i18n。</p>
 <p><strong>Phase 6：Wire 進 AddSheet</strong>（3 個 commit）—— <code>CurrencySelector</code> + <code>TripSelector</code> 兩個元件、<code>createTransaction</code> 接 currency + trip 兩個 param、AddSheet wire 進去 + dashboard prop drilling + i18n。</p>
 <p><strong>Phase 7：E2E golden path test</strong>（1 個 commit）—— multi-currency × trip 從 create transaction 一路測到 balance / records / trip detail 全鏈路，<strong>這條是 v0.17.0 release 之前的 gatekeeper</strong>。</p>
 <p><code>v0.17.0</code> 23:31 release。</p>
-<h2>凌晨：v0.17.1 把 UX 補齊</h2>
+<h2 id="凌晨v0171-把-ux-補齊">凌晨：v0.17.1 把 UX 補齊</h2>
 <p><code>v0.17.0</code> ship 完之後立刻 dogfood 撞出一堆「能動但不順手」的小細節，連續 4 個 PR 包成 v0.17.1：</p>
 <ul>
 <li><strong><code>#322–#326</code> Currency UX pass</strong> —— Settings 貨幣頁 rate 編輯介面、base picker 鎖規則的提示文案、未啟用幣別的 dimmed 顯示、convert preview 即時更新、4 語 i18n 完整覆蓋</li>
@@ -47,123 +47,8 @@
 <li><strong><code>#317 #318 #319</code> build perf</strong> —— <code>browserslist</code> field targeting modern browsers（Chrome/Firefox/Edge ≥ 100、Safari/iOS ≥ 16）讓 SWC 跳過 ES2019+ polyfill、grep 確認 7 條 polyfill 拔掉 6 條；Noto Sans TC 設 <code>preload: false</code>——保留 @font-face metadata 但拔掉 <code>&#x3C;link rel="preload"></code> storm（之前並行 fetch ~11 個 unicode-range woff2 共 ~770 KiB）。<strong>fold above 不應該被 font preload 卡 770 KiB 才開始 render</strong>。</li>
 </ul>
 <p><code>v0.17.1</code> 00:37（已經是 5/15 凌晨）release。</p>
-<h2>收尾</h2>
+<h2 id="收尾">收尾</h2>
 <p>62 個 commit、4 個 release、一個架構先行 bundle、多幣別跟旅行子帳本一次到位。寫完 <code>migration 0038</code> 那條 SQL 之後我盯著它看了一下——<code>CurrencyRates</code> 跟 <code>Trips</code> 兩張新表、<code>CashTransactions</code> 三欄外加 <code>trip_id</code> FK、CHECK constraint 鎖緊 invariant——<strong>整段 schema 第一次看就 self-consistent</strong>。設計先行的便宜在這裡：寫的時候沒有「啊我忘了一個 case」那種卡頓，因為 design doc 已經把 5 個架構決策鎖死了。</p>
 <p>最後在 dashboard 點開 AddSheet、切到 JPY、選旅行「東京 2026」、輸入 5000、看著「¥5,000 ≈ NT$1,110」即時 render——<strong>那一刻覺得這個 app 終於是「兩個人的」</strong>，不只是兩個台灣人的。</p>
 <p>至於那連續四個 release tag？v0.16.2 → v0.16.3 → v0.17.0 → v0.17.1 都在同一個自然日內（最後一個跨 5/15 凌晨 37 分）。git log 看下去像個發版機關槍。我自己看著也有點不真實。</p>
-<h2>5 月每日變動 line 數（更新到 5/14）</h2>
-<p>濾掉 lock / build artifacts / 圖片字型：</p>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<table><thead><tr><th>日期</th><th>新增</th><th>刪除</th><th>net</th><th>檔案</th></tr></thead><tbody><tr><td>5/2</td><td>+8,820</td><td>−245</td><td>+8,575</td><td>84</td></tr><tr><td>5/3</td><td>+18,504</td><td>−11,701</td><td>+6,803</td><td>245</td></tr><tr><td>5/4</td><td>+251</td><td>−5</td><td>+246</td><td>3</td></tr><tr><td>5/5</td><td>+12,171</td><td>−1,042</td><td>+11,129</td><td>240</td></tr><tr><td>5/6</td><td>+5,519</td><td>−2,859</td><td>+2,660</td><td>234</td></tr><tr><td>5/7</td><td>+8,169</td><td>−1,403</td><td>+6,766</td><td>128</td></tr><tr><td>5/8</td><td>+8,585</td><td>−3,836</td><td>+4,749</td><td>256</td></tr><tr><td>5/9</td><td>+7,460</td><td>−975</td><td>+6,485</td><td>205</td></tr><tr><td>5/10</td><td>+8,709</td><td>−2,792</td><td>+5,917</td><td>296</td></tr><tr><td>5/11</td><td>+7,846</td><td>−493</td><td>+7,353</td><td>196</td></tr><tr><td>5/12</td><td>+10,160</td><td>−3,944</td><td>+6,216</td><td>282</td></tr><tr><td>5/13</td><td>+9,716</td><td>−3,853</td><td>+5,863</td><td>420</td></tr><tr><td>5/14</td><td>+7,453</td><td>−883</td><td>+6,570</td><td>223</td></tr><tr><td>總計</td><td>+121,363</td><td>−34,031</td><td>+87,332</td><td>—</td></tr></tbody></table>
-<p>13 天 net <strong>+87,332</strong> 行——平均每天 <strong>+6,718</strong>。5/14 比較特別的不是行數爆量（其實在這個 sprint 裡偏中段），而是<strong>檔案數只有 223</strong>——「動少地方但每處改得深」的典型 schema-driven sprint。對照 5/13 的 420 個檔案（守護模組獨立化、TypePicker 重整、過去章節 read-only 全套切版）幾乎是一半。</p>
-<p><strong>v0.1.0 → v0.17.1 一共 18 版</strong>——平均每 1.2 天一版，這個節奏感不可能用傳統工時 model 解釋。</p>
 <p><em>這段 code 寫於 2026 年 5 月，文章整理於 2026 年 5 月。</em></p>  </div> </article> <nav class="post-nav"> <div class="post-nav-prev"> <a href="/blog/v0160">← 把保險從愛物裡搬走、再給愛物加上第七種——v0.16.0 的兩件事</a> </div> <div class="post-nav-next"> <a href="/blog/futari-3">Futari 開發日誌 3：離開也保留陪伴，守護成為自己的模組 →</a> </div> </nav> </main> <aside class="page-sidebar"> <div class="sidebar-panel"> <div class="sidebar-title">// tags</div> <div class="tag-cloud"> <a class="tag-chip size-xl" href="/tags/futari"> futari </a><a class="tag-chip size-xl" href="/tags/devlog"> devlog </a><a class="tag-chip size-xl" href="/tags/release"> release </a><a class="tag-chip size-lg" href="/tags/vanishwhisper"> vanishwhisper </a><a class="tag-chip size-lg" href="/tags/security"> security </a><a class="tag-chip size-lg" href="/tags/encryption"> encryption </a><a class="tag-chip size-lg" href="/tags/firebase"> firebase </a><a class="tag-chip size-lg" href="/tags/indie-dev"> indie-dev </a><a class="tag-chip size-md" href="/tags/wildcard"> wildcard </a><a class="tag-chip size-md" href="/tags/google-cloud"> google-cloud </a><a class="tag-chip size-sm" href="/tags/react"> react </a><a class="tag-chip size-sm" href="/tags/refactor"> refactor </a><a class="tag-chip size-sm" href="/tags/database"> database </a><a class="tag-chip size-sm" href="/tags/infra"> infra </a><a class="tag-chip size-sm" href="/tags/rls"> rls </a><a class="tag-chip size-sm" href="/tags/meta"> meta </a><a class="tag-chip size-sm" href="/tags/game"> game </a> </div> </div> </aside> </div> </div> <footer class="site-footer"> <span>© 2026 Ray Lee</span> <span> <a href="https://github.com/redtear1115">github</a> </span> </footer> </body></html>
