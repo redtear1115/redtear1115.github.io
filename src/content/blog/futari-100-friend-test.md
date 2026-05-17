@@ -1,32 +1,8 @@
 ---
 title: "Futari 1.0.0 上線了——順便聊聊我在 friend test 收尾那天幹了什麼"
 pubDate: "2026-05-17"
-tags: []
+tags: ["futari", "release", "friend-test", "i18n", "locale-url-prefix", "rls", "supabase", "postgres", "security", "performance", "next.js", "cdn-cache", "refactor", "sheet-primitives", "server-action", "branding", "copy-guidelines", "retrospective"]
 draft: false
----
----
-title: Futari 1.0.0 上線了——順便聊聊我在 friend test 收尾那天幹了什麼
-date: 2026-05-17
-tags:
-  - Futari
-  - release
-  - friend-test
-  - i18n
-  - locale-url-prefix
-  - rls
-  - supabase
-  - postgres
-  - security
-  - performance
-  - next.js
-  - cdn-cache
-  - refactor
-  - sheet-primitives
-  - server-action
-  - branding
-  - copy-guidelines
-  - retrospective
-summary: friend test 收尾那天從 v1.0.0 連發到 v1.0.4，105 個 commits——i18n 補完 + locale URL prefix、RLS 補洞、perf 三連發、sheet primitives 抽共用，外加一個被 CDN cache 凍住 30 分鐘的 hero copy。
 ---
 friend test 一開始我以為會是「拿到反饋、改幾個 bug、發版」這種純粹的事。結果反饋進來、自己再點一遍 app，發現問題不是 bug——是**整個 sign-in 頁長得像一個 2019 年沒人維護的 side project**。然後是 i18n 沒做完、RLS 有洞、prod log 飆紅、CDN 拿 1 小時的 cache 蓋掉了我臨時改的 hero copy。一天之內從 v1.0.0 連發到 v1.0.4，105 個 commits，我覺得我可以寫一篇了。
 
