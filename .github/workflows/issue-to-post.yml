@@ -32,14 +32,33 @@ jobs:
 
             const issue = context.payload.issue;
             const title = (issue.title || '').trim();
-            const body = (issue.body || '').replace(/\r\n/g, '\n');
+            const rawBody = (issue.body || '').replace(/\r\n/g, '\n');
             const createdAt = new Date(issue.created_at);
             const pubDate = createdAt.toISOString().slice(0, 10);
 
-            const tags = (issue.labels || [])
+            // Parse frontmatter block from issue body if present
+            let bodyContent = rawBody;
+            let frontmatterTags = [];
+            const fmMatch = rawBody.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+            if (fmMatch) {
+              const fmBlock = fmMatch[1];
+              bodyContent = fmMatch[2].trimStart();
+              // Parse tags: supports both inline [a, b] and block list (- a)
+              const inlineMatch = fmBlock.match(/^tags:\s*\[([^\]]*)\]/m);
+              const blockMatch = fmBlock.match(/^tags:\s*\n((?:[ \t]*-[ \t]+.+\n?)+)/m);
+              if (inlineMatch) {
+                frontmatterTags = inlineMatch[1].split(',').map((t) => t.trim().replace(/^["']|["']$/g, '')).filter(Boolean);
+              } else if (blockMatch) {
+                frontmatterTags = blockMatch[1].split('\n').map((l) => l.replace(/^[ \t]*-[ \t]+/, '').trim()).filter(Boolean);
+              }
+            }
+
+            // Merge: frontmatter tags take priority, label tags fill the rest
+            const labelTags = (issue.labels || [])
               .map((l) => (typeof l === 'string' ? l : l.name))
               .filter((n) => typeof n === 'string' && n.startsWith('tag:'))
               .map((n) => n.slice(4));
+            const tags = frontmatterTags.length ? frontmatterTags : labelTags;
 
             const slug = title
               .toLowerCase()
@@ -72,7 +91,7 @@ jobs:
             const dir = 'src/content/blog';
             fs.mkdirSync(dir, { recursive: true });
             const filePath = path.join(dir, `${slug}.md`);
-            fs.writeFileSync(filePath, frontmatter + body + '\n');
+            fs.writeFileSync(filePath, frontmatter + bodyContent + '\n');
 
             core.setOutput('slug', slug);
             core.setOutput('title', title);
