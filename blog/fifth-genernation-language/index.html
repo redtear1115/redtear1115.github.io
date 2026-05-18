@@ -1,0 +1,89 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Astro v4.16.19"><meta name="color-scheme" content="dark"><title>第五代程式語言 Fifth Genernation Language — Southern Light</title><meta name="description" content="Notes on systems, tools, and side projects."><link rel="canonical" href="https://southern-light.dev/blog/fifth-genernation-language"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="sitemap" href="/sitemap-index.xml"><link rel="alternate" type="application/rss+xml" title="Southern Light" href="/rss.xml"><meta property="og:type" content="website"><meta property="og:title" content="第五代程式語言 Fifth Genernation Language — Southern Light"><meta property="og:description" content="Notes on systems, tools, and side projects."><meta property="og:url" content="https://southern-light.dev/blog/fifth-genernation-language"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="第五代程式語言 Fifth Genernation Language — Southern Light"><meta name="twitter:description" content="Notes on systems, tools, and side projects."><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"><link rel="stylesheet" href="/_astro/_slug_.V6pldb3M.css"><script type="module">(function(){const e=Date.now(),t=document.documentElement.style;t.setProperty("--phase-aurora-green",`-${e%8e3/1e3}s`),t.setProperty("--phase-aurora-purple",`-${e%13e3/1e3}s`),t.setProperty("--phase-ice",`-${e%6e3/1e3}s`)})();
+</script></head> <body> <!-- Aurora bands (fixed, behind content) --> <div class="aurora-wrap" aria-hidden="true"> <div class="aurora-band aurora-green"></div> <div class="aurora-band aurora-purple"></div> </div> <header class="site-header"> <a href="/" class="site-name">southern<span class="site-name-accent">_light</span></a> <nav> <a href="/blog">blog</a> <a href="/about">about</a> <a href="/rss.xml">rss</a> </nav> </header> <div class="site-wrapper"> <div class="page-layout"> <main class="page-main">  <article> <header class="post-header"> <h1>第五代程式語言 Fifth Genernation Language</h1> <div class="meta"> <time datetime="2026-05-07">2026-05-07</time> <span>~8 min</span>  </div> </header> <div class="prose">  <p>每隔一段時間，我們寫程式的方式就會被重新定義一次。</p>
+<p>從打孔卡到組譯器，從 C 到 Java，從手寫 SQL 到拖拉式報表工具，每一次轉變的本質都是一樣的：<strong>讓人類用更接近意圖的方式表達想做的事，把瑣碎的翻譯工作交給機器。</strong></p>
+<p>這篇是我對「第五代程式語言」的看法——但在那之前，先把前面四代盤點一遍。</p>
+<hr>
+<h2 id="第一代1gl機器語言">第一代（1GL）：機器語言</h2>
+<p>直接寫給 CPU 看的東西。<code>10110000 01100001</code> 這種二進位碼，或寫成 hex 的 <code>B0 61</code>。</p>
+<ul>
+<li><strong>核心特性</strong>：最貼近硬體，沒有抽象，每個 opcode 對應一條指令。</li>
+<li><strong>典型代表</strong>：CPU 的 instruction set，比如 x86、ARM、RISC-V 的 native binary。</li>
+<li><strong>配合工具</strong>：早期是打孔卡跟開關面板，後來是 hex editor 跟 ROM burner。</li>
+</ul>
+<p>寫 1GL 不太像「程式設計」，比較像「組裝電子訊號」。今天還在直接手寫 1GL 的人，大概只剩做逆向工程跟 firmware patch 的那批硬核派。</p>
+<hr>
+<h2 id="第二代2gl組合語言">第二代（2GL）：組合語言</h2>
+<p>把 binary opcode 換成人類看得懂的助記符號。<code>MOV AL, 61h</code> 就是上面那段機器碼。</p>
+<ul>
+<li><strong>核心特性</strong>：一條 assembly 對應一條機器指令，但用助記符號加上 label，讓人能讀。</li>
+<li><strong>典型代表</strong>：x86 asm、ARM asm、MIPS asm。</li>
+<li><strong>配合工具</strong>：assembler（NASM、MASM、GAS）、linker、debugger（gdb）。</li>
+</ul>
+<p>第一次出現了「翻譯器」這個概念——你寫的東西不是 CPU 直接吃的，而是經過 assembler 轉一手。這是抽象層級的第一次跳躍，也是後面所有事情的開端。</p>
+<p>組合語言今天還沒死，OS kernel、嵌入式韌體、編譯器後端、極致效能調校的人都還在用。但對絕大多數應用層工程師來說，它是「不得不碰才會碰」的東西。</p>
+<hr>
+<h2 id="第三代3gl高階語言">第三代（3GL）：高階語言</h2>
+<p>我們大部分人吃飯的工具。C、C++、Java、Python、Go、Ruby、JavaScript、Rust——這些都是 3GL。</p>
+<ul>
+<li><strong>核心特性</strong>：跟硬體脫鉤，用變數、函式、類別、控制流來描述邏輯。一行 code 通常對應到很多條機器指令。</li>
+<li><strong>典型代表</strong>：太多了。系統層的 C/C++/Rust，應用層的 Java/Python/Ruby/JS，新一代的 Go/Kotlin/Swift。</li>
+<li><strong>配合工具</strong>：compiler、interpreter、IDE、套件管理器（npm、pip、cargo、bundler）、版本控制（git）、test framework、CI/CD。</li>
+</ul>
+<p>3GL 是現代軟體業的地基。你今天打開 GitHub 上 99% 的 repo，看到的都是 3GL。它的抽象足以讓人專注在「業務邏輯」而不是「記憶體位址」，但底下還是要有人懂 stack、heap、pointer、cache line 才能把效能榨出來。</p>
+<hr>
+<h2 id="第四代4gldsl-與低程式碼">第四代（4GL）：DSL 與低程式碼</h2>
+<p>4GL 的目標更激進：<strong>讓非程式設計師也能寫程式</strong>，或至少讓寫程式的人少打很多字。</p>
+<ul>
+<li><strong>核心特性</strong>：針對特定 domain 設計，宣告式（declarative）多於命令式（imperative）。「告訴系統你要什麼」而不是「告訴系統怎麼做」。</li>
+<li><strong>典型代表</strong>：SQL（資料查詢）、MATLAB（數值運算）、R（統計）、各家報表工具（Crystal Reports、SSRS）、現代的 low-code 平台（Retool、Airtable、Bubble、Zapier）。</li>
+<li><strong>配合工具</strong>：視覺化 builder、拖拉式 UI、表單產生器、預先包好的 connector。</li>
+</ul>
+<p>SQL 是 4GL 最成功的例子。你不會去想 B-tree 怎麼走、index 怎麼用、JOIN 怎麼實作，你只說「我要這幾個欄位、從這幾張表、滿足這些條件」，剩下交給 query planner。</p>
+<p>低程式碼平台則把這個概念推到極限——拖個按鈕、連個 API、設個觸發條件，一個內部工具就完成了。對部分場景非常有效，但天花板也很明顯：一旦需求超出平台預設的形狀，整個東西就會卡住。</p>
+<hr>
+<h2 id="第五代5glprompt-驅動的-agent">第五代（5GL）：Prompt 驅動的 Agent</h2>
+<p>到這裡開始有趣了。</p>
+<p>傳統教科書會把 5GL 定義成「以邏輯與約束為主」的語言，比如 Prolog。我覺得那個定義已經被歷史淘汰了——它從來沒真正進入主流。</p>
+<p>我這篇文章想講的 5GL 是另一種東西：<strong>人類用自然語言（prompt）描述意圖，agent 負責產生底層實作（任何 1GL ~ 4GL 都可以）。</strong></p>
+<p>換句話說，<strong>prompt 本身就是 program，agent 就是 compiler。</strong> 而它編譯的目標，可以是 Python、TypeScript、SQL、Rust、甚至 assembly——只要能跑就行。</p>
+<h3 id="核心轉變人類往上爬一層">核心轉變：人類往上爬一層</h3>
+<p>每一代程式語言演進的方向都一樣：人類往上一層，機器往下一層補上。</p>
+<ul>
+<li>1GL → 2GL：人類不再記 opcode，assembler 補上翻譯。</li>
+<li>2GL → 3GL：人類不再管 register，compiler 補上配置。</li>
+<li>3GL → 4GL：人類不再寫迴圈，query engine 補上執行計畫。</li>
+<li>4GL → 5GL：人類不再寫 code，<strong>agent 補上整個實作。</strong></li>
+</ul>
+<p>每一次跳躍都伴隨同樣的爭議：「這樣寫不夠快」、「這樣寫不可控」、「真正的工程師應該還是要寫底層」。但歷史證明，每次抽象層級提升之後整個產業的產能都會翻好幾倍——而且過了一個世代，沒人會再想回去手寫上一代的東西。</p>
+<h3 id="工程師的角色變了">工程師的角色變了</h3>
+<p>舊的角色：把需求翻譯成 code。</p>
+<p>新的角色：</p>
+<ol>
+<li><strong>設計意圖</strong> — 把模糊的需求變成清楚、可被執行、邊界明確的描述。</li>
+<li><strong>驗證結果</strong> — agent 產出的 code、行為、效能，符不符合期待？bug 在哪？</li>
+<li><strong>管控架構</strong> — 哪些東西該做、哪些不該做、哪些 trade-off 業務上能接受。</li>
+</ol>
+<p>我自己最近做了一個<a href="/blog/code-side-project">幾乎沒寫 code 的 side project</a>，過程中體會最深的就是這件事——AI 把實作成本壓到趨近於零之後，<strong>真正的工作不在「寫」，而在「想清楚要寫什麼」跟「判斷它寫得對不對」。</strong></p>
+<h3 id="已經出現的雛形">已經出現的雛形</h3>
+<p>這不是科幻小說，已經在跑的工具：</p>
+<ul>
+<li><strong>Claude Code、Cursor、GitHub Copilot Workspace</strong> — 目前最像 5GL 的形態，工程師用自然語言描述任務，agent 直接修改 codebase。</li>
+<li><strong>Devin、SWE-agent、OpenHands</strong> — 想跨出「IDE 助手」的範疇，做完整的自主開發 agent。</li>
+<li><strong>v0、bolt.new、Lovable</strong> — 把 5GL 應用在 frontend 生成上。</li>
+<li><strong>Text-to-SQL 工具</strong> — 4GL 之上再疊一層 5GL，自然語言進、SQL 出。</li>
+</ul>
+<p>它們現在都還不完美，但形狀已經很清楚了。</p>
+<h3 id="還沒解決的問題">還沒解決的問題</h3>
+<p>別把這篇寫成傳教文。5GL 現階段有幾個很實在的問題：</p>
+<p><strong>可靠性</strong>：agent 寫的 code 偶爾會「看起來對但其實不對」。很多 bug 是 silent failure——測試也過、看起來合理，但邏輯不符你真正的意圖。這讓「驗證」變成新的瓶頸。</p>
+<p><strong>可驗證性</strong>：當人類不再讀每一行 code，你怎麼知道它沒有偷偷做了什麼？這在安全敏感的場景（金流、權限、資安）特別致命。</p>
+<p><strong>安全性</strong>：agent 跑起來能改檔案、能呼叫 API、能花錢。一個 prompt injection 就可能讓它做你沒授權的事。權限模型還在發展中。</p>
+<p><strong>意圖傳遞</strong>：自然語言天生模糊。「幫我做一個登入頁面」對 agent 跟對工程師意義可能完全不同。要做到清楚的意圖傳遞，反而需要新的「prompt 工程」紀律——這也許就是新世代的 coding style guide。</p>
+<hr>
+<h2 id="結語對開發者的意義">結語：對開發者的意義</h2>
+<p>如果你是工程師，這代表什麼？</p>
+<p>我的看法是——<strong>「會不會寫某個語言」這件事，重要性正在快速下降；「能不能想清楚一個系統」的重要性正在快速上升。</strong></p>
+<p>寫 React 跟寫 Vue 之間的差異，未來可能跟「用 Excel 還是用 Numbers」差不多——都是 agent 替你處理的細節。但「這個產品到底要解決什麼問題」、「這個架構未來會不會卡住」、「這個 trade-off 業務上能不能接受」——這些東西沒辦法 prompt 給 agent。</p>
+<p>5GL 不會讓工程師失業。它會讓<strong>只會寫 code 的工程師</strong>很尷尬，但會讓<strong>懂得設計系統、設計問題、判斷對錯的工程師</strong>力量放大十倍。</p>
+<p>我們正站在 3GL 跟 5GL 的接縫上。手感還不太順，工具還在演化，最佳實踐還沒成形。但回頭看歷史就會知道——每次接縫期過後，整個產業都會被重新塑形一次。</p>
+<p>這次也不會例外。</p>  </div> </article> <nav class="post-nav"> <div class="post-nav-prev"> <a href="/blog/futari-drizzle-migration-rls-infra">← Futari 的地基：從 Drizzle migration 到 RLS，一天搭完的 infra 紀錄</a> </div> <div class="post-nav-next"> <a href="/blog/72-commit-futari-081-0113"># 一天 72 個 commit 的後遺症：把 Futari 從 0.8.1 推到 0.11.3 →</a> </div> </nav> </main> <aside class="page-sidebar"> <div class="sidebar-panel"> <div class="sidebar-title">// tags</div> <div class="tag-cloud"> <a class="tag-chip size-xl" href="/tags/futari"> futari </a><a class="tag-chip size-xl" href="/tags/feature"> feature </a><a class="tag-chip size-xl" href="/tags/devlog"> devlog </a><a class="tag-chip size-xl" href="/tags/release"> release </a><a class="tag-chip size-lg" href="/tags/security"> security </a><a class="tag-chip size-lg" href="/tags/vanishwhisper"> vanishwhisper </a><a class="tag-chip size-lg" href="/tags/murmur"> murmur </a><a class="tag-chip size-lg" href="/tags/wildcard"> wildcard </a><a class="tag-chip size-lg" href="/tags/day-summary"> day-summary </a><a class="tag-chip size-lg" href="/tags/encryption"> encryption </a><a class="tag-chip size-lg" href="/tags/firebase"> firebase </a><a class="tag-chip size-lg" href="/tags/indie-dev"> indie-dev </a><a class="tag-chip size-md" href="/tags/zero-to-one"> zero-to-one </a><a class="tag-chip size-md" href="/tags/google-cloud"> google-cloud </a><a class="tag-chip size-sm" href="/tags/react"> react </a><a class="tag-chip size-sm" href="/tags/refactor"> refactor </a><a class="tag-chip size-sm" href="/tags/claude-code"> claude-code </a><a class="tag-chip size-sm" href="/tags/devtool"> devtool </a><a class="tag-chip size-sm" href="/tags/performance"> performance </a><a class="tag-chip size-sm" href="/tags/retrospective"> retrospective </a><a class="tag-chip size-sm" href="/tags/database"> database </a><a class="tag-chip size-sm" href="/tags/infra"> infra </a><a class="tag-chip size-sm" href="/tags/rls"> rls </a><a class="tag-chip size-sm" href="/tags/meta"> meta </a><a class="tag-chip size-sm" href="/tags/architecture"> architecture </a><a class="tag-chip size-sm" href="/tags/testing"> testing </a><a class="tag-chip size-sm" href="/tags/game"> game </a> </div> </div> </aside> </div> </div> <footer class="site-footer"> <span>© 2026 Ray Lee</span> <span> <a href="https://github.com/redtear1115">github</a> </span> </footer> </body></html>
