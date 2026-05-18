@@ -1,0 +1,55 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Astro v4.16.19"><meta name="color-scheme" content="dark"><title>Agent 看不懂的 codebase，就是壞掉的 codebase——agentic 時代的易讀性筆記 — Southern Light</title><meta name="description" content="Notes on systems, tools, and side projects."><link rel="canonical" href="https://southern-light.dev/blog/agent-codebase-codebaseagentic"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="sitemap" href="/sitemap-index.xml"><link rel="alternate" type="application/rss+xml" title="Southern Light" href="/rss.xml"><meta property="og:type" content="website"><meta property="og:title" content="Agent 看不懂的 codebase，就是壞掉的 codebase——agentic 時代的易讀性筆記 — Southern Light"><meta property="og:description" content="Notes on systems, tools, and side projects."><meta property="og:url" content="https://southern-light.dev/blog/agent-codebase-codebaseagentic"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Agent 看不懂的 codebase，就是壞掉的 codebase——agentic 時代的易讀性筆記 — Southern Light"><meta name="twitter:description" content="Notes on systems, tools, and side projects."><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"><link rel="stylesheet" href="/_astro/_slug_.V6pldb3M.css"><script type="module">(function(){const e=Date.now(),t=document.documentElement.style;t.setProperty("--phase-aurora-green",`-${e%8e3/1e3}s`),t.setProperty("--phase-aurora-purple",`-${e%13e3/1e3}s`),t.setProperty("--phase-ice",`-${e%6e3/1e3}s`)})();
+</script></head> <body> <!-- Aurora bands (fixed, behind content) --> <div class="aurora-wrap" aria-hidden="true"> <div class="aurora-band aurora-green"></div> <div class="aurora-band aurora-purple"></div> </div> <header class="site-header"> <a href="/" class="site-name">southern<span class="site-name-accent">_light</span></a> <nav> <a href="/blog">blog</a> <a href="/about">about</a> <a href="/rss.xml">rss</a> </nav> </header> <div class="site-wrapper"> <div class="page-layout"> <main class="page-main">  <article> <header class="post-header"> <h1>Agent 看不懂的 codebase，就是壞掉的 codebase——agentic 時代的易讀性筆記</h1> <div class="meta"> <time datetime="2026-05-18">2026-05-18</time> <span>~8 min</span>  </div> </header> <div class="prose">  <p>前陣子我讓 Claude 在 Futari 的 codebase 裡加一個小功能——「在 trip detail 頁加一個 end trip 按鈕」。結果它跑去翻了 <code>TripDetailClient.tsx</code>、然後翻了 <code>EndTripSheet</code>、然後翻了 <code>useSheetMutation</code>、然後翻了 <code>assertMember</code>、然後翻了 <code>lib/balance.ts</code>——花了我大概 40k tokens 才開始動工。我看著 token meter 跳，心裡只有一個念頭：<strong>這個 codebase 不是寫給 agent 看的，是寫給「有兩年 onboarding 時間的工程師」看的。</strong></p>
+<p>然後我突然意識到一件事——這就是新時代的 WTF 指數。</p>
+<h2 id="clean-code-的-wtf-指數還活著只是讀者換了">Clean Code 的 WTF 指數還活著，只是讀者換了</h2>
+<p>Robert Martin 那句經典——「衡量 code 品質的唯一標準是 code review 時每分鐘喊出 WTF 的次數」——以前是給人類用的。一段命名混亂、邏輯跳躍、沒 comment、隱式依賴一堆的 code，人看了會皺眉。我們花了二十年想各種辦法降這個指數：clean code、code review、style guide、linter、formatter、static analyzer。</p>
+<p>現在多了一個讀者：<strong>agent</strong>。</p>
+<p>而 agent 的「WTF 反應」不是皺眉——是<strong>多翻 5 個檔案、多燒 30k tokens、然後給你一個猜錯依賴的 patch</strong>。WTF 指數的單位從「次數」變成「美金」——這比皺眉嚴重多了，至少皺眉不會出現在你信用卡帳單上。</p>
+<h2 id="順手複習一下-google-code-review-五原則">順手複習一下 Google Code Review 五原則</h2>
+<p>Google 那本 [<a href="https://google.github.io/eng-practices/review/">Code Review Developer Guide</a>](<a href="https://google.github.io/eng-practices/review/">https://google.github.io/eng-practices/review/</a>) 我覺得在 agentic 時代反而更重要——核心就五條：</p>
+<p><strong>基於事實與數據</strong>——「我覺得這樣比較好」不是 review comment，是抒情。改用「benchmark 顯示 X」「style guide 第幾條」「這會違反 invariant Y」。</p>
+<p><strong>嚴守風格指南</strong>——風格爭論用 style guide 結案，不要在 PR 裡吵 tab 還 space。</p>
+<p><strong>優雅的溝通態度</strong>——要求修改要說「為什麼」；對方的設計如果只是「不是你會寫的方式」但沒實質問題，<strong>就放過</strong>。</p>
+<p><strong>持續改進而非完美</strong>——review 的標準是「這個 patch 讓系統變好了嗎」，不是「這個 patch 完美嗎」。完美主義會卡死進度。</p>
+<p><strong>權責與可讀性</strong>——Google 內部有 Readability Certification 機制，核心模組的 owner 要有那個語言的「可讀性認證」才能 approve。為的就是 codebase 不會因為每個人各寫各的而崩壞。</p>
+<p>這五條在人類團隊已經很重要——在你跟 agent 共事的時候，<strong>更重要</strong>。因為 agent 不會跟你吵 tab/space，但它會默默把你 codebase 裡兩種風格全學起來、然後產出第三種混合版。</p>
+<h2 id="大-codebase-的真實腐壞速度">大 codebase 的真實腐壞速度</h2>
+<p>我做 Futari 之前在公司寫過上萬行的後端系統——複雜度增長是<strong>等比級數</strong>，不是線性。第一年加一個功能 2 天，第三年加同樣大小的功能 2 週，第五年沒人敢動。這不是工程師變懶——是因為<strong>任何兩個模組之間都可能有隱式依賴</strong>，n 個模組就有 n² 種交互。</p>
+<p>人類面對這個的辦法是——資深工程師花時間建立心智模型，遇事問他。agent 沒有那個心智模型——它每次都是冷啟動，每次都要把那 n² 重新讀一遍。</p>
+<p>所以新問題來了：<strong>怎麼讓 agent 不要每次都把整個 codebase 重讀一遍？</strong></p>
+<h2 id="七條我自己在跑的原則">七條我自己在跑的原則</h2>
+<h3 id="1-token-是有價格的codebase-越小越好">1. Token 是有價格的，codebase 越小越好</h3>
+<p>以前我們說「code is liability, not asset」，那時候講的是維護成本。現在這句話有了字面意義——<strong>每行 code 都會被讀進 context window，每個 token 都算錢</strong>。</p>
+<p>Refactor #512 我們做了一輪——6 個 asset sheet 共用的 <code>useAssetSheetCommon</code>、<code>useSheetMutation</code>、<code>DateField</code> 統一、<code>assertMember</code> 抽出來——少掉差不多 1000 行重複。<strong>這不只是工程美學，是省錢</strong>。下次 agent 改 sheet，少讀 1000 行就是少燒幾 k tokens。</p>
+<h3 id="2-從不重複造輪子到不引用不需要的部分">2. 從「不重複造輪子」到「不引用不需要的部分」</h3>
+<p>DRY 原則大家都會背。但 agentic 時代有個新煩惱——<strong>有時候你引用一個 utility，agent 為了搞懂它會把整個 module 讀一遍</strong>。</p>
+<p>所以現在我寫 helper 的時候會想——這個 function 是不是 self-contained？dependency 鏈拉多長？一個 5 行的 utility 引到 3 層深的 chain，agent 看它要燒 5k tokens——還不如 inline。</p>
+<p>「不引用不需要的部分」聽起來反 OOP——其實是反「為了結構而結構」。</p>
+<h3 id="3-claudemd--readmemd--skills-是-codebase-的索引">3. CLAUDE.md / README.md / skills 是 codebase 的索引</h3>
+<p>Futari 的 <code>CLAUDE.md</code> 我把它當成「給 agent 的 30 秒 onboarding」來寫——架構速查、domain model、entity 關係、worktree 工作流、品牌文案準則、部署流程。<strong>任何 agent 進來，先讀這份</strong>。</p>
+<p>意義是——agent 不用為了搞懂「balance 怎麼算」去翻 <code>lib/balance.ts</code> + <code>lib/db/queries/balance.ts</code> + <code>schema.ts</code> 三個檔案。<code>CLAUDE.md</code> 一段話講完核心邏輯，agent 只在真的要動 balance 邏輯時才會去翻細節。</p>
+<p>skills 也一樣——<code>git-develop:release</code> / <code>git-develop:deploy</code> / <code>doc-keeper</code> 這幾個是把「重複的高階流程」打包成 agent 可以直接呼叫的模組。<strong>重複的事不要每次都讓 agent 重學一遍</strong>。</p>
+<h3 id="4-repo-裡放-product--design--ux-文件">4. Repo 裡放 product / design / UX 文件</h3>
+<p>這個我以前不太這樣做——product spec 在 Notion、design 在 Figma、UX guideline 在 Google Doc。結果 agent 寫 UI 寫得很 generic、寫 copy 違反品牌準則（friend test 那天我自己 hero copy 違規的事下次再講）。</p>
+<p>現在 <code>docs/superpowers/specs/</code> 裡放 feature spec、<code>CLAUDE.md</code> 裡放品牌文案準則、<code>.claude/</code> 裡放 design artifacts。<strong>讓 agent 跟設計師站在同一份文件前面</strong>——出來的東西才不會精神分裂。</p>
+<h3 id="5-隨時更新-document不是事後補">5. 隨時更新 document（不是「事後補」）</h3>
+<p>doc 最大的問題不是沒寫——是<strong>寫完就過期</strong>。spec 裡寫的還是上一版 schema、CLAUDE.md 還在講已經刪掉的 feature——這比沒有 doc 更糟，因為 agent 會<strong>相信錯的東西</strong>然後 confidently 寫錯。</p>
+<p>我現在的 rule 是：<strong>改 schema 就一起改 CLAUDE.md 的 domain model 段、改 server action 就一起改 spec、release 前跑 doc-keeper 掃一遍</strong>。doc 不更新的 PR 不能 merge。</p>
+<p>這聽起來像在加負擔，實際上是把負擔挪到對的位置——<strong>寫 code 的當下你最懂，事後補要重新理解一次，成本更高</strong>。</p>
+<h3 id="6-tdd-守則測試是-agent-的安全網">6. TDD 守則：測試是 agent 的安全網</h3>
+<p>TDD 在人類時代有點宗教戰爭——有人覺得 essential、有人覺得 overkill。agentic 時代我覺得是<strong>剛性需求</strong>。</p>
+<p>理由：agent 寫完 code 你要驗證它對不對。靠肉眼看 diff？看不出來 edge case。靠手動測？慢。<strong>靠測試</strong>——agent 寫完跑一遍 test、紅了自己改、綠了才丟給你看。</p>
+<p>Futari 的測試覆蓋還不夠（誠實說），但 balance 計算、validators、server actions 這些核心都有測。每次 agent 動到這幾塊，test 是第一道防線——比 code review 更早抓到問題。</p>
+<h3 id="7-定時重構或更精確地說隨時重構">7. 定時重構——或更精確地說，隨時重構</h3>
+<p>技術債的可怕之處不是有債，是<strong>債滾利</strong>。一個 anti-pattern 寫進去，下次有人 copy 那段、再下次又 copy——三個月後你的 codebase 有 20 個地方在重複同樣的爛 pattern。</p>
+<p>agentic 時代這個問題會放大——<strong>agent 學的是 codebase 的現狀</strong>。你 codebase 裡有壞 pattern，它就會學會這個壞 pattern、然後把它複製到第 21 個地方。</p>
+<p>所以「定時」重構不夠——要<strong>隨時</strong>。看到一個小重複就抽出來、看到一個奇怪命名就改掉、看到一個 dead code 就刪。Refactor #512 那種「一次清 1000 行」的大重構很爽——但<strong>真正在維持 codebase 健康的是 100 次「順手清 10 行」</strong>。</p>
+<p>副作用是——codebase 變小、agent 讀得快、token 燒得少。看吧——又繞回第一條了。</p>
+<h2 id="一個我踩過的小坑">一個我踩過的小坑</h2>
+<p>Futari 早期我 CLAUDE.md 寫得超詳細——把 schema 每個欄位都列出來、每個 server action 簽名都貼上。聽起來很 thorough 對吧？結果 agent 進來——<code>CLAUDE.md</code> 本身就 3000 行，光讀它就燒掉一半 context window，<strong>還沒開始工作</strong>。</p>
+<p>後來砍掉一半——只留「架構速查 + entity 是什麼 + 怎麼接」，細節讓 agent 自己去翻 <code>schema.ts</code>。token 用量直接砍半，response 品質還變好——因為 agent 把省下的 context 拿去讀真正相關的 code。</p>
+<p><strong>doc 的目標是「快速 onboarding」，不是「完整 reference」</strong>——reference 在 code 裡。doc 是地圖，不是地形。</p>
+<h2 id="收尾">收尾</h2>
+<p>agentic 時代寫 code 我最大的體悟是——你寫的不只是給人類同事看，也不只是給未來的自己看，<strong>現在還要給一個按 token 計費的同事看</strong>。WTF 指數從「次數」變成「美金」，readability 從「軟需求」變成「直接影響你信用卡帳單」。</p>
+<p>當然，我寫這篇文章的時候 agent 在背景跑了 5 個 task——半小時燒了 4 美金。看來我的 CLAUDE.md 還有得改。</p>
+<p>這段思考整理於 2026 年 5 月。</p>  </div> </article> <nav class="post-nav"> <div class="post-nav-prev"> <a href="/blog/futari-100-friend-test">← Futari 1.0.0 上線了——順便聊聊我在 friend test 收尾那天幹了什麼</a> </div> <div class="post-nav-next">  </div> </nav> </main> <aside class="page-sidebar"> <div class="sidebar-panel"> <div class="sidebar-title">// tags</div> <div class="tag-cloud"> <a class="tag-chip size-xl" href="/tags/futari"> futari </a><a class="tag-chip size-xl" href="/tags/feature"> feature </a><a class="tag-chip size-xl" href="/tags/devlog"> devlog </a><a class="tag-chip size-xl" href="/tags/release"> release </a><a class="tag-chip size-lg" href="/tags/security"> security </a><a class="tag-chip size-lg" href="/tags/vanishwhisper"> vanishwhisper </a><a class="tag-chip size-lg" href="/tags/murmur"> murmur </a><a class="tag-chip size-lg" href="/tags/wildcard"> wildcard </a><a class="tag-chip size-lg" href="/tags/day-summary"> day-summary </a><a class="tag-chip size-lg" href="/tags/encryption"> encryption </a><a class="tag-chip size-lg" href="/tags/firebase"> firebase </a><a class="tag-chip size-lg" href="/tags/indie-dev"> indie-dev </a><a class="tag-chip size-md" href="/tags/zero-to-one"> zero-to-one </a><a class="tag-chip size-md" href="/tags/google-cloud"> google-cloud </a><a class="tag-chip size-sm" href="/tags/react"> react </a><a class="tag-chip size-sm" href="/tags/refactor"> refactor </a><a class="tag-chip size-sm" href="/tags/claude-code"> claude-code </a><a class="tag-chip size-sm" href="/tags/devtool"> devtool </a><a class="tag-chip size-sm" href="/tags/performance"> performance </a><a class="tag-chip size-sm" href="/tags/retrospective"> retrospective </a><a class="tag-chip size-sm" href="/tags/database"> database </a><a class="tag-chip size-sm" href="/tags/infra"> infra </a><a class="tag-chip size-sm" href="/tags/rls"> rls </a><a class="tag-chip size-sm" href="/tags/meta"> meta </a><a class="tag-chip size-sm" href="/tags/architecture"> architecture </a><a class="tag-chip size-sm" href="/tags/testing"> testing </a><a class="tag-chip size-sm" href="/tags/game"> game </a> </div> </div> </aside> </div> </div> <footer class="site-footer"> <span>© 2026 Ray Lee</span> <span> <a href="https://github.com/redtear1115">github</a> </span> </footer> </body></html>
