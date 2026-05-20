@@ -1,7 +1,7 @@
 ---
 title: "Futari 的餘額不再撒謊：把 balance 從「另存一欄」改成「每筆交易後重算」"
 pubDate: "2026-05-09"
-tags: []
+tags: ["futari", "database", "architecture", "feature"]
 draft: false
 ---
 寫情侶帳本最荒謬的事，就是你以為「兩人之間誰欠誰多少」是一個欄位——你 INSERT 一筆 transaction，順手 UPDATE 一下 group balance，搞定。然後某天你 soft-delete 一筆舊帳，UPDATE 漏掉了，畫面上的數字就開始撒謊——而最尷尬的是，撒謊對象是你另一半。

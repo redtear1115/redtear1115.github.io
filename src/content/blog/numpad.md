@@ -1,7 +1,7 @@
 ---
 title: "我自己刻了一個 numpad，然後一週後把它砍掉"
 pubDate: "2026-05-12"
-tags: []
+tags: ["futari", "devlog", "refactor", "feature"]
 draft: false
 ---
 Futari 的記帳 sheet 一開始長這樣：底部彈出一張卡，金額是大大的 NT$ hero，下面是我親手刻的九宮格 numpad——每顆按鈕都有 active state、有 haptic 感、還能長按連刪。我那時還挺得意的（畢竟 designer mode 全開）。
