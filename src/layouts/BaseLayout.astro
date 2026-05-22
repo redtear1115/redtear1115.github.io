@@ -7,14 +7,17 @@ import TagCloud from '../components/TagCloud.astro';
 interface Props {
   title: string;
   description?: string;
+  image?: string;
+  lang?: string;
 }
 
-const { title, description } = Astro.props;
+const { title, description, image, lang = 'zh-TW' } = Astro.props;
 ---
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
   <head>
-    <BaseHead title={title} description={description} />
+    <BaseHead title={title} description={description} image={image} />
+    <slot name="head" />
     <script>
       // Sync aurora animations to wall-clock time so page navigation doesn't restart them.
       // Negative animation-delay jumps each animation to where it "should" be right now.

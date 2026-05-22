@@ -4,6 +4,8 @@ import BaseLayout from './BaseLayout.astro';
 interface Props {
   title: string;
   description?: string;
+  image?: string;
+  lang?: string;
   pubDate: Date;
   tags: string[];
   prev?: { slug: string; title: string };
@@ -11,10 +13,34 @@ interface Props {
   readingTime?: number;
 }
 
-const { title, description, pubDate, tags, prev, next, readingTime } = Astro.props;
+const { title, description, image, lang, pubDate, tags, prev, next, readingTime } = Astro.props;
 const dateStr = pubDate.toISOString().slice(0, 10);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: title,
+  datePublished: pubDate.toISOString(),
+  ...(description && { description }),
+  ...(image && { image: new URL(image, Astro.site).toString() }),
+  keywords: tags.join(', '),
+  url: Astro.url.toString(),
+  author: {
+    '@type': 'Person',
+    name: 'Ray Lee',
+    url: Astro.site?.toString(),
+  },
+  publisher: {
+    '@type': 'Person',
+    name: 'Ray Lee',
+    url: Astro.site?.toString(),
+  },
+};
 ---
-<BaseLayout title={`${title} — Southern Light`} description={description}>
+<BaseLayout title={`${title} — Southern Light`} description={description} image={image} lang={lang}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </Fragment>
   <article>
     <header class="post-header">
       <h1>{title}</h1>

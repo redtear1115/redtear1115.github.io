@@ -6,8 +6,22 @@ import PostCard from '../components/PostCard.astro';
 const posts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
   .slice(0, 5);
+
+const personJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Ray Lee',
+  url: 'https://southern-light.dev',
+  jobTitle: 'Backend Engineer',
+  worksFor: { '@type': 'Organization', name: 'KDAN' },
+  email: 'vfgcees@gmail.com',
+  sameAs: ['https://github.com/redtear1115'],
+};
 ---
 <BaseLayout title="Southern Light" description="Ray Lee — backend engineer at KDAN. Notes on systems, tools, and side projects.">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(personJsonLd)} />
+  </Fragment>
   <section class="hero">
     <h1>Ray Lee</h1>
     <p>Backend Engineer at KDAN.</p>
