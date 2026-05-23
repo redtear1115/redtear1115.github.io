@@ -1,0 +1,200 @@
+<!DOCTYPE html><html lang="zh-TW"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Astro v4.16.19"><meta name="color-scheme" content="dark"><title>多幣別才上線 14 小時，就被我自己收回去——v0.17.2 / v0.17.3 的反向收斂日 — Southern Light</title><meta name="description" content="<p>老實說——昨天凌晨 00:37 才 ship 完 v0.17.1、把 <code>CurrencySelector</code> 接到 AddSheet 上、自己看著 <code>¥5,000 ≈ NT$1,110</code> 即時 render 還很感動。<strong>結果今天中午自己 dogfood…"><link rel="canonical" href="https://southern-light.dev/blog/14-v0172-v0173"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="sitemap" href="/sitemap-index.xml"><link rel="alternate" type="application/rss+xml" title="Southern Light" href="/rss.xml"><meta property="og:type" content="website"><meta property="og:title" content="多幣別才上線 14 小時，就被我自己收回去——v0.17.2 / v0.17.3 的反向收斂日 — Southern Light"><meta property="og:description" content="<p>老實說——昨天凌晨 00:37 才 ship 完 v0.17.1、把 <code>CurrencySelector</code> 接到 AddSheet 上、自己看著 <code>¥5,000 ≈ NT$1,110</code> 即時 render 還很感動。<strong>結果今天中午自己 dogfood…"><meta property="og:url" content="https://southern-light.dev/blog/14-v0172-v0173"><meta property="og:image" content="https://southern-light.dev/og-image.png"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="多幣別才上線 14 小時，就被我自己收回去——v0.17.2 / v0.17.3 的反向收斂日 — Southern Light"><meta name="twitter:description" content="<p>老實說——昨天凌晨 00:37 才 ship 完 v0.17.1、把 <code>CurrencySelector</code> 接到 AddSheet 上、自己看著 <code>¥5,000 ≈ NT$1,110</code> 即時 render 還很感動。<strong>結果今天中午自己 dogfood…"><meta name="twitter:image" content="https://southern-light.dev/og-image.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"> <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"多幣別才上線 14 小時，就被我自己收回去——v0.17.2 / v0.17.3 的反向收斂日","datePublished":"2026-05-15T00:00:00.000Z","description":"<p>老實說——昨天凌晨 00:37 才 ship 完 v0.17.1、把 <code>CurrencySelector</code> 接到 AddSheet 上、自己看著 <code>¥5,000 ≈ NT$1,110</code> 即時 render 還很感動。<strong>結果今天中午自己 dogfood…","keywords":"","url":"https://southern-light.dev/blog/14-v0172-v0173","author":{"@type":"Person","name":"Ray Lee","url":"https://southern-light.dev/"},"publisher":{"@type":"Person","name":"Ray Lee","url":"https://southern-light.dev/"}}</script> <link rel="stylesheet" href="/_astro/_slug_.V6pldb3M.css"><script type="module">(function(){const e=Date.now(),t=document.documentElement.style;t.setProperty("--phase-aurora-green",`-${e%8e3/1e3}s`),t.setProperty("--phase-aurora-purple",`-${e%13e3/1e3}s`),t.setProperty("--phase-ice",`-${e%6e3/1e3}s`)})();
+</script></head> <body> <!-- Aurora bands (fixed, behind content) --> <div class="aurora-wrap" aria-hidden="true"> <div class="aurora-band aurora-green"></div> <div class="aurora-band aurora-purple"></div> </div> <header class="site-header"> <a href="/" class="site-name">southern<span class="site-name-accent">_light</span></a> <nav> <a href="/blog">blog</a> <a href="/about">about</a> <a href="/rss.xml">rss</a> </nav> </header> <div class="site-wrapper"> <div class="page-layout"> <main class="page-main">   <article> <header class="post-header"> <h1>多幣別才上線 14 小時，就被我自己收回去——v0.17.2 / v0.17.3 的反向收斂日</h1> <div class="meta"> <time datetime="2026-05-15">2026-05-15</time> <span>~11 min</span>  </div> </header> <div class="prose">  <p>老實說——昨天凌晨 00:37 才 ship 完 v0.17.1、把 <code>CurrencySelector</code> 接到 AddSheet 上、自己看著 <code>¥5,000 ≈ NT$1,110</code> 即時 render 還很感動。<strong>結果今天中午自己 dogfood 第一筆主帳本記錄，第一個動作就是：「我幹嘛在記帳的時候要選幣別？我又不出國」</strong>。</p>
+<p>每筆 transaction 多一個 picker、就算 default 是 base currency 也要看著它<strong>意識到自己可以選</strong>——這個認知負擔對日常記帳是純粹的噪音。<strong>為了支援 5% 出國場景，把 95% 日常場景變吵</strong>——這個交換不划算。</p>
+<p>所以這天決定：<strong>多幣別 picker 從主帳本拿掉、只留在旅行子帳本</strong>。這不是退一步——這是把架構釐清成「主帳本單幣別、旅行子帳本多幣別」兩層。發了 v0.17.2 / v0.17.3 兩版，35 個 commit、整天都在做這件「<strong>把昨天 ship 的東西收一半回來</strong>」的事。</p>
+<h2>早上：v0.17.2 phase 3 / 4 把旅行子帳本接到底</h2>
+<p>接著昨天 <code>TripExpenses</code> 表跟 server actions 鋪好的地皮，<strong>phase 3 把 TripExpense UI wire 起來</strong>、<strong>phase 4 寫了 <code>trip-end summary CashTransactions</code></strong>——這條才是 trip sub-ledger 真正的核心。</p>
+<p>問題是：旅行進行中 TripExpenses 表自己玩自己的——多幣別、<code>splitRatioA</code> 可以每筆不同、不影響 <code>GroupBalance</code>。但旅行結束的時候，<strong>這趟旅行的「淨額」必須回到主帳本</strong>——不然 balance 永遠對不齊。<strong>怎麼 fold？</strong></p>
+<p>答：<strong>最多兩條 <code>CashTransactions</code></strong>（每個 paying member 一條），代表「整趟旅行的綜合結果」。實作 <code>lib/tripSummary.ts</code> 的 <code>buildTripSummaries()</code>：</p>
+<ol>
+<li>對每個 paying member 算 out-of-pocket total + A-share total</li>
+<li><strong>暴力搜尋 integer <code>splitRatioA</code></strong>——逐一試 <code>0..100</code>、看哪個比例下 <code>lib/balance.ts</code> 算出的 delta 最接近真正的 per-expense exact delta</li>
+<li>邊界 collapse：0% → <code>all_theirs</code>、100% → <code>all_mine</code>、其他用 <code>weighted</code></li>
+<li>回 0–2 rows</li>
+</ol>
+<p><strong>為什麼暴力搜尋 ratio？</strong> 因為旅行裡 100 筆 transaction 每筆都可能用不同 splitRatioA、不同幣別、不同 paying member。<strong>真實的「平均」是無理數</strong>，但 <code>splitRatioA</code> 在 schema 是 0–100 integer——所以挑「最接近 exact delta 的整數比例」、誤差吸進那條 summary 的 amount。<strong>整數空間只有 101 個，暴力搜尋比寫精算公式快寫又好懂</strong>——這種「有界整數空間直接窮舉」的思路在實務上常常贏過精緻演算法。</p>
+<p><code>endTrip</code> 寫成 <strong>atomic transaction</strong>：</p>
+<pre><code>UPDATE Trips SET status='ended' WHERE status='active'  -- conditional, idempotent
+↓ (若 0 rows updated → throw '找不到進行中的旅行')
+SELECT live TripExpenses
+↓
+INSERT 0-2 summary CashTransactions
+↓
+COMMIT → trigger recalcGroupBalance
+</code></pre>
+<p>第一行的 <code>WHERE status='active'</code> 是 idempotent guard——同一個 trip 被 race condition 連續 <code>endTrip</code> 兩次、第二次 affected rows = 0、throw error、後面 select / insert 完全不會跑。<strong>單一 SQL conditional 取代分布式鎖</strong>，因為 DB row update 本身就是 atomic。</p>
+<h2>中午 13:15：trip detail FAB + currency/per-side review</h2>
+<p>把旅行 detail 頁的 FAB 接上去——點 ➕ 直接開 AddSheet 帶 <code>prefilledTripId</code>、currency 也預填成 trip 的 <code>defaultCurrency</code>。同時補 per-side review（每個 member 自己這趟花多少、A 應分多少、結算 delta）—— <strong><code>endTrip</code> 那條 fold-back 邏輯先讓使用者預覽再 commit</strong>，避免「按下去才知道結果」的恐懼感。</p>
+<h2>14:16：把 CurrencySelector 從 AddSheet 拿掉</h2>
+<p>第一個版本——<strong>激進刀</strong>：<code>CurrencySelector</code> 直接 drop、<code>currencyManuallySet</code> state 整片刪。Currency 改成完全 cascade from context：</p>
+<ul>
+<li>有 trip selected → trip 的 <code>defaultCurrency</code></li>
+<li>沒有 trip → group 的 <code>baseCurrency</code></li>
+</ul>
+<p>backend <code>currency</code> field 還是會送，<strong>只是 UI 沒有 picker、沒有「我手動覆寫了 currency」這條 state</strong>。這版邏輯簡單但<strong>有點過頭</strong>——旅行中也選不到 JPY 5000 跟 USD 30 混在同一個 trip 的情境。</p>
+<h2>14:42：收斂版——picker only in trip-sub-ledger path</h2>
+<p>26 分鐘後 ship 第二版，<strong>這版才是對的形狀</strong>：</p>
+<ul>
+<li><code>tripId</code> set（記到 TripExpenses）→ render <code>CurrencySelector</code>，可以每筆 override</li>
+<li><code>tripId</code> null（記到主帳本）→ picker 完全不存在、amount hero 直接顯示 baseCurrency 符號</li>
+</ul>
+<p><strong>「不該決定的時候不要假裝給你決定權」</strong>——這條 UX 原則寫起來簡單、做起來常常違反。AddSheet 在 trip 跟非 trip 場景變成兩種不同的 form，<strong>這是分歧、不是 inconsistency</strong>——硬要統一只會兩邊都難用。</p>
+<h2>13:41 那條 docs commit：幣別視角刻意分層立場</h2>
+<p>寫完上面兩個 picker 改動的中間，補了一個 docs commit——<code>product-design.md</code> 新增「設計立場」section，把這個取捨用一句話定住：</p>
+<blockquote>
+<p><strong>Complexity at the boundary, simplicity in daily use</strong>——守住記錄要素低認知負擔，日常每筆不必做幣別決定。</p>
+</blockquote>
+<p>把這條哲學寫進 spec 的價值在於——<strong>將來再有「為什麼不在主帳本也加 picker」這種建議時，這條 spec 是擋下來的理由</strong>。設計決策不留書面紀錄，三個月後就會被自己（或下一個人）以「合理」之名再撤一次。</p>
+<h2>18:23：兩份 spec 重新拆分——按「核心哲學」分組</h2>
+<p>接著做了一個更大膽的 docs refactor——把 <code>multi-currency-trip-design.md</code> 跟 <code>i18n-locales.md</code> 兩份 spec <strong>重新切</strong>，分成兩條核心哲學：</p>
+<ul>
+<li><strong>「邊界複雜」</strong>：多幣別、跨章節歷史、leave/swap、PartnerQuiz——產品<strong>外圍</strong>接 reality 的部分一定會有複雜度，這層該複雜就複雜</li>
+<li><strong>「保持簡單」</strong>：日常記帳、AddSheet、dashboard、records feed——使用者<strong>每天碰</strong>的入口必須認知負擔極低</li>
+</ul>
+<p>spec 的組織方式不再按「功能模組」分（currency.md / trip.md / i18n.md），改按「<strong>這個決策守護的是哪一條哲學</strong>」分組。一份 spec 同時涉及兩條哲學就<strong>拆</strong>。<strong>spec 是給未來自己看的決策邏輯，不是給程式碼 mirror 的目錄樹</strong>——這條 framing 我自己也是第一次寫的時候才想清楚。</p>
+<h2>18:45 / 18:50：Settings 也跟著重整</h2>
+<p><code>v0.17.2</code> 上線後使用者馬上反饋——<strong>「貨幣」這顆 Setting Row 在每個 user 面前都存在、但 99% 人從不碰</strong>。</p>
+<p>兩個改動：</p>
+<p><strong><code>#365</code> 語言 &#x26; 幣別合一</strong>：把 language switcher 跟 base currency 合進新的 <code>sectionDisplay</code>。<strong>邏輯上它們都是「這個帳本是誰的、用哪種視角」的基礎設定</strong>——之前散在「應用」跟「資料」兩個 section，使用者第一次找 base currency 平均要點 3 個 section 才找到。i18n 4 語齊備。</p>
+<p><strong><code>#366</code> 心理匯率搬進 trip context</strong>：<code>/settings/currency</code> 整個頁面保留（onboarding 時還是需要設 base currency），但<strong>心理匯率編輯</strong>從 Settings top-level 拔掉——心理匯率<strong>只在記帳時用得到、平常看完全是噪音</strong>。改成 TripDetailClient 加一條 tertiary link「調整心理匯率」、放在 edit/end-trip CTA 下面。<strong>使用者剛好想著「這趟旅行的匯率合不合理」的瞬間、入口就在那</strong>。</p>
+<p>19:05 又補一條 <code>ActiveTripBanner</code>——dashboard 已經 SSR-fetch <code>activeTrips</code> 給 AddSheet 的 TripSelector 用、但<strong>沒有任何視覺 surface</strong>。要知道哪趟旅行進行中只能去 Settings 翻。banner 補上、點進去直接 trip detail。<strong>這就是「資料已經在 client 上、只是沒有對應 UI」的典型 leftover</strong>——v0.17.0 衝架構先行的代價、第二天回來收。</p>
+<h2>18:57：AddSheet asset picker 拆愛物/守護 tabs</h2>
+<p>Guardian beta on 的時候、AddSheet 的 asset picker 要怎麼處理保險？v0.16.0 把保險從愛物拆出來變獨立模組——<strong>但 AddSheet 還是把所有 asset 攤平在同一個 picker</strong>，「車、貓、植物、那張壽險保單」混在一起選。Guardian on 的時候 picker 拆成兩個 tab（<strong>愛物 / 守護</strong>），off 的時候維持單 tab。</p>
+<p>這條改動 50 行 UI 但<strong>結構意義超過 v0.16.0 的 tab 拆分</strong>——v0.16.0 是「看清單時分」、這次是「<strong>選的時候也分</strong>」。一個產品的 mental model 一旦在 list view 切兩半，<strong>每個 entry point 都得跟著切</strong>——picker、stats、filter、search、notification……漏掉任一個都會造成「視覺上是分的、但操作上又混在一起」的精神分裂。</p>
+<h2>20:14 v0.17.3 release + 20:55 修 i18n key regression</h2>
+<p><code>v0.17.3</code> 20:14 release。<strong>41 分鐘後撞到 regression</strong>——<code>#366</code> 把 Settings 「貨幣」Row 拿掉的時候連帶刪了 <code>settings.currency</code> 這個 i18n key，但 onboarding flow 還有別的地方 reference 它、頁面跑出來顯示 raw key string。Hotfix 一行：把 key restore 回來、只是不再 mount UI Row 上。<strong>i18n key removal 是這種「靜默 break」的高發地</strong>——TypeScript 對 i18n key string 看不到、grep 又會被各種 dynamic key compose 騙過去。</p>
+<h2>收尾的兩個小東西</h2>
+<p><code>#352 LCP perf</code>——public pages（<code>/</code>、<code>/sign-in</code>、<code>/terms</code>、<code>/privacy</code>）的 Largest Contentful Paint 優化。CSS critical path、image priority、font-display: swap 整套。SEO core web vitals 直接拉上去。</p>
+<p><code>llms-full.txt</code>（接昨天 <code>llms.txt</code>）——比 <code>llms.txt</code> 更詳細，給 AI crawler 完整 context、提升 AI citation accuracy。<strong><code>llms.txt</code> 是 robots.txt 等級的 metadata、<code>llms-full.txt</code> 是 sitemap.xml 等級的 full content</strong>。新一代 SEO 兩條都要。</p>
+<h2>收尾</h2>
+<p>35 個 commit、v0.17.2 + v0.17.3 兩個 release、把多幣別 UI 從主帳本拿掉、把 trip sub-ledger fold-back 邏輯寫穿、Settings 重組、spec 按哲學重拆。</p>
+<p>最有戲的對照——<strong>v0.17.0 凌晨 ship、14 小時後我自己 dogfood 把它的核心 UI 收一半回來</strong>。這聽起來像失敗、但其實是 architecture-first sprint 的設計正確性反證：schema 是對的（<code>original_currency</code> / <code>trip_id</code> / <code>rate_snapshot</code> 全都保留沒動）、只是<strong>最初的 UI 假設太貪心</strong>。把 picker 收掉、schema 不動、未來任何時候要重開都是 5 行 UI 的事。<strong>這就是「架構先行」的真實價值——UI 可以反復試錯、schema 不用反復遷移</strong>。</p>
+<p>至於那個從 14:16 → 14:42 兩版迭代——26 分鐘內 ship → 再 ship——我自己看著 git log 也覺得這節奏該寫進什麼「<strong>LLM-augmented 開發節奏</strong>」的文章裡。一邊 ship 一邊就意識到上一版過頭、立刻再 ship 一版收回去——傳統工時 model 完全描述不了這種「邊想邊改」的密度。</p>
+<h2>5 月每日變動 line 數（更新到 5/15）</h2>
+<p>濾掉 lock / build artifacts / 圖片字型之後：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>日期</th><th>新增</th><th>刪除</th><th>net</th><th>檔案</th></tr></thead><tbody><tr><td>5/2</td><td>+8,820</td><td>−245</td><td>+8,575</td><td>84</td></tr><tr><td>5/3</td><td>+18,504</td><td>−11,701</td><td>+6,803</td><td>245</td></tr><tr><td>5/4</td><td>+251</td><td>−5</td><td>+246</td><td>3</td></tr><tr><td>5/5</td><td>+12,171</td><td>−1,042</td><td>+11,129</td><td>240</td></tr><tr><td>5/6</td><td>+5,519</td><td>−2,859</td><td>+2,660</td><td>234</td></tr><tr><td>5/7</td><td>+8,169</td><td>−1,403</td><td>+6,766</td><td>128</td></tr><tr><td>5/8</td><td>+8,585</td><td>−3,836</td><td>+4,749</td><td>256</td></tr><tr><td>5/9</td><td>+7,460</td><td>−975</td><td>+6,485</td><td>205</td></tr><tr><td>5/10</td><td>+8,709</td><td>−2,792</td><td>+5,917</td><td>296</td></tr><tr><td>5/11</td><td>+7,846</td><td>−493</td><td>+7,353</td><td>196</td></tr><tr><td>5/12</td><td>+10,160</td><td>−3,944</td><td>+6,216</td><td>282</td></tr><tr><td>5/13</td><td>+9,716</td><td>−3,853</td><td>+5,863</td><td>420</td></tr><tr><td>5/14</td><td>+7,453</td><td>−883</td><td>+6,570</td><td>223</td></tr><tr><td>5/15</td><td>+4,883</td><td>−1,154</td><td>+3,729</td><td>95</td></tr><tr><td>總計</td><td>+126,246</td><td>−35,185</td><td>+91,061</td><td>—</td></tr></tbody></table>
+<p><strong>14 天 net +91,061 行</strong>，平均每天 <strong>+6,504</strong>。<strong>v0.1.0 → v0.17.3 累計 20 版</strong>——平均 <strong>1.07 天一版</strong>，看起來像個發版機關槍。</p>
+<p><strong>5/15 觀察</strong>：</p>
+<ul>
+<li>net +3,729 是 5 月以來第二低（僅高於 5/4 的休息日 +246）—— <strong>不是因為慢，是因為今天的工作 60% 是「拿掉昨天加的東西」</strong>，net 看起來保守、實質決策密度很高</li>
+<li><strong>檔案數只有 95</strong>——典型的「收斂日」：sub-ledger fold-back、AddSheet picker 簡化、Settings 重組、spec 重拆，<strong>動少地方但每處改得深</strong></li>
+<li>對照 5/13（420 檔）跟 5/14（223 檔）—— sprint 從「鋪地皮」收斂到「對齊哲學」的曲線很清楚</li>
+</ul>
+<p><em>這段 code 寫於 2026 年 5 月，文章整理於 2026 年 5 月。</em></p>  </div> </article> <nav class="post-nav"> <div class="post-nav-prev"> <a href="/blog/type-futari">← 把「房子」這個 type 從佔位符變成會講話的人：Futari 第七種愛物落地</a> </div> <div class="post-nav-next"> <a href="/blog/sub-ledger-7">為什麼旅行不能用主帳本記？——一條 sub-ledger 在 7 版內長出來的全紀錄 →</a> </div> </nav> </main> <aside class="page-sidebar"> <div class="sidebar-panel"> <div class="sidebar-title">// tags</div> <div class="tag-cloud"> <a class="tag-chip size-xl" href="/tags/futari"> futari </a><a class="tag-chip size-xl" href="/tags/feature"> feature </a><a class="tag-chip size-xl" href="/tags/devlog"> devlog </a><a class="tag-chip size-xl" href="/tags/release"> release </a><a class="tag-chip size-xl" href="/tags/murmur"> murmur </a><a class="tag-chip size-lg" href="/tags/refactor"> refactor </a><a class="tag-chip size-lg" href="/tags/security"> security </a><a class="tag-chip size-lg" href="/tags/architecture"> architecture </a><a class="tag-chip size-lg" href="/tags/vanishwhisper"> vanishwhisper </a><a class="tag-chip size-lg" href="/tags/wildcard"> wildcard </a><a class="tag-chip size-lg" href="/tags/claude-code"> claude-code </a><a class="tag-chip size-lg" href="/tags/day-summary"> day-summary </a><a class="tag-chip size-lg" href="/tags/encryption"> encryption </a><a class="tag-chip size-lg" href="/tags/firebase"> firebase </a><a class="tag-chip size-lg" href="/tags/indie-dev"> indie-dev </a><a class="tag-chip size-md" href="/tags/react"> react </a><a class="tag-chip size-md" href="/tags/design-system"> design-system </a><a class="tag-chip size-md" href="/tags/design-tokens"> design-tokens </a><a class="tag-chip size-md" href="/tags/seo"> seo </a><a class="tag-chip size-md" href="/tags/csv-import"> csv-import </a><a class="tag-chip size-md" href="/tags/zero-to-one"> zero-to-one </a><a class="tag-chip size-md" href="/tags/performance"> performance </a><a class="tag-chip size-md" href="/tags/google-cloud"> google-cloud </a><a class="tag-chip size-md" href="/tags/database"> database </a><a class="tag-chip size-sm" href="/tags/devtool"> devtool </a><a class="tag-chip size-sm" href="/tags/typescript"> typescript </a><a class="tag-chip size-sm" href="/tags/async-await"> async-await </a><a class="tag-chip size-sm" href="/tags/server-action"> server-action </a><a class="tag-chip size-sm" href="/tags/ux-polish"> ux-polish </a><a class="tag-chip size-sm" href="/tags/touch-target"> touch-target </a><a class="tag-chip size-sm" href="/tags/og-image"> og-image </a><a class="tag-chip size-sm" href="/tags/primitives"> primitives </a><a class="tag-chip size-sm" href="/tags/tailwind"> tailwind </a><a class="tag-chip size-sm" href="/tags/json-ld"> json-ld </a><a class="tag-chip size-sm" href="/tags/useReducer"> useReducer </a><a class="tag-chip size-sm" href="/tags/migration"> migration </a><a class="tag-chip size-sm" href="/tags/lighthouse"> lighthouse </a><a class="tag-chip size-sm" href="/tags/next-fonts"> next-fonts </a><a class="tag-chip size-sm" href="/tags/claude-md"> claude-md </a><a class="tag-chip size-sm" href="/tags/pr-review"> pr-review </a><a class="tag-chip size-sm" href="/tags/icon-design"> icon-design </a><a class="tag-chip size-sm" href="/tags/retrospective"> retrospective </a><a class="tag-chip size-sm" href="/tags/infra"> infra </a><a class="tag-chip size-sm" href="/tags/rls"> rls </a><a class="tag-chip size-sm" href="/tags/product-philosophy"> product-philosophy </a><a class="tag-chip size-sm" href="/tags/interview"> interview </a><a class="tag-chip size-sm" href="/tags/couples"> couples </a><a class="tag-chip size-sm" href="/tags/solo-mode"> solo-mode </a><a class="tag-chip size-sm" href="/tags/multi-currency"> multi-currency </a><a class="tag-chip size-sm" href="/tags/psychological-rate"> psychological-rate </a><a class="tag-chip size-sm" href="/tags/monthly-review"> monthly-review </a><a class="tag-chip size-sm" href="/tags/inbox-layer"> inbox-layer </a><a class="tag-chip size-sm" href="/tags/trust"> trust </a><a class="tag-chip size-sm" href="/tags/dogfooding"> dogfooding </a><a class="tag-chip size-sm" href="/tags/product-design"> product-design </a><a class="tag-chip size-sm" href="/tags/meta"> meta </a><a class="tag-chip size-sm" href="/tags/hydration"> hydration </a><a class="tag-chip size-sm" href="/tags/ssr"> ssr </a><a class="tag-chip size-sm" href="/tags/nextjs"> nextjs </a><a class="tag-chip size-sm" href="/tags/localstorage"> localstorage </a><a class="tag-chip size-sm" href="/tags/cookies"> cookies </a><a class="tag-chip size-sm" href="/tags/sentry"> sentry </a><a class="tag-chip size-sm" href="/tags/posthog"> posthog </a><a class="tag-chip size-sm" href="/tags/observability"> observability </a><a class="tag-chip size-sm" href="/tags/testing"> testing </a><a class="tag-chip size-sm" href="/tags/game"> game </a> </div> </div> </aside> </div> </div> <footer class="site-footer"> <span>© 2026 Ray Lee</span> <span> <a href="https://github.com/redtear1115">github</a> </span> </footer> </body></html>
