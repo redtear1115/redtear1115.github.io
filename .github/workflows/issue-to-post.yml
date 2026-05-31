@@ -97,6 +97,31 @@ jobs:
             core.setOutput('title', title);
             core.setOutput('file', filePath);
 
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify build
+        id: verify
+        run: npm run build
+
+      - name: Comment on build failure
+        if: failure() && steps.verify.conclusion == 'failure'
+        uses: actions/github-script@v8
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.issue.number,
+              body: `❌ Build failed — post was not published. Check the [workflow run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}) for details.`,
+            });
+
       - name: Commit and push
         env:
           POST_TITLE: ${{ steps.build.outputs.title }}
