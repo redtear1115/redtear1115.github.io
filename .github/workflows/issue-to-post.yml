@@ -69,10 +69,7 @@ jobs:
               .replace(/\s+/g, '-')
               .replace(/-+/g, '-');
 
-            if (!slug) {
-              core.setFailed(`Could not derive a slug from title: "${title}"`);
-              return;
-            }
+            const finalSlug = slug || `post-${issue.number}`;
 
             const yamlString = (s) => JSON.stringify(s);
             const yamlArray = (arr) =>
@@ -90,10 +87,10 @@ jobs:
 
             const dir = 'src/content/blog';
             fs.mkdirSync(dir, { recursive: true });
-            const filePath = path.join(dir, `${slug}.md`);
+            const filePath = path.join(dir, `${finalSlug}.md`);
             fs.writeFileSync(filePath, frontmatter + bodyContent + '\n');
 
-            core.setOutput('slug', slug);
+            core.setOutput('slug', finalSlug);
             core.setOutput('title', title);
             core.setOutput('file', filePath);
 
