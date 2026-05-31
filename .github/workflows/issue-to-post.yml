@@ -39,6 +39,7 @@ jobs:
             // Parse frontmatter block from issue body if present
             let bodyContent = rawBody;
             let frontmatterTags = [];
+            let frontmatterSlug = '';
             const fmMatch = rawBody.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
             if (fmMatch) {
               const fmBlock = fmMatch[1];
@@ -51,6 +52,9 @@ jobs:
               } else if (blockMatch) {
                 frontmatterTags = blockMatch[1].split('\n').map((l) => l.replace(/^[ \t]*-[ \t]+/, '').trim()).filter(Boolean);
               }
+              // Parse slug
+              const slugMatch = fmBlock.match(/^slug:\s*(.+)$/m);
+              if (slugMatch) frontmatterSlug = slugMatch[1].trim().replace(/^["']|["']$/g, '');
             }
 
             // Merge: frontmatter tags take priority, label tags fill the rest
@@ -60,7 +64,7 @@ jobs:
               .map((n) => n.slice(4));
             const tags = frontmatterTags.length ? frontmatterTags : labelTags;
 
-            const slug = title
+            const derivedSlug = title
               .toLowerCase()
               .normalize('NFKD')
               .replace(/[̀-ͯ]/g, '')
@@ -69,7 +73,7 @@ jobs:
               .replace(/\s+/g, '-')
               .replace(/-+/g, '-');
 
-            const finalSlug = slug || `post-${issue.number}`;
+            const finalSlug = frontmatterSlug || derivedSlug || `post-${issue.number}`;
 
             const yamlString = (s) => JSON.stringify(s);
             const yamlArray = (arr) =>
