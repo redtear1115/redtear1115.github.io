@@ -166,6 +166,29 @@ main {
   position: relative;
   z-index: 1;
 }
+.site-footer .footer-sep {
+  margin: 0 0.5rem;
+  opacity: 0.5;
+}
+
+/* ----- Ko-fi support button ----- */
+.kofi-button {
+  display: inline-block;
+  padding: 0.55rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, #1a2540, #0f1629);
+  color: var(--text) !important;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  text-decoration: none !important;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+.kofi-button:hover {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px #5ba3d930;
+}
 
 /* ----- Hero (home intro) ----- */
 .hero {
