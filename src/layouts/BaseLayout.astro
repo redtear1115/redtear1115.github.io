@@ -47,5 +47,15 @@ const { title, description, image, lang = 'zh-TW' } = Astro.props;
       </div>
     </div>
     <Footer />
+
+    <script is:inline src="https://storage.ko-fi.com/cdn/scripts/overlay-widget.js"></script>
+    <script is:inline>
+      kofiWidgetOverlay.draw('ray19841115', {
+        type: 'floating-chat',
+        'floating-chat.donateButton.text': '請我喝杯咖啡',
+        'floating-chat.donateButton.background-color': '#5ba3d9',
+        'floating-chat.donateButton.text-color': '#0a0e1a'
+      });
+    </script>
   </body>
 </html>
