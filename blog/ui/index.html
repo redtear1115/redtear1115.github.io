@@ -33,4 +33,27 @@ c8d00f79723e90c8195923a9aa11ab8aacfc36e3 2026-05-02 fix: preserve next param thr
         'floating-chat.donateButton.background-color': '#5ba3d9',
         'floating-chat.donateButton.text-color': '#0a0e1a'
       });
+
+      // Source attribution: fire GA event on widget click, plus best-effort UTM
+      // injection into Ko-fi's hidden iframe so their GA picks up the source too.
+      (function () {
+        const SOURCE = 'southern-light';
+        const UTM = '&utm_source=' + SOURCE + '&utm_medium=kofi_widget';
+
+        document.addEventListener('click', function (e) {
+          if (e.target.closest('[class*="kofi"], [id*="kofi"]') && typeof gtag === 'function') {
+            gtag('event', 'kofi_widget_click', { source: SOURCE });
+          }
+        });
+
+        const patch = function () {
+          document.querySelectorAll('iframe[src*="ko-fi.com"]').forEach(function (iframe) {
+            if (!iframe.src.includes('utm_source')) {
+              iframe.src = iframe.src + UTM;
+            }
+          });
+        };
+        new MutationObserver(patch).observe(document.body, { childList: true, subtree: true });
+        patch();
+      })();
     </script> </body> </html>
