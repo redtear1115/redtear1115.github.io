@@ -5,7 +5,7 @@ on:
     types: [labeled]
 
 permissions:
-  contents: read
+  contents: write
   issues: write
 
 concurrency:
@@ -18,9 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          token: ${{ secrets.GH_PAT }}
+        uses: actions/checkout@v4
 
       - name: Build post file
         id: build
@@ -99,7 +97,7 @@ jobs:
             core.setOutput('file', filePath);
 
       - name: Setup Node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
