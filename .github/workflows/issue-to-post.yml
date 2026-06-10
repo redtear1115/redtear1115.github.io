@@ -7,6 +7,7 @@ on:
 permissions:
   contents: write
   issues: write
+  actions: write
 
 concurrency:
   group: issue-to-post
@@ -19,10 +20,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          # Use GH_PAT so the post commit's push triggers the Deploy workflow.
-          # Pushes made with the default GITHUB_TOKEN do NOT trigger other workflows.
-          token: ${{ secrets.GH_PAT }}
 
       - name: Build post file
         id: build
@@ -126,6 +123,7 @@ jobs:
             });
 
       - name: Commit and push
+        id: commit
         env:
           POST_TITLE: ${{ steps.build.outputs.title }}
           POST_FILE: ${{ steps.build.outputs.file }}
@@ -135,10 +133,21 @@ jobs:
           git add "$POST_FILE"
           if git diff --cached --quiet; then
             echo "No changes to commit"
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           git commit -m "post: $POST_TITLE"
           git push origin HEAD:master
+          echo "pushed=true" >> "$GITHUB_OUTPUT"
+
+      # This push uses GITHUB_TOKEN, which by design does NOT trigger the Deploy
+      # workflow's push event. workflow_dispatch is the documented exception, so
+      # trigger Deploy explicitly to rebuild the site.
+      - name: Trigger Deploy
+        if: steps.commit.outputs.pushed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run deploy.yml --ref master
 
       - name: Comment on issue
         uses: actions/github-script@v8
