@@ -7,7 +7,8 @@ on:
 permissions:
   contents: write
   issues: write
-  actions: write
+  pages: write
+  id-token: write
 
 concurrency:
   group: issue-to-post
@@ -17,6 +18,9 @@ jobs:
   publish:
     if: github.event.label.name == 'published'
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -140,14 +144,20 @@ jobs:
           git push origin HEAD:master
           echo "pushed=true" >> "$GITHUB_OUTPUT"
 
-      # This push uses GITHUB_TOKEN, which by design does NOT trigger the Deploy
-      # workflow's push event. workflow_dispatch is the documented exception, so
-      # trigger Deploy explicitly to rebuild the site.
-      - name: Trigger Deploy
+      # Deploy the dist/ built above directly — it already contains the new post.
+      # Previously we dispatched deploy.yml via `gh workflow run --ref master`,
+      # but that raced against post-push ref propagation and sometimes published
+      # the PREVIOUS commit (site missing the just-published post). See issue #97.
+      - name: Upload Pages artifact
         if: steps.commit.outputs.pushed == 'true'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh workflow run deploy.yml --ref master
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        if: steps.commit.outputs.pushed == 'true'
+        uses: actions/deploy-pages@v4
 
       - name: Comment on issue
         uses: actions/github-script@v8
