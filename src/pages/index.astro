@@ -12,20 +12,20 @@ const personJsonLd = {
   '@type': 'Person',
   name: 'Ray Lee',
   url: 'https://southern-light.dev',
-  jobTitle: 'Backend Engineer',
+  jobTitle: 'Technical Manager',
   worksFor: { '@type': 'Organization', name: 'KDAN' },
   email: 'vfgcees@gmail.com',
   sameAs: ['https://github.com/redtear1115'],
 };
 ---
-<BaseLayout title="Southern Light" description="Ray Lee — backend engineer at KDAN. Notes on systems, tools, and side projects.">
+<BaseLayout title="Southern Light" description="Ray Lee — technical manager at KDAN, building in the AI era. Notes on systems, tools, and side projects.">
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(personJsonLd)} />
   </Fragment>
   <section class="hero">
     <h1>Ray Lee</h1>
-    <p>Backend Engineer at KDAN.</p>
-    <p>Building things with Ruby, occasionally JavaScript.</p>
+    <p>Technical Manager at KDAN.</p>
+    <p>Building small products in the AI era — mostly TypeScript.</p>
     <p>Writing about systems, tools, and side projects.</p>
     <div class="links">
       <a href="https://github.com/redtear1115">GitHub</a>
