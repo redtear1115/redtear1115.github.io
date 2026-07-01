@@ -21,3 +21,16 @@
 - slug 取自 issue frontmatter 的 `slug:`，沒寫才用標題推導。
 - ⚠️ **不要改回「push 完再 `gh workflow run deploy.yml` dispatch 部署」的做法**。那會踩 ref 傳播 race：dispatch 時 `master` 可能還指向前一個 commit，導致部署到舊版、新文章 404（issue #97 就是這個 bug）。發文一定要 commit 與部署在同一個 run、用同一份 build artifact。
 - `deploy.yml` 仍保留，負責「直接 push 到 master」與手動 `workflow_dispatch` 的部署。
+
+## 標籤詞彙（受控清單）
+
+標籤雲要維持技術部落格的樣子，**只用下面這 30 個全小寫 kebab-case 英文標籤**，每篇 2–5 個。不要發明新標籤、不要用中文；真的需要新增類別再回頭擴充這份清單（並同步 `TagCloud.astro` 的字級級距）。
+
+- **Projects**：`futari` · `wildcard` · `vanishwhisper`
+- **Stack**：`typescript` · `react` · `nextjs` · `tailwind` · `phaser` · `capacitor` · `firebase` · `supabase` · `google-cloud`
+- **Topics**：`ai` · `architecture` · `refactoring` · `design-system` · `accessibility` · `performance` · `seo` · `i18n` · `security` · `database` · `observability` · `testing` · `gamedev` · `indie-dev`
+- **Type**：`devlog` · `postmortem` · `retrospective` · `notes`
+
+常見合併原則（避免同義詞爆炸）：`claude-code`/`LLM`/`gemini`/`harness…` → `ai`；`翻車記`/`prod-bug`/`debug` → `postmortem`；`release`/`feature`/`day-summary` → `devlog`；`encryption`/`rls`/`oauth`/`PII` → `security`；`design-tokens`/`ux`/`a11y` 拆到 `design-system` 或 `accessibility`。
+
+- issue-to-post 的標籤取自 issue frontmatter 的 `tags:`，沒寫才用 `tag:` label。發文前先確認這些標籤都在上面清單內。
