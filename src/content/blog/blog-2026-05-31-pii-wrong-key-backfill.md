@@ -2,12 +2,7 @@
 title: 我在 prod 加密了 PII，然後用了錯的 key
 slug: pii-wrong-key-backfill
 pubDate: 2026-05-31
-tags:
-  - prod-bug
-  - 加密
-  - PII
-  - 翻車記
-  - 資料安全
+tags: ["security", "postmortem"]
 draft: false
 ---
 

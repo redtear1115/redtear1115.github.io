@@ -1,7 +1,7 @@
 ---
 title: "第五代程式語言 Fifth Genernation Language"
 pubDate: "2026-05-07"
-tags: ["architecture", "claude-code", "murmur"]
+tags: ["ai", "architecture", "notes"]
 draft: false
 ---
 每隔一段時間，我們寫程式的方式就會被重新定義一次。

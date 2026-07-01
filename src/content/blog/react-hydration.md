@@ -1,7 +1,7 @@
 ---
 title: "我為了消滅一個閃爍，掉進了 React hydration 的兔子洞"
 pubDate: "2026-05-21"
-tags: ["futari", "react", "hydration", "ssr", "nextjs", "localstorage", "cookies", "sentry", "posthog", "observability", "release"]
+tags: ["futari", "react", "nextjs", "security", "observability", "devlog"]
 draft: false
 ---
 故事的起點是一個極其無辜的需求——「讓使用者收合的卡片，下次打開還是收合的」。BalanceHero 可以收起來、MonthlyStatsView 可以摺疊，使用者收好了，重新整理一下又全部展開——這很煩。我心想，這不就是一個 `localStorage.getItem` 的事嗎？

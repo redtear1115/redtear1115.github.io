@@ -2,12 +2,7 @@
 title: 新增一個引流頁面要改 800 行，所以我把架構重寫了
 slug: migrate-use-case-data-driven
 pubDate: 2026-05-30
-tags:
-  - 架構
-  - SEO
-  - i18n
-  - nextjs
-  - refactor
+tags: ["nextjs", "architecture", "refactoring", "seo", "i18n"]
 draft: false
 ---
 

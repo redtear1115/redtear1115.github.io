@@ -1,7 +1,7 @@
 ---
 title: "Futari 1.0.0 上線了——順便聊聊我在 friend test 收尾那天幹了什麼"
 pubDate: "2026-05-17"
-tags: ["futari", "release", "security", "performance", "retrospective"]
+tags: ["futari", "performance", "security", "devlog", "retrospective"]
 draft: false
 ---
 friend test 一開始我以為會是「拿到反饋、改幾個 bug、發版」這種純粹的事。結果反饋進來、自己再點一遍 app，發現問題不是 bug——是**整個 sign-in 頁長得像一個 2019 年沒人維護的 side project**。然後是 i18n 沒做完、RLS 有洞、prod log 飆紅、CDN 拿 1 小時的 cache 蓋掉了我臨時改的 hero copy。一天之內從 v1.0.0 連發到 v1.0.4，105 個 commits，我覺得我可以寫一篇了。

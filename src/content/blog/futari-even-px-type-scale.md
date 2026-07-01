@@ -1,7 +1,7 @@
 ---
 title: "我的 type scale 裡塞了 11、13、15 三個奇數——直到我受不了把它們全砍了"
 pubDate: "2026-06-10"
-tags: ["futari", "devlog", "release"]
+tags: ["futari", "devlog"]
 draft: false
 ---
 你有沒有過那種，打開自己的 `globals.css`，看到 `text-micro` (11px)、`text-xs` (12px) 並排躺在那，然後突然一陣反胃的經驗？兩個 token，差 1px，幹一模一樣的事——這種東西我居然養了好幾個月。

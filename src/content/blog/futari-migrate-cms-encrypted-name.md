@@ -1,7 +1,7 @@
 ---
 title: "七個長得一模一樣的 page.tsx，我終於忍不住把它們換成一個動態路由"
 pubDate: "2026-06-03"
-tags: ["futari", "devlog", "release"]
+tags: ["futari", "devlog"]
 draft: false
 ---
 你有沒有那種感覺：某個地方很明顯不對，但改起來工程有點大，所以你一直跟自己說「下次吧」——結果「下次」就在你要加第八個的時候到了？

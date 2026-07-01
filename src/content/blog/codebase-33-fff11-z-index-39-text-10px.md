@@ -1,7 +1,7 @@
 ---
 title: "我的 codebase 裡有 33 個寫死的 `#fff`、11 種隨手敲的 z-index，跟 39 個 `text-[10px]` 等級的魔術數字"
 pubDate: "2026-05-27"
-tags: ["devlog", "futari", "release"]
+tags: ["futari", "devlog"]
 draft: false
 ---
 說真的，我以前都假裝沒看到這些東西。一個白色字 `'#fff'`、一個彈窗 `z-[100]`、一個小標籤 `text-[12px]`——每個單獨看都很合理，合在一起就是一鍋沒人敢動的湯。直到我想做 dark mode，發現要改前景色得手動 grep 33 個檔案，我才認清：這不是設計，這是技術債穿了件設計的外套。

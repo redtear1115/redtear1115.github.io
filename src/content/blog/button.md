@@ -1,7 +1,7 @@
 ---
 title: "那天我終於受不了——把 Button 寫了第八次的那一天"
 pubDate: "2026-05-19"
-tags: ["futari", "design-system", "primitives", "design-tokens", "tailwind", "refactor", "seo", "json-ld", "csv-import", "useReducer", "release"]
+tags: ["futari", "react", "tailwind", "refactoring", "design-system", "seo", "database", "devlog"]
 draft: false
 ---
 `grep -r "rounded-full px-4 py-2 bg-" app/` ——20 個 match。每一個都是某個 sheet / wizard / setting 裡某顆 button，每一個都有自己微妙不一樣的 padding、border-radius、hover state。**我在 codebase 裡寫了八種 Button 而每一種都堅持自己才是「對的」**。

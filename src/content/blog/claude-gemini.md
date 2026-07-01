@@ -1,7 +1,7 @@
 ---
 title: "把 Claude 當包工頭、Gemini 當小工，居然真的有用"
 pubDate: "2026-05-28"
-tags: ["ai-coop", "claude", "gemini", "superpowers", "工作紀錄"]
+tags: ["ai", "devlog"]
 draft: false
 ---
 你有沒有過那種，明明手上有一把刀，卻硬要拿榔頭去切牛排的時刻？

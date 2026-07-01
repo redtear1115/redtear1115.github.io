@@ -1,7 +1,7 @@
 ---
 title: "功能做好了，腳本還在讀一個不存在的 env 變數"
 pubDate: "2026-06-02"
-tags: ["futari", "devlog", "release"]
+tags: ["futari", "devlog"]
 draft: false
 ---
 你有沒有寫過那種，功能本體完全沒問題、但配套的腳本默默讀了一個錯的 env 變數，然後你渾然不知的故事？我最近就撞上一個——而且比較慘的是，腳本是我自己寫的。

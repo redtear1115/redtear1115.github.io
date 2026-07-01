@@ -1,7 +1,7 @@
 ---
 title: "一個只有「對方」看得到的 bug，因為我永遠是那個 A"
 pubDate: "2026-05-26"
-tags: ["prod-bug", "資料語意", "邊界轉換", "前端", "翻車記"]
+tags: ["architecture", "database", "postmortem"]
 draft: false
 ---
 你有沒有寫過那種 bug——你自己用一百次都正常，因為你剛好站在它隱形的那一側？我這天抓到一隻，它在 prod 上活了不知道多久，而我完全沒發現，原因蠢到我想找個地洞鑽進去：**因為我永遠是那個 member A。**

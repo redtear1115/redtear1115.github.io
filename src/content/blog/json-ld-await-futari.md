@@ -1,7 +1,7 @@
 ---
 title: "游標亂跳、JSON-LD 重複、await 又忘記——Futari 那一輪「對齊」雜事"
 pubDate: "2026-05-29"
-tags: ["devlog", "futari", "release"]
+tags: ["futari", "devlog"]
 draft: false
 ---
 每次我以為自己已經把 Futari 的「日常瑣事」收乾淨了，打開一看——一個輸入框打到一半游標跳到最後、首頁的 JSON-LD schema 印了兩次、然後 listAllTrips 連 await 都沒加。一句話：每次自以為穩，每次都有新洞。

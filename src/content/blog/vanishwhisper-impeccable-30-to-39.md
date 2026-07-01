@@ -1,7 +1,7 @@
 ---
 title: "VanishWhisper 的聊天頁被打 30/40，我硬著頭皮拉到 39"
 pubDate: "2026-05-30"
-tags: ["vanishwhisper", "devlog", "a11y", "design-system"]
+tags: ["vanishwhisper", "design-system", "accessibility", "devlog"]
 draft: false
 ---
 你有沒有那種，自己用了一百次都覺得 OK、結果被工具一掃才知道對色盲使用者根本是空白的經驗？我這禮拜在 VanishWhisper 上踩到一個——只是這次「工具」是我自己跑的 `/impeccable` critique，它直接打了我聊天頁 **30/40，三個 P1**。滿慘的。

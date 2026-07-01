@@ -2,12 +2,7 @@
 title: 三個晚上不到，我用 Gemini 3.1 Preview 燒掉了 600 美
 slug: gemini-3-1-preview-burned-600usd
 pubDate: 2026-05-29
-tags:
-  - gemini
-  - agentic
-  - 翻車記
-  - 成本
-  - llm
+tags: ["ai", "postmortem"]
 draft: false
 ---
 

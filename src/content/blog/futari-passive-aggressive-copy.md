@@ -1,7 +1,7 @@
 ---
 title: "原來我的 app 一直在對單身使用者說「等你們一起」"
 pubDate: "2026-05-25"
-tags: ["futari", "devlog", "ux", "a11y"]
+tags: ["futari", "design-system", "accessibility", "devlog"]
 draft: false
 ---
 說來有點丟臉——Futari 是給兩個人一起記帳的 app，但如果你還沒邀請到伴侶，打開首頁映入眼簾的是一條 banner，上面寫著「等你們一起」。

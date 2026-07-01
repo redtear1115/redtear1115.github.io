@@ -1,7 +1,7 @@
 ---
 title: "當了一日 Android 工程師，結果兇手是 Supabase 後台的兩個星號"
 pubDate: "2026-05-31"
-tags: ["capacitor", "supabase", "oauth", "prod-bug", "翻車記"]
+tags: ["capacitor", "supabase", "security", "postmortem"]
 draft: false
 ---
 你有沒有過那種，code 一行都沒錯、測試全綠、release 也發了，結果功能照樣炸——而真正的兇手躺在一個你三天沒打開的後台設定頁裡？

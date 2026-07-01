@@ -1,7 +1,7 @@
 ---
 title: "我寫了一篇文章警告大家別忘記 await——然後我忘了 await"
 pubDate: "2026-05-20"
-tags: ["futari", "typescript", "async-await", "server-action", "design-system", "design-tokens", "ux-polish", "touch-target", "seo", "og-image", "release"]
+tags: ["futari", "typescript", "nextjs", "design-system", "accessibility", "seo", "devlog"]
 draft: false
 ---
 前幾天我才寫了一篇短文，講「忘記 `await` 的 server action 會讓 balance 比真實資料早一步出去」——還煞有介事地下了個結論：「TypeScript 不會幫你抓忘記 await，丟掉 Promise 它覺得你是故意的。」結果這天 `grep` trip query——`listAllTrips`、`listActiveTrips`、`listTripRecords` **三個 function 全部忘了 await**。

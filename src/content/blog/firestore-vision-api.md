@@ -1,7 +1,7 @@
 ---
 title: "當「樹葉、石頭、剪刀」變成多人戰場——一段 Firestore 跟 Vision API 的纏鬥"
 pubDate: "2026-05-11"
-tags: ["wildcard", "firebase", "google-cloud", "feature"]
+tags: ["wildcard", "firebase", "google-cloud", "devlog"]
 draft: false
 ---
 原本 wildcard 是個我自己玩開心的小東西——拍一張石頭、剪刀、或樹葉的照片（對，原本是雲朵，但你能想像在台北市區到底要去哪拍雲），丟給 Google Vision API 辨識類型，然後跟系統比一場猜拳。問題來了：朋友想加入。「給我一個 link 我也玩」——好啊，能多難。

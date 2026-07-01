@@ -1,7 +1,7 @@
 ---
 title: "Wildcard 野地對戰：用石頭樹葉打架，Vision API 幫你出牌"
 pubDate: "2026-05-07"
-tags: ["wildcard", "google-cloud", "game", "feature"]
+tags: ["wildcard", "google-cloud", "gamedev", "devlog"]
 draft: false
 ---
 一開始的 commit message 叫做「racing car 1」——沒有 1 之前的版本，沒有任何說明，只有一輛不知道要開去哪的車。這就是 Wildcard 野地對戰的誕生。

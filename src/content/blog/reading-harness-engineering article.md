@@ -1,7 +1,7 @@
 ---
 title: "讀完 Harness Engineering 那篇我才發現——軟體工程沒被淘汰，只是搬家了"
 pubDate: "2026-05-29"
-tags: ["AI", "harness-engineering", "claude-code"]
+tags: ["ai"]
 draft: false
 ---
 你有沒有過那種，看完一篇技術文章之後，整個下午看自己的 codebase 都覺得不對勁的經驗？我前幾天就是。起因是被人塞了一篇 HackMD——〈Harness Engineering 完全解析〉，本來想說又一個 AI buzzword，划個五分鐘交差，結果一路讀到底，讀完之後我第一件事是打開自己手上專案的根目錄，看一眼，然後嘆了一口氣。

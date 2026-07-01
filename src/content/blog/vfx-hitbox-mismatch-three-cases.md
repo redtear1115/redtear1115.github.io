@@ -1,7 +1,7 @@
 ---
 title: "火伊布放火爆，螢幕上卻是一個白方塊——「眼睛看到的」跟「程式判定的」差在哪"
 pubDate: "2026-06-17"
-tags: ["gamedev", "phaser", "vfx", "翻車記", "hitbox"]
+tags: ["phaser", "gamedev", "postmortem"]
 draft: false
 ---
 你有沒有過那種，code 完全沒錯、測試 831 個全綠、但玩起來就是「怪怪的」的經驗？不是會 crash 的那種怪，是那種你說不上來、但身體很誠實地覺得「這不對」的怪。

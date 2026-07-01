@@ -1,7 +1,7 @@
 ---
 title: "從設計文件到 AES-256-GCM：Oikos 的第一批 commits 都在解決「信任問題」"
 pubDate: "2026-05-06"
-tags: ["security", "encryption", "futari", "feature"]
+tags: ["futari", "security", "devlog"]
 draft: false
 ---
 說真的，大部分 side project 死在同一個地方：第一個 commit 之後的第三天。

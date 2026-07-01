@@ -1,7 +1,7 @@
 ---
 title: "Futari 的 dashboard 只會哭窮——直到我幫它加了一個「進帳」模式"
 pubDate: "2026-05-21"
-tags: ["devlog", "futari", "release"]
+tags: ["futari", "devlog"]
 draft: false
 ---
 說來好笑，我做了一個記帳 app，結果它只會記你「花了多少」。打開 Futari 的 dashboard，BalanceHero 上永遠是一個往下掉的數字——彷彿在提醒你「你又窮了一點」。但人不是只會花錢的（至少帳面上要假裝不是），薪水、轉帳、那筆久違的退款，總得有地方安放吧？所以這次我幫 dashboard 長出了第二個人格。

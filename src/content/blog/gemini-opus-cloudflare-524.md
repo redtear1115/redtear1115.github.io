@@ -1,7 +1,7 @@
 ---
 title: "我把 Gemini 偽裝成 Opus，然後被 Cloudflare 524 打趴在地——一個還沒驗收的地端模型實驗"
 pubDate: "2026-05-27"
-tags: ["地端模型", "claude-code", "litellm", "翻車記", "LLM"]
+tags: ["ai", "postmortem"]
 draft: false
 ---
 你有沒有過那種，明明只是想「換一個便宜一點的引擎」，結果整個禮拜都在跟一堆中間人搏鬥的經驗？我這幾天就是。我沒在改產品、沒在修 bug，我在做一件聽起來很單純的事——**讓我的 coding agent 不要每次都燒 Claude 的錢**。然後我發現，難的從來不是模型本身，是模型外面那一圈東西。

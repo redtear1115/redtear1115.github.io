@@ -1,7 +1,7 @@
 ---
 title: "Futari 的 Dashboard.tsx 長到 735 行，那天我終於受不了"
 pubDate: "2026-05-29"
-tags: ["futari", "devlog", "release"]
+tags: ["futari", "devlog"]
 draft: false
 ---
 你有沒有過那種，打開一個檔案、滾輪滾到一半就決定「先把它關掉、明天再說」的感覺？

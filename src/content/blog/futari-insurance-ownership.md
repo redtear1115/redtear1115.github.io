@@ -1,7 +1,7 @@
 ---
 title: "保單可以掛在別人家的車上——直到我把那個洞補起來"
 pubDate: "2026-05-23"
-tags: ["futari", "devlog", "security"]
+tags: ["futari", "security", "devlog"]
 draft: false
 ---
 你有沒有寫過那種 bug——你自己用一百次都正常，因為你剛好站在它隱形的那一側？

@@ -1,7 +1,7 @@
 ---
 title: "Futari 開發日誌 2：從定期收入到加權分攤落地"
 pubDate: "2026-05-14"
-tags: ["futari", "devlog", "indie-dev", "feature"]
+tags: ["futari", "indie-dev", "devlog"]
 draft: false
 ---
 ### 2026-05-07 — 2026-05-11 · v0.9.0 → v0.14.2

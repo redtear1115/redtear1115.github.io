@@ -1,7 +1,7 @@
 ---
 title: "從 2010-11 賽季開始當籃網隊 GM，結果竟然是 Jokic 的膝蓋報廢了"
 pubDate: "2026-06-12"
-tags: ["llm-as-dm", "跑團", "claude", "遊戲設計", "心得"]
+tags: ["ai", "gamedev", "retrospective"]
 draft: false
 ---
 你有沒有過那種——你以為自己在玩遊戲，結果遊戲在玩你的經驗？

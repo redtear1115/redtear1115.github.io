@@ -1,7 +1,7 @@
 ---
 title: "我調了一整天的平衡參數，結果引擎根本沒在讀那個欄位"
 pubDate: "2026-06-17"
-tags: ["gamedev", "balance", "data-driven", "翻車記", "debug"]
+tags: ["database", "gamedev", "postmortem"]
 draft: false
 ---
 你有沒有過那種，認真調了老半天的參數、跑了好幾輪測試、覺得自己很科學，最後發現——那個欄位根本沒人讀？就像對著一台沒插電的電風扇按了一整天遙控器，還很納悶它怎麼都不轉。

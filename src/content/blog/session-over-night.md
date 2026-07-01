@@ -1,7 +1,7 @@
 ---
 title: "我開了四個 session 跑 over night，隔天醒來像在看別人的鬼屋"
 pubDate: "2026-05-23"
-tags: ["agentic-engineering", "系統整合", "翻車記", "spec", "AI 協作"]
+tags: ["ai", "architecture", "postmortem", "notes"]
 draft: false
 ---
 你有沒有過那種，睡前覺得自己是天才、醒來覺得自己是凶手的經驗？

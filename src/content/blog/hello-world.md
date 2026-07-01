@@ -1,7 +1,7 @@
 ---
 title: "Hello, world"
 pubDate: "2026-05-03"
-tags: ["meta"]
+tags: ["notes"]
 draft: false
 ---
 

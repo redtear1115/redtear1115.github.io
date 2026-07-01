@@ -1,7 +1,7 @@
 ---
 title: "同一個 bug 我修了三次，前兩次都在打空氣"
 pubDate: "2026-05-25"
-tags: ["nextjs", "app-router", "debug", "前端", "翻車記"]
+tags: ["nextjs", "postmortem"]
 draft: false
 ---
 你有沒有過那種，明明已經「修好」了、還很有自信地寫了 commit message，結果隔了幾小時又回來修同一個地方的經驗？我這四天經歷了三次——同一個 bug，三張臉，前兩張我都打偏。

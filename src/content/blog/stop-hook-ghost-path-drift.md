@@ -1,7 +1,7 @@
 ---
 title: "我寫了個守門員，結果它守了一扇不存在的門"
 pubDate: "2026-06-14"
-tags: ["claude-code", "hooks", "翻車記", "prod-bug", "automation"]
+tags: ["react", "ai", "indie-dev", "postmortem"]
 draft: false
 ---
 你有沒有寫過那種——你以為它在幫你顧著，結果它早就罷工了，而你完全不知道——的東西？

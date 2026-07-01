@@ -1,7 +1,7 @@
 ---
 title: "保險忘了帶編輯筆、車色其實是字串騙局——Futari 那一輪小修小補"
 pubDate: "2026-05-19"
-tags: ["devlog", "futari", "release"]
+tags: ["futari", "devlog"]
 draft: false
 ---
 說來尷尬——我自己在 Futari 上新增了一張保險，填完才發現「咦怎麼沒有編輯按鈕」。翻 code 才想起來，當初 scaffold 保險 detail page 時，TYPE_OPTIONS 還沒把它 expose 出來，所以連 edit pencil 都沒接上。後來 Phase 1 解鎖保險新增，這顆釘子就尷尬地浮出水面——能建立、不能修改，活像一隻沒帶後悔藥的寵物。

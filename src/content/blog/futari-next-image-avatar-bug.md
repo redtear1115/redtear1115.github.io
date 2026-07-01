@@ -1,7 +1,7 @@
 ---
 title: "我昨天的「優化」，今天把所有人的臉都變成了縮寫"
 pubDate: "2026-05-27"
-tags: ["nextjs", "next-image", "prod-bug", "analytics", "futari"]
+tags: ["futari", "nextjs", "performance", "observability", "postmortem"]
 draft: false
 ---
 你有沒有過那種，前一天還很得意自己做了個漂亮的優化，隔天它就在 prod 上當著所有人的面炸給你看的經驗？我這次炸得特別有畫面感——**所有用 Google 登入的使用者，頭像全變成了名字縮寫。**

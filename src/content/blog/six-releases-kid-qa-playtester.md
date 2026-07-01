@@ -1,7 +1,7 @@
 ---
 title: "五天發了六次版，我最兇的 QA 是個會說「打不到啦」的小朋友"
 pubDate: "2026-06-18"
-tags: ["gamedev", "release", "playtest", "心得", "童言童語"]
+tags: ["gamedev", "devlog", "retrospective", "notes"]
 draft: false
 ---
 你有沒有過那種，寫了一堆很驕傲的 commit、跑過幾百個測試、覺得自己這版很穩,結果交到真實使用者手上三分鐘就被打回原形的經驗?

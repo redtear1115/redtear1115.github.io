@@ -1,7 +1,7 @@
 ---
 title: "從 64 種暱稱卡到 900 種，順便偷學 vercel-labs 的 skills 規矩"
 pubDate: "2026-05-08"
-tags: ["wildcard", "claude-code", "devtool", "murmur"]
+tags: ["wildcard", "ai", "notes"]
 draft: false
 ---
 說真的，我之前的 random nickname pool 只有 8×8 = 64 種組合，玩個幾局就會撞到一樣的「靜謐石頭」、「微涼樹枝」——不是說重複很糟啦，但 Wildcard 野地對戰本來就是「帶你的石頭來」這種 vibe，結果系統幫你取的名字比石頭還少，畫面有點微妙。

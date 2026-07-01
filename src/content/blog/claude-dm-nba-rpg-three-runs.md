@@ -1,7 +1,7 @@
 ---
 title: "我用 Claude 當 DM 跑 MyGM 遊戲，費城拿了十冠"
 pubDate: "2026-06-10"
-tags: ["claude-code", "文字rpg", "prod-bug", "翻車記", "side-project"]
+tags: ["ai", "gamedev", "indie-dev", "postmortem"]
 draft: false
 ---
 你有沒有過那種，本來只是想偷懶、結果做出一個比正職還認真的東西的經驗？

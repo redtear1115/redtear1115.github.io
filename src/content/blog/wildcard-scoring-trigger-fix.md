@@ -1,7 +1,7 @@
 ---
 title: "Wildcard 的計分器只記敵人不記自己——一個 trigger 寫錯位置的代價"
 pubDate: "2026-05-26"
-tags: ["wildcard", "devlog", "firebase"]
+tags: ["wildcard", "firebase", "devlog"]
 draft: false
 ---
 你有沒有過那種感覺——明明打贏了，排行榜卻一臉茫然地看著你，就像你什麼都沒做過？

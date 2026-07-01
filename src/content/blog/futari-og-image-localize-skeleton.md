@@ -1,7 +1,7 @@
 ---
 title: "五個 commit、一個下午——Futari 的 OG image 終於會說三種語言了"
 pubDate: "2026-06-01"
-tags: ["futari", "devlog", "release"]
+tags: ["futari", "devlog"]
 draft: false
 ---
 你有沒有過那種，覺得某件事「之後再做就好」，然後某天突然手癢，三個小時就把它全部清掉的感覺？5月20日下午就是那種日子。

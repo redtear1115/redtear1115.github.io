@@ -1,7 +1,7 @@
 ---
 title: "Agent 看不懂的 codebase，就是壞掉的 codebase——agentic 時代的易讀性筆記"
 pubDate: "2026-05-18"
-tags: ["claude-code", "architecture", "refactor", "murmur"]
+tags: ["ai", "architecture", "refactoring", "notes"]
 draft: false
 ---
 前陣子我讓 Claude 在 Futari 的 codebase 裡加一個小功能——「在 trip detail 頁加一個 end trip 按鈕」。結果它跑去翻了 `TripDetailClient.tsx`、然後翻了 `EndTripSheet`、然後翻了 `useSheetMutation`、然後翻了 `assertMember`、然後翻了 `lib/balance.ts`——花了我大概 40k tokens 才開始動工。我看著 token meter 跳，心裡只有一個念頭：**這個 codebase 不是寫給 agent 看的，是寫給「有兩年 onboarding 時間的工程師」看的。**

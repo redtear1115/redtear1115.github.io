@@ -1,7 +1,7 @@
 ---
 title: "那天我把 CWMoney 用戶從十年前的記帳 app 救出來"
 pubDate: "2026-05-18"
-tags: ["futari", "csv-import", "migration", "performance", "lighthouse", "next-fonts", "claude-md", "pr-review", "icon-design", "release"]
+tags: ["futari", "ai", "architecture", "design-system", "performance", "database", "devlog", "notes"]
 draft: false
 ---
 friend test 之後最常聽到的回饋是——「我用 CWMoney / Spendee / Honeydue **十年**了，要我換 app？資料怎麼辦？」。然後我打開 CWMoney 的 export，看到一份 utf-16 編碼、欄位順序跟它 UI 完全不一樣、日期格式長得像 `2026/5/18 下午 3:42` 的 CSV——我懂了，這不是「換 app」的問題，是「**幫人類從十年前的 app 把回憶搶救出來**」的問題。

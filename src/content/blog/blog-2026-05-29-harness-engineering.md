@@ -1,7 +1,7 @@
 ---
 title: "讀完 Harness Engineering 那篇我才發現——軟體工程沒被淘汰，只是搬家了"
 pubDate: "2026-05-29"
-tags: ["AI", "harness-engineering", "devlog", "claude-code", "agents-md"]
+tags: ["ai", "devlog"]
 draft: false
 ---
 
