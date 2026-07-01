@@ -1,7 +1,7 @@
 ---
 title: "把 1205 行的 ChatSessionView 拆成人類看得懂的形狀"
 pubDate: "2026-05-13"
-tags: []
+tags: ["vanishwhisper", "refactoring", "design-system", "accessibility", "devlog"]
 draft: false
 ---
 VanishWhisper 的 ChatSessionView 不知不覺長到 1205 行——我那種「之後一定會重構」的之後，永遠是還沒到。每次想加一個小功能都要先深呼吸三次，怕碰錯一行就連帶吹掉貼圖面板、燈箱、刪除確認 banner 三個東西。

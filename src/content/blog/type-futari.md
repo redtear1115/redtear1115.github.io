@@ -1,7 +1,7 @@
 ---
 title: "把「房子」這個 type 從佔位符變成會講話的人：Futari 第七種愛物落地"
 pubDate: "2026-05-15"
-tags: []
+tags: ["futari", "architecture", "design-system", "devlog"]
 draft: false
 ---
 老實說——TypePicker 裡那塊「房子」tile 已經在那邊冷板凳坐了快兩個版本，按下去長一個跟車子幾乎一樣的 form，存下去之後 detail page 一片白——對，**就是那種「功能是有，但你按了會懷疑自己是不是按錯」的 type**。第七種愛物（物品）都先它一步落地了，房子還在當佔位符——這次決定把它從 placeholder 升級成會講話的人。

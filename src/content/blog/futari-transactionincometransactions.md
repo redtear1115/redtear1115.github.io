@@ -1,7 +1,7 @@
 ---
 title: "Futari 終於記得錢「進來」也是一筆 transaction：IncomeTransactions 上線"
 pubDate: "2026-05-17"
-tags: []
+tags: ["futari", "supabase", "security", "database", "devlog"]
 draft: false
 ---
 Futari 之前只記得錢「出去」——進帳？哦，那只是「balance 自己變大」這個結果

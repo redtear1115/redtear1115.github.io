@@ -1,7 +1,7 @@
 ---
 title: "Ray 的人物描寫 × 個人圖騰 Prompt"
 pubDate: "2026-06-30"
-tags: []
+tags: ["ai", "indie-dev", "notes"]
 draft: false
 ---
 <blockquote>

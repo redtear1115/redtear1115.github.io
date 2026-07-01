@@ -1,7 +1,7 @@
 ---
 title: "從「我要用最先進的工具組」到「OK...，run first」"
 pubDate: "2026-05-07"
-tags: []
+tags: ["firebase", "architecture", "indie-dev", "devlog"]
 draft: false
 ---
 一個新 side project 的 initial commit 永遠是最令人興奮的——所有架構都還是完美的，還沒踩任何坑。然後第二個 commit 就把你拉回現實。

@@ -1,7 +1,7 @@
 ---
 title: "從一張卡開始：Wildcard 的牌組系統，跟 jsdom 的 Blob 吵了一架"
 pubDate: "2026-05-16"
-tags: []
+tags: ["wildcard", "firebase", "testing", "gamedev", "devlog"]
 draft: false
 ---
 老實說，一個對戰遊戲沒有「自己的牌組」就只是個用相機拍石頭的玩具——這件事我其實心裡有數，只是一直假裝沒看到。直到 `/battle` 每次都得重新拍照才能出牌，我才認真坐下來把 deck system 補起來。

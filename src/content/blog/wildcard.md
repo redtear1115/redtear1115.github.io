@@ -1,7 +1,7 @@
 ---
 title: "在 wildcard 蓋一座牌組系統前，我先蓋了三把鏟子"
 pubDate: "2026-05-14"
-tags: []
+tags: ["wildcard", "firebase", "testing", "gamedev", "devlog"]
 draft: false
 ---
 牌組系統的 spec 寫到一半，我才意識到 wildcard 還是一個沒有任何測試的專案——所以這個 feature 的第一個 commit，不是 createCard，而是 `npm i -D vitest jsdom fake-indexeddb`。是的，在我打算讓使用者用相機把照片變成卡片之前，我得先說服 jsdom 接受 `File.arrayBuffer`（它不接受，要 polyfill），還要哄 IndexedDB 在 node 環境裡假裝自己存在。基本工沒做，後面什麼 transaction 都別談。
