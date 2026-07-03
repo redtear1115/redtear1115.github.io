@@ -239,6 +239,18 @@ main {
   margin: 0 0 1.25rem;
 }
 
+/* ----- Search (Pagefind UI) ----- */
+.pagefind-search {
+  --pagefind-ui-primary: var(--accent);
+  --pagefind-ui-text: var(--text);
+  --pagefind-ui-background: var(--surface);
+  --pagefind-ui-border: var(--border);
+  --pagefind-ui-tag: var(--code-bg);
+  --pagefind-ui-border-radius: var(--radius);
+  --pagefind-ui-border-width: 1px;
+  --pagefind-ui-font: var(--font-body);
+}
+
 /* ----- Blog archive: month groups ----- */
 .archive-group {
   margin-bottom: 3rem;
