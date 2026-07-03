@@ -66,7 +66,7 @@ user_content = f"""請根據以下 {repo} 的 commits 寫一篇文章。
 {existing}"""
 
 payload = {
-    "model": "claude-opus-4-6",
+    "model": "claude-opus-4-8",
     "max_tokens": 2048,
     "system": system_prompt,
     "messages": [{"role": "user", "content": user_content}],
