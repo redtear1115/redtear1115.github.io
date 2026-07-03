@@ -103,6 +103,22 @@ a:hover {
   color: var(--accent-hover);
 }
 
+/* Visible keyboard focus (dark theme default outline is too faint) */
+:focus-visible {
+  outline: 2px solid var(--accent-hover);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Respect reduced-motion: freeze the ambient aurora / shimmer / pulse */
+@media (prefers-reduced-motion: reduce) {
+  .aurora-band,
+  body::after,
+  .tag-chip.size-xl {
+    animation: none !important;
+  }
+}
+
 ::selection {
   background: var(--accent);
   color: var(--bg);
@@ -195,10 +211,10 @@ main {
   margin-bottom: 4rem;
 }
 .hero h1 {
-  font-size: 1.5rem;
-  font-weight: 500;
+  font-size: 1.85rem;
+  font-weight: 600;
   margin: 0 0 0.75rem;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
 }
 .hero p {
   color: var(--text-muted);
@@ -230,11 +246,18 @@ main {
   margin: 0;
 }
 .post-card {
-  padding: 1.5rem 0;
+  position: relative;
+  padding: 1.5rem 1rem;
+  margin: 0 -1rem;
+  border-radius: var(--radius);
   border-bottom: 1px solid var(--border);
+  transition: background 0.15s ease;
 }
 .post-card:last-child {
   border-bottom: none;
+}
+.post-card:hover {
+  background: #ffffff05;
 }
 .post-card h2 {
   font-size: 1.2rem;
@@ -245,13 +268,25 @@ main {
 .post-card h2 a {
   color: var(--text);
 }
-.post-card h2 a:hover {
+.post-card:hover h2 a {
   color: var(--accent);
+}
+/* Stretched link: whole card is the click target for the post */
+.post-card h2 a::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
 }
 .post-card .meta {
   font-family: var(--font-mono);
   font-size: 0.78rem;
   color: var(--text-muted);
+}
+/* Keep tag links clickable above the stretched overlay */
+.post-card .meta a.tag {
+  position: relative;
+  z-index: 1;
 }
 .post-card .meta .tag {
   margin-left: 0.75rem;
@@ -481,7 +516,7 @@ main {
   border-radius: 12px;
   border: 1px solid;
   text-decoration: none;
-  transition: all 0.2s;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
   line-height: 1.4;
 }
 
@@ -504,15 +539,15 @@ main {
 
 .tag-chip.size-md {
   font-size: 0.65rem;
-  color: #4a7a9b;
-  border-color: #1e2d4a;
+  color: #7fa8c7;
+  border-color: #26364f;
   background: transparent;
 }
 
 .tag-chip.size-sm {
   font-size: 0.60rem;
-  color: #2a4a65;
-  border-color: #162030;
+  color: #6a8aa8;
+  border-color: #1e2d4a;
   background: transparent;
 }
 
