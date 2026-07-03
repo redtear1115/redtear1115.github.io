@@ -13,7 +13,6 @@
 - `src/content/blog/` — 部落格文章（Markdown）
 - `src/content/config.ts` — Astro content collection schema
 - `src/pages/` — Astro 頁面與路由
-- `.github/blog-state.json` — 記錄各 side project repo 已處理到的 commit sha
 
 ## 發文流程（issue-to-post）
 
