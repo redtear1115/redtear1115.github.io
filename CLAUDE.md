@@ -21,6 +21,7 @@
 - slug 取自 issue frontmatter 的 `slug:`，沒寫才用標題推導。
 - ⚠️ **不要改回「push 完再 `gh workflow run deploy.yml` dispatch 部署」的做法**。那會踩 ref 傳播 race：dispatch 時 `master` 可能還指向前一個 commit，導致部署到舊版、新文章 404（issue #97 就是這個 bug）。發文一定要 commit 與部署在同一個 run、用同一份 build artifact。
 - `deploy.yml` 仍保留，負責「直接 push 到 master」與手動 `workflow_dispatch` 的部署。
+- **程式碼區塊一定要標語言**（`` ```ts ``、`` ```bash ``、`` ```json `` …），不要用裸 `` ``` ``。Shiki 用 Nord 主題上色，沒標語言會被當 `plaintext` 顯示成單色，跟其他文章的彩色 code 不一致。語言標記對就會自動套上冷色系高亮，樣式不用改。
 
 ## 標籤詞彙（受控清單）
 
