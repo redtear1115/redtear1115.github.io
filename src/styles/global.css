@@ -372,7 +372,9 @@ main {
   color: var(--accent);
 }
 .prose pre {
-  background: var(--code-bg);
+  /* Override Shiki's inline background so code blocks share the site's navy
+     surface (same as inline-code chips), while keeping Nord's token colors. */
+  background: var(--code-bg) !important;
   padding: 1rem 1.25rem;
   overflow-x: auto;
   border-radius: var(--radius);
