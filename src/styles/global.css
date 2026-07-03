@@ -239,6 +239,36 @@ main {
   margin: 0 0 1.25rem;
 }
 
+/* ----- Blog archive: month groups ----- */
+.archive-group {
+  margin-bottom: 3rem;
+}
+.archive-group:last-child {
+  margin-bottom: 0;
+}
+.archive-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--aurora-teal);
+  letter-spacing: 0.04em;
+  margin: 0 0 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+.archive-heading .archive-count {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+}
+.archive-heading .archive-count::before {
+  content: '// ';
+  opacity: 0.6;
+}
+
 /* ----- Post list ----- */
 .post-list {
   list-style: none;

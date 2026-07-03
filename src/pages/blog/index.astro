@@ -5,10 +5,28 @@ import PostCard from '../../components/PostCard.astro';
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+// Group posts by month (YYYY-MM). Posts within a group are already newest-first,
+// and the YYYY-MM keys sort lexicographically = chronologically.
+const byMonth = new Map<string, typeof posts>();
+for (const post of posts) {
+  const d = post.data.pubDate;
+  const key = `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}`;
+  if (!byMonth.has(key)) byMonth.set(key, []);
+  byMonth.get(key)!.push(post);
+}
+const months = [...byMonth.entries()].sort((a, b) => (a[0] < b[0] ? 1 : -1));
 ---
 <BaseLayout title="Blog — Southern Light" description="All posts.">
-  <h2 class="section-title">All posts</h2>
-  <ul class="post-list">
-    {posts.map((post) => <PostCard post={post} />)}
-  </ul>
+  <h2 class="section-title">All posts · {posts.length}</h2>
+  {months.map(([month, monthPosts]) => (
+    <section class="archive-group">
+      <h3 class="archive-heading">
+        {month}<span class="archive-count">{monthPosts.length}</span>
+      </h3>
+      <ul class="post-list">
+        {monthPosts.map((post) => <PostCard post={post} />)}
+      </ul>
+    </section>
+  ))}
 </BaseLayout>
