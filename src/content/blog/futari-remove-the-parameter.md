@@ -98,7 +98,7 @@ const existingLog = await db.query.fuelLogs.findFirst({
 
 順手也修了那段 doc comment。它宣稱「若 asset 不屬於 viewer 的 group 則 throw」—— 在修好之前，那句話只對新傳進來的 asset 成立，對被編輯的那一列不成立。**註解描述的是作者以為的行為，不是實際行為**，這種註解比沒有註解更危險。
 
-## 小結
+## 收尾
 
 我的結論是：權限漏洞優先考慮**把不可信的輸入從簽章裡刪掉**，而不是在簽章裡多加一道驗證。驗證要靠每個 caller 都記得，刪掉不用。
 
