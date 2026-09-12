@@ -8,6 +8,7 @@ dist
 !.env.example
 blog-bot-token
 blog-bot-token-org
-.claude
+.claude/*
+!.claude/skills
 .superpowers
 docs/superpowers/plans
