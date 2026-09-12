@@ -1,120 +1,211 @@
 ---
 name: write-blog-post
-description: 撰寫、改寫或發佈 Southern Light（southern-light.dev，repo redtear1115.github.io）這個 Astro 部落格的繁體中文技術文章時使用。涵蓋選題判斷、大綱、Ray 慣用的文章骨架、受控標籤清單、繁中排版與台灣用語、去 AI 味檢查表、front matter 與 issue-to-post 發佈流程。Use when the user asks to write, draft, revise, outline, or publish a blog post / 技術文章 / 部落格文章 / 心得筆記 for this site.
+description: 撰寫、改寫或發佈 Southern Light（southern-light.dev，repo redtear1115.github.io）這個 Astro 部落格的繁體中文技術文章時使用。骨架、開場、收尾、排版慣例全部歸納自站上既有 83 篇文章；另含受控標籤清單、去 AI 味檢查表與 issue-to-post 發佈流程。Use when the user asks to write, draft, revise, outline, or publish a blog post / 技術文章 / 部落格文章 / 開發日誌 for this site.
 ---
 
-# 寫一篇 Southern Light 的技術文章
+# 寫一篇 Southern Light 的文章
 
-這個 skill 讓你用 Ray 的語氣、在這個 Astro 站台的既有慣例下，寫出**讀起來是人寫的**繁體中文技術文章。
+這個 skill 的每一條規則都是從 `src/content/blog/` 既有 83 篇量出來的，不是我發明的寫作理論。
+統計細節在 `references/corpus.md`，寫之前掃一次。
 
-站台事實（別再去猜）：Astro content collection，文章放 `src/content/blog/<slug>.md`，
-schema 在 `src/content/config.ts`。程式碼用 Shiki + Nord 主題上色，站內搜尋用 Pagefind，
-首頁有 TagCloud，`lang` 預設 `zh-TW`（`src/layouts/BaseLayout.astro`）。
-線上網址是 `https://southern-light.dev/blog/<slug>`。
+另外有一份 `references/tw-blog-craft.md`，歸納 Huli、Kalan、Hiraku 這幾位台灣技術作者
+讓文章好看的手法（選題、標題形狀、設問驅動、括號吐槽、怎麼收尾）。
+**那份借的是手法，語氣一律以本站 83 篇為準**，兩邊衝突時聽本站的。
 
-> 這個 repo 是 2026 年從舊的 Jekyll 站台搬過來的。舊站的 `## 前言` / `## 環境` / `## 小結` / `bash>` prompt 前綴
-> **在這裡沒有人用**（77 篇裡 0 篇）。看到舊文範例不要跟著抄。
+站台事實：Astro content collection，文章放 `src/content/blog/<slug>.md`，schema 在
+`src/content/config.ts`（`title` / `pubDate` / `tags` / `draft` / 選填 `description` `image` `lang`）。
+程式碼用 Shiki + Nord 主題，站內搜尋 Pagefind，首頁有 TagCloud，`lang` 預設 `zh-TW`。
+線上位址 `https://southern-light.dev/blog/<slug>`。
 
 ## 動工前：先確認這三件事
 
-1. **這篇是什麼型**（決定標籤與篇幅）：
-   - `devlog` — 這週做了什麼、發了什麼版。這個站的主力，55 篇。
-   - `postmortem` — 從一個真實的錯誤訊息或翻車現場出發，查到根因。
+1. **這篇是什麼型**（決定結構與標籤）：
+   - `devlog` — 這幾天做了什麼、發了什麼版。站上主力，55 篇。
+   - `postmortem` — 從一個症狀出發、誤判一輪、找到根因。12 篇，也是寫得最好看的一群。
    - `notes` — 讀了什麼、試了什麼工具的筆記。
-   - `retrospective` — 一段時間之後回頭看的判斷，要有立場。
-2. **有沒有真實情境**。開頭第一段要寫「我當時遇到什麼」。**沒有真實情境就別編**，
-   老實寫成「X 的筆記」，不要假裝有個故事。
-3. **選題值不值得寫**。三個問題任一個是 yes 就寫：
-   - 一年前的我會需要這篇嗎？上禮拜的我會需要嗎？
-   - 網路上現有的資料是不是過時或錯的？
-   - 這是我自己實際做出來、驗證過的流程嗎？
+   - `retrospective` — 一段時間之後回頭看的判斷。
+2. **有沒有真實情境**。第一段要能寫出「我當時遇到什麼」。**沒有真實情境就別編**，
+   老實寫成筆記，不要假裝有個故事。站上沒有一篇是沒有現場的。
+3. **最有戲的是哪一段**。這個站的文章幾乎都靠一個「我以為 X，結果是 Y」的轉折撐著。
+   先找到那個轉折，其他段落是它的前後文。找不到轉折的題目，通常寫出來會很平。
 
-   新手心得**特別**值得寫 — 資深的人會跳過「常識」，新手不會，那些細節才是別人卡住的地方。
+選題拿不定主意的時候用 Hiraku 那六條篩：別人沒寫過的、自己原創的、
+**別人寫錯或容易有誤區的**、很難 Google 到的、自己常用但會忘的、
+對自己簡單但對別人有點難的。中一條就可以寫。細節見 `references/tw-blog-craft.md`。
 
-## 流程
+## 標題
 
-### 1. 讀場地
+站上 83 個標題只有三種形狀，挑一種：
 
-動筆前先看過 `src/content/blog/` 最近 2–3 篇，抓出當下的篇幅、標題、程式碼呈現與標籤用法。
-**既有文章定義語氣，不是這份文件。** 這個 skill 寫的是原則，衝突時以實際文章為準。
+- **結果反轉**：「我調了一整天的平衡參數，結果引擎根本沒在讀那個欄位」
+  「當了一日 Android 工程師，結果兇手是 Supabase 後台的兩個星號」
+  「我寫了一篇文章警告大家別忘記 await——然後我忘了 await」
+- **具體數字或物件開頭**：「我的 codebase 裡有 33 個寫死的 `#fff`、11 種隨手敲的 z-index」
+  「把 1205 行的 ChatSessionView 拆成人類看得懂的形狀」
+- **現象 + 破折號 + 這篇在幹嘛**：「Wildcard 的計分器只記敵人不記自己——一個 trigger 寫錯位置的代價」
+  「保單可以掛在別人家的車上——直到我把那個洞補起來」
 
-### 2. 列大綱，先寫最有把握的段落
+共同點：**第一人稱、講具體的東西（行數、欄位名、版本號）、不用冒號式的論文標題**。
+「埋點的失敗是靜默的：一個躺了四個月沒人發現的事件」這種形狀站上一篇都沒有，別用。
 
-3–5 個主段落起手，每段一個動作。**開頭跟結尾最後寫** — 先寫完主體才知道自己到底講了什麼。
-寫不下去通常不是文筆問題，是觀念沒清楚或大綱錯了，回去補研究或重排大綱。
+## 開場
 
-### 3. 骨架
+**不下標題，直接寫。** 站上 83 篇沒有一篇有 `## 前言`。開場三大家族：
+
+1. **共感鉤子**（28 篇）：「你有沒有過那種，code 一行都沒錯、測試全綠、release 也發了，
+   結果功能照樣炸——而真正的兇手躺在一個你三天沒打開的後台設定頁裡？」
+   接著馬上落到自己身上：「這就是我這兩天的故事。」
+2. **自白式副詞**（約 20 篇）：「說真的，……」「老實說——……」「說來有點荒謬——……」
+   「說來尷尬——我自己在 Futari 上新增了一張保險，填完才發現『咦怎麼沒有編輯按鈕』。」
+3. **直接把現場丟出來**：一個數字、一行指令、一段 commit message。
+   「`grep -r "rounded-full px-4 py-2 bg-" app/` ——20 個 match。」
+   「VanishWhisper 的 ChatSessionView 不知不覺長到 1205 行——」
+
+規則：**同一批文章不要連續用同一個家族。** 第 1 種已經佔了三分之一，再堆就變公式。
+開場兩到四句要交代完「症狀是什麼」跟「這篇為什麼值得看下去」，不要寫成目錄導覽。
+
+另外兩種外面驗證過、這個站還沒用過的開法，可以輪替：**時序案例堆疊**
+（連丟兩三個帶日期的真實事件，再問「那該怎麼辦」）、
+**先寫情緒再寫技術**（「我當時有點生氣」）。
+
+## 替讀者問，然後打臉
+
+Huli 那套「設問驅動」很值得偷：每講完一段，替讀者講出他此刻心裡的話，
+然後在下一行推翻它。
+
+- 「應該很安全了，對吧？」→ 下一行：「這麼想的話，你就掉以輕心了。」
+- 「寫到這裡，我們該做的看起來都做了……」→ 接：「魔鬼永遠藏在細節裡。」
+
+這跟本站的「誤診 → 真相」是同一件事的兩種寫法，差別在誤判掛在誰身上：
+Huli 掛讀者，本站掛作者自己。**本站的版本照用**，但在自己的誤判之前
+夾一句「聽起來很對吧？我當時也這麼覺得」，效果會加倍。
+
+一篇用一到兩次就好，整篇都在問會很累。
+
+人稱也順手混一下：講讀者會遇到的事用「你」，講共同處境用「我們」，
+講選擇與經驗用「我」。本站目前幾乎只有「我」，適度加另外兩個會更像在對話。
+
+括號是語氣閥門，拿來放你想講但不好意思寫進正文的話——
+本站已經有一個範例：「我又覺得自己是天才了（你看出問題了吧）」。
+
+## 結構
+
+三種都合法，照長度選：
+
+| 內文行數 | 用什麼分節 | 站上篇數 |
+|---|---|---|
+| 30 行以內 | 不分節，一路寫到底 | 23 |
+| 30–60 行 | `---` 水平線分段，不下標題 | 25 |
+| 60 行以上 | `##` 標題 | 28（7 篇兩者混用）|
+
+內文行數中位數是 45，p75 是 64，最長 132。**超過 90 行請先確認每一節都有它自己的轉折**，
+沒有的話那節該併掉。
+
+`###` 全站只有 14 個，`####` **一個都沒有**。不要出現第四層。
+
+用 `##` 的長文有一個很穩的敘事骨架，直接套：
 
 ```
-（開場）      ← 不下標題，直接一到兩句鉤子 + 一句「我這次踩到的是什麼」
-## <動作／現象一>   ← 一個 ## 一件事，標題要能單獨看懂
-## <動作／現象二>
-## 收尾        ← 結論、還沒解的問題、下一步。不要重述上面講過的話
+（開場鉤子，無標題）
+## 先講前情：<當初為什麼會這樣寫>
+## 然後它開始怪怪的       ← 症狀。標題就寫症狀本身，不要寫「問題描述」
+## 誤診：我以為是<錯的方向>  ← 這節是文章的價值所在，不要省
+## 真相：<根因>
+## <修法> 或 <我學到的三件事>
+## 收尾
 ```
 
-- **收尾那節就叫 `## 收尾`。** 這是這個站的固定用字（77 篇裡 65 篇），不要寫成「小結」「結論」「總結」。
-- **開場不要題目導覽。** 現有文章的慣用開法是一句共感式的鉤子，接著馬上落地到自己身上：
-  「你有沒有過那種，寫了一堆很驕傲的 commit、跑過幾百個測試、覺得自己這版很穩，
-  結果交到真實使用者手上三分鐘就被打回原形的經驗？／我有。」
-  這個開法好用，但 77 篇裡已經有 28 篇這樣開，**會膩** — 不要每篇都套同一句型，
-  也可以直接從錯誤訊息、從一個數字、從一行 code 開場。
-- **版本資訊寫進正文，不要開一節 `## 環境`。** 會影響重現的版本（框架、runtime、有問題的那個套件）
-  就在相關段落順手交代；沒影響的不用列。沒版本的效能數字等於沒條件的 benchmark。
-- 巢狀用 `###`，**不要有 `####`**（現有文章 `##` 157 個、`###` 14 個、`####` 0 個）。
-- 段落**深度依照有趣程度分配**，不要每節等長：讓你卡住三小時的那節值得五倍篇幅，
-  `npm install` 那節一行就夠。
-- 讀者多半是用掃的，他們找的是標題和程式碼區塊。
-- 篇幅參考：現有文章平均約 55 行。長文可以，但長是因為那件事真的複雜，不是因為湊。
+標題要**寫事情本身**，不要寫功能名稱。站上實例：「催眠術調不動」「升級反而變弱」
+「最陰險的不是它壞了，是它『安靜地』壞了」「真相：兩個 project、兩個星號」。
+一看就知道那節在講什麼，而且看得出情緒。
 
-### 4. 程式碼
+**誤診那節不要跳過。** 站上最好看的幾篇全部有它——先講你信心滿滿改了什麼、發了什麼版，
+然後補一句「我又覺得自己是天才了（你看出問題了吧）」。
+讀者信的是這段，不是你最後那個正確答案。
 
-- **每個 fenced code block 一定要標語言**（`ts`、`tsx`、`bash`、`yaml`、`json`、`sql`、`css`…）。
-  Shiki 用 Nord 主題上色，**沒標語言會被當 `plaintext` 顯示成單色**，跟其他文章的彩色 code 不一致。
-  這是 repo 根目錄 `CLAUDE.md` 明文寫的規則，不是建議。
-- 指令不加 prompt 前綴（不寫 `$`、不寫 `bash>`），直接寫指令本身。
-- **每段程式碼都必須是實際跑過的**。沒跑過就明講「這段沒測過，是示意」。
-- 路徑、檔名、設定鍵、錯誤碼用 `` ` `` 包起來。粗體留給真正的強調。
-- 佔位符用大寫方括號：`[PATH_TO_PROJECT]`、`YOUR_PASSWORD`。
+## 收尾
 
-### 5. 語氣
+三件事，照順序：
 
-寫給一個坐在旁邊的同事聽，不是寫手冊。細則見 `references/voice-and-typography.md`，
-動筆前掃一次，交稿前再掃一次。
+1. **`## 收尾` 那一節**（19 篇這樣下標）。放結論、還沒解的問題、下一步。
+   不要重述前面講過的。長文也可以改成 `## 我學到的三件事`，用 `**粗體開頭**` 帶出每一點。
+2. **一句自嘲式的轉身**（30 篇）：「先不說了，我得去把整份 enemies JSON 掃一遍，
+   看看還有幾個死欄位躺在裡面對我笑。」「先不說了，我得去想下一個洞在哪裡了。」
+   這句要**具體**、要跟本文的東西有關，不能是通用感嘆。
+3. **斜體時間戳**（68 篇）：`*這段 code 寫於 2026 年 X 月 X 日，文章整理於同日深夜。*`
+   有變化型：「*這些實驗進行於…*」「*這件事發生於…*」，翻車文會寫
+   「*寫於 6 月 7 日，翻車於同一晚，修好於 6 月 11 日，文章整理於 6 月 14 日。*」
 
-### 6. 交稿前檢查
+如果這篇是從某個 repo 的 commit 整理出來的，最後再加 provenance footer（35 篇有）：
 
-跑 `references/ai-smell-checklist.md`。**一項一項跑**，合在一起跑會漏。
-外加基本功：錯字、贅字、專有名詞大小寫（是 PostgreSQL 不是 Postgresql、是 Astro 不是 astro
-除非在 code 裡）、句子通順。發佈後用手機再看一次排版。
+```html
+<!-- source: <repo 代號> | last_sha: <sha> -->
+<!-- commits:
+<sha> (<日期>) <commit message>
+-->
+```
+
+`oikos` 是 futari 的 repo 代號，另外還有 `wildcard`、`vanishwhisper`。
+**沒有實際 sha 就不要編這段**，寧可不寫。
+
+## 程式碼與行內標記
+
+**這個站是散文站，不是教學站。** 83 篇裡只有 16 篇有 code fence，但 75 篇有行內 `` `code` ``。
+
+- 預設用行內 code 講檔名、欄位、函式、錯誤碼、設定值。
+- **只有在那段 code 本身就是轉折的時候才貼 fence**：錯的那一行、對照的前後版本、
+  一個一看就懂的 selector。貼超過 15 行的 code block 之前先問自己讀者會不會直接跳過。
+- **每個 fence 一定要標語言**（`ts`、`tsx`、`bash`、`css`、`json`、`sql`、`html`…）。
+  Shiki 用 Nord 主題，沒標語言會變單色 plaintext，跟全站不一致。這是 `CLAUDE.md` 的硬規則。
+- **不要讓 code block 自己站在兩段文字中間**：前面一句把讀者的眼睛帶進去
+  （「可以看到還不少：」「會在 terminal 上看到……」），後面一句解釋它。
+- 指令不加 prompt 前綴（不寫 `$`、不寫 `bash>`）。
+- 每段 code 都必須是實際跑過的。沒跑過就明講「這段是示意」。
+
+## 排版
+
+從語料量出來的習慣，照著做就對了：
+
+- **破折號 `——` 是這個站的主要節奏工具**（82/83 篇）。用來接轉折、接自嘲、接補充。
+  中文全形雙破折號，不要用 `--` 或 `–`。
+- **直角引號「」**（82/83 篇）標概念、標別人說的話、標自己心裡的 OS。不要用英文 `" "`。
+- **粗體**（66/83 篇）一段最多一處，用在那句你希望讀者只記得這句的話。
+- **不要用表格。** 83 篇裡 0 個 markdown 表格。要對照就用 `- ` 條列或直接寫成兩句話。
+- **外部連結很少**（2/83 篇）。除非真的要人去讀，不然不要放。
+- 條列（27/83 篇）只在真的可以列舉的時候用，長度照事實走，不要湊三點。
+- 中英文之間、中文與半形數字之間加一個半形空格：`用 Capacitor 包成 Android 殼`、`長到 1205 行`。
+- 標點用全形，但程式碼、指令、路徑、版本號、URL 內部維持半形。
+
+語氣、台灣用語、翻譯腔的細則見 `references/voice.md`。
 
 ## 標籤
 
-**只用受控清單裡的 30 個全小寫 kebab-case 英文標籤，每篇 2–5 個。**
-正本在 repo 根目錄的 `CLAUDE.md`，**動筆前去讀那份，不要憑記憶**。
-不要發明新標籤、不要用中文。真的需要新類別，先問過，改 `CLAUDE.md` 並同步 `TagCloud.astro` 的字級級距。
+**只用受控清單裡的 30 個全小寫 kebab-case 標籤，每篇 2–5 個**（站上分布：2 個最多，其次 3、4 個）。
+正本在 repo 根目錄的 `CLAUDE.md`，**動筆前去讀那份，不要憑記憶**。不要發明新標籤、不要用中文。
 
-常見合併原則（避免同義詞爆炸）：
+常見合併（避免同義詞爆炸）：
 
-| 你想寫的 | 實際用 |
-|---|---|
-| `claude-code` / `LLM` / `gemini` / `harness` | `ai` |
-| `analytics` / `posthog` / `logging` | `observability` |
-| `drizzle` / `prisma` / `postgres` / `rls`（schema 面） | `database` |
-| `encryption` / `oauth` / `PII` / `rls`（權限面） | `security` |
-| `翻車記` / `prod-bug` / `debug` | `postmortem` |
-| `release` / `feature` / `day-summary` | `devlog` |
-| `design-tokens` / `ux` | `design-system` |
-| `a11y` | `accessibility` |
-| `css` / `safe-area` / `ios` | 用所屬 stack（`tailwind` / `capacitor`）或型別標籤 |
+- `claude-code` / `LLM` / `gemini` / `harness` → `ai`
+- `analytics` / `posthog` / `logging` → `observability`
+- `drizzle` / `prisma` / `postgres`（schema 面）→ `database`
+- `encryption` / `oauth` / `PII` / `rls`（權限面）→ `security`
+- `翻車記` / `prod-bug` / `debug` → `postmortem`
+- `release` / `feature` / `day-summary` → `devlog`
+- `design-tokens` / `ux` → `design-system`；`a11y` → `accessibility`
 
 專案標籤（`futari`、`wildcard`、`vanishwhisper`）只要文章在講那個專案就加。
 **Oikos 是 futari 的 codebase 名稱**，寫 Oikos 的文章標 `futari`。
+
+## 交稿前
+
+跑 `references/ai-smell-checklist.md`，**一項一項跑**，合在一起掃會漏。
+語氣細則見 `references/voice.md`，手法對照見 `references/tw-blog-craft.md`。
 
 ## 發佈
 
 正常流程是 **issue-to-post**，不是手動 commit：
 
-1. 開一個 GitHub issue，body 最上面放 frontmatter：
+1. 開 GitHub issue，body 最上面放 frontmatter，後面接正文（不要重寫 `title`，標題就是 issue title）：
 
    ```yaml
    ---
@@ -123,26 +214,23 @@ schema 在 `src/content/config.ts`。程式碼用 Shiki + Nord 主題上色，�
    ---
    ```
 
-   frontmatter 後面接正文（不要再寫一次 `title`，標題就是 issue title）。
 2. 貼 `published` label。
-3. `.github/workflows/issue-to-post.yml` 會在**同一個 run 內**產生
-   `src/content/blog/<slug>.md`、commit 進 master、build、直接用那份 `dist/` 部署到 GitHub Pages，
-   最後回一則留言附上網址。
+3. `.github/workflows/issue-to-post.yml` 在**同一個 run 內**產生檔案、commit 進 master、build、
+   用那份 `dist/` 直接部署，最後回一則留言附網址。
 
-幾個會咬人的細節：
+會咬人的細節：
 
-- **`pubDate` 取自 issue 的 `created_at`，不是你寫的日期。** 想控制發佈日期就控制開 issue 的時間。
-- `slug` 沒寫的話會從標題推導 —— 中文標題推出來是空字串，會 fallback 成 `post-<issue 編號>`。
-  **一定要自己寫 `slug`**，英文小寫連字號。同專案的文章沿用前綴（`futari-`、`wildcard-`…）。
-- `tags` 沒寫才會退回去讀 `tag:` 開頭的 label。寫 frontmatter 比較好控。
-- workflow 只寫 `title` / `pubDate` / `tags` / `draft`。`description` 與 `image` 是 schema 的選填欄位，
-  現有 77 篇都沒用，需要的話得手動補。
-- build 失敗就不會發佈，workflow 會在 issue 留言告訴你。
+- **`pubDate` 取自 issue 的 `created_at`**，不是你寫的日期。想控發佈日就控開 issue 的時間。
+- `slug` 沒寫會從標題推導 —— **中文標題推出來是空字串**，會 fallback 成 `post-<issue 編號>`。
+  一定要自己寫，英文小寫連字號，同專案沿用前綴（`futari-`、`wildcard-`、`vanishwhisper-`）。
+- `tags` 沒寫才會退回讀 `tag:` label。寫 frontmatter 比較好控。
+- workflow 只寫 `title` / `pubDate` / `tags` / `draft`。`description` 與 `image` 全站 0 篇在用。
+- build 失敗就不發佈，workflow 會在 issue 留言。
 
 直接 push 到 master 也會部署（`deploy.yml`），但**不要**改回「push 完再 dispatch `deploy.yml`」
 那套發文流程 —— 會踩 ref 傳播 race，部署到舊 commit、新文章 404（issue #97）。
 
-手動寫檔時的 front matter 長這樣：
+手動寫檔的 front matter：
 
 ```yaml
 ---
@@ -162,26 +250,5 @@ npm run dev
 ## 什麼時候該直接發佈
 
 **還在不滿意的時候就發佈。** 另一個選項是一個裝滿草稿的資料夾。
-短文完全可以 — 500 字以下的文章一樣有價值，而且比較容易寫完。
-不必是專家，不必原創，不必寫完整，甚至不必全對 — 說明白你不確定的地方，
-會有人來告訴你答案。
-
-## 跟 sepia 的關係
-
-如果 sepia plugin 在，第 6 步可以改成呼叫 `sepia:sepia-review`（診斷）或
-`sepia:sepia-refactor`（原地修），它的 `tech-articles` domain 比這份清單完整。
-這個 skill 的清單是精簡自用版，沒裝 sepia 也能單獨運作。
-
-**永遠不要 sepia 跟這份清單各跑一次然後兩份都改** — 過度修正本身就是一種指紋。
-
-## 這份 skill 的來源
-
-骨架與程式碼慣例抽自 `src/content/blog/` 的既有文章。寫作原則參考：
-
-- [Huli — 寫技術部落格不需要那麼大費周章](https://life.huli.tw/2020/01/28/tech-blog-coderbridge-to-the-rescue-2ba5b52d8bcd/)、[每一篇心得都有價值](https://medium.com/hulis-blog/why-blogging-ab77fd8c6ffa)
-- [Hiraku — 寫十年部落格和技術文章的心得](https://hiraku.dev/2021/08/6584/)
-- [ALPHA Camp — 技術寫作六步驟](https://tw.alphacamp.co/blog/2018-06-14-18352)
-- [iT 邦幫忙 — 鐵人賽寫作攻略](https://ithelp.ithome.com.tw/articles/10368955)
-- [Julia Evans — advice for aspiring tech bloggers](https://jvns.ca/blog/2016/05/22/how-do-you-write-blog-posts/)
-- [Simon Willison — What to blog about](https://simonwillison.net/2022/Nov/6/what-to-blog-about/)
-- sepia plugin 的 `professional-pass` / `tech-articles` / `style-pass`（去 AI 味檢查表的來源）
+站上內文行數中位數只有 45 行 —— 短文是這個站的常態，不是半成品。
+不必是專家，不必原創，不必寫完整，甚至不必全對 —— 說明白你不確定的地方就好。
