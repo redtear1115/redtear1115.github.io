@@ -16,6 +16,8 @@
 
 ## 發文流程（issue-to-post）
 
+- **完整路徑：Claude 開 issue → 我在 issue 上調整 → 我貼 `published` label → GitHub Actions 轉成文章並部署。**
+- **Claude 寫完文章一律開成 GitHub issue（`gh issue create`），不要直接寫進 `src/content/blog/` 也不要直接 commit 文章檔。** 檔案由 `issue-to-post.yml` 產生，不是由 Claude 寫。開完 issue 把 issue URL 給我就好，label 我自己貼。
 - 在 GitHub issue 貼 `published` label → `.github/workflows/issue-to-post.yml` 把 issue 轉成 `src/content/blog/<slug>.md`、commit 進 master，並**在同一個 run 內**用剛 build 好的 `dist/` 直接部署到 GitHub Pages（`upload-pages-artifact` + `deploy-pages`）。
 - slug 取自 issue frontmatter 的 `slug:`，沒寫才用標題推導。
 - ⚠️ **不要改回「push 完再 `gh workflow run deploy.yml` dispatch 部署」的做法**。那會踩 ref 傳播 race：dispatch 時 `master` 可能還指向前一個 commit，導致部署到舊版、新文章 404（issue #97 就是這個 bug）。發文一定要 commit 與部署在同一個 run、用同一份 build artifact。
