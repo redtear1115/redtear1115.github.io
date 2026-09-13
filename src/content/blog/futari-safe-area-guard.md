@@ -1,6 +1,6 @@
 ---
 title: "我加了一道守衛防瀏海，結果我自己的修法把它變成了瞎子"
-pubDate: "2026-09-12"
+pubDate: "2026-09-10"
 tags: ["futari", "capacitor", "testing", "postmortem"]
 draft: false
 ---

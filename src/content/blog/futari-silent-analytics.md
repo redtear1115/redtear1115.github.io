@@ -1,6 +1,6 @@
 ---
 title: "我只是想確認一個數字，結果撈出一個躺了四個月、一次都沒送出去的事件"
-pubDate: "2026-09-12"
+pubDate: "2026-09-11"
 tags: ["futari", "observability", "nextjs", "postmortem"]
 draft: false
 ---
