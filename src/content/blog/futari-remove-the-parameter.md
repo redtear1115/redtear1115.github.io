@@ -1,6 +1,6 @@
 ---
 title: "前任伴侶還記得那串 group id——所以我把那個參數整個刪掉"
-pubDate: "2026-09-14"
+pubDate: "2026-09-12"
 tags: ["futari", "security", "database", "postmortem"]
 draft: false
 ---
