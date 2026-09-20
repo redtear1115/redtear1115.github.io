@@ -1,7 +1,7 @@
 ---
 title: "一天生出一個 App，順便修了自己埋的三個資安洞"
 pubDate: "2026-09-20"
-tags: ["macos", "swift", "security", "devlog", "claude-code"]
+tags: ["security", "devlog", "ai"]
 draft: false
 ---
 你有沒有過那種凌晨兩點還在敲鍵盤、覺得自己是全世界最聰明的工程師,隔天回頭看 git log 卻發現自己根本是嫌疑犯的經驗?我最近經歷了一次,而且整段劇情壓縮在同一天——早上是天才,晚上抓到自己捅的資安洞。
