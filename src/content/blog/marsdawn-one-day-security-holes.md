@@ -1,7 +1,7 @@
 ---
 title: "一天生出一個 App，順便修了自己埋的三個資安洞"
 pubDate: "2026-09-20"
-tags: ["security", "devlog", "ai"]
+tags: ["marsdawn", "security", "devlog", "ai"]
 draft: false
 ---
 

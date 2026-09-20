@@ -27,9 +27,9 @@
 
 ## 標籤詞彙（受控清單）
 
-標籤雲要維持技術部落格的樣子，**只用下面這 30 個全小寫 kebab-case 英文標籤**，每篇 2–5 個。不要發明新標籤、不要用中文；真的需要新增類別再回頭擴充這份清單（並同步 `TagCloud.astro` 的字級級距）。
+標籤雲要維持技術部落格的樣子，**只用下面這 31 個全小寫 kebab-case 英文標籤**，每篇 2–5 個。不要發明新標籤、不要用中文；真的需要新增類別再回頭擴充這份清單（並同步 `TagCloud.astro` 的字級級距）。
 
-- **Projects**：`futari` · `wildcard` · `vanishwhisper`
+- **Projects**：`futari` · `wildcard` · `vanishwhisper` · `marsdawn`
 - **Stack**：`typescript` · `react` · `nextjs` · `tailwind` · `phaser` · `capacitor` · `firebase` · `supabase` · `google-cloud`
 - **Topics**：`ai` · `architecture` · `refactoring` · `design-system` · `accessibility` · `performance` · `seo` · `i18n` · `security` · `database` · `observability` · `testing` · `gamedev` · `indie-dev`
 - **Type**：`devlog` · `postmortem` · `retrospective` · `notes`
