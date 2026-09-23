@@ -75,7 +75,7 @@ code fence 的 16 篇中，14 篇同時有 `##`（長文），2 篇沒有。
 
 ## 標籤
 
-全站用過的標籤全部落在 `CLAUDE.md` 的 30 個受控清單內，沒有例外。使用次數前段：
+全站用過的標籤全部落在 `CLAUDE.md` 的受控清單內，沒有例外。使用次數前段：
 
 ```
 devlog 55 · futari 37 · ai 14 · postmortem 12 · wildcard 11 · security 11

@@ -145,7 +145,7 @@ Huli 掛讀者，本站掛作者自己。**本站的版本照用**，但在自�
 -->
 ```
 
-`oikos` 是 futari 的 repo 代號，另外還有 `wildcard`、`vanishwhisper`。
+`oikos` 是 futari 的 repo 代號，另外還有 `wildcard`、`vanishwhisper`、`marsdawn`。
 **沒有實際 sha 就不要編這段**，寧可不寫。
 
 ## 程式碼與行內標記
@@ -180,7 +180,7 @@ Huli 掛讀者，本站掛作者自己。**本站的版本照用**，但在自�
 
 ## 標籤
 
-**只用受控清單裡的 30 個全小寫 kebab-case 標籤，每篇 2–5 個**（站上分布：2 個最多，其次 3、4 個）。
+**只用受控清單裡的 31 個全小寫 kebab-case 標籤，每篇 2–5 個**（站上分布：2 個最多，其次 3、4 個）。
 正本在 repo 根目錄的 `CLAUDE.md`，**動筆前去讀那份，不要憑記憶**。不要發明新標籤、不要用中文。
 
 常見合併（避免同義詞爆炸）：
@@ -193,7 +193,7 @@ Huli 掛讀者，本站掛作者自己。**本站的版本照用**，但在自�
 - `release` / `feature` / `day-summary` → `devlog`
 - `design-tokens` / `ux` → `design-system`；`a11y` → `accessibility`
 
-專案標籤（`futari`、`wildcard`、`vanishwhisper`）只要文章在講那個專案就加。
+專案標籤（`futari`、`wildcard`、`vanishwhisper`、`marsdawn`）只要文章在講那個專案就加。
 **Oikos 是 futari 的 codebase 名稱**，寫 Oikos 的文章標 `futari`。
 
 ## 交稿前
@@ -222,7 +222,7 @@ Huli 掛讀者，本站掛作者自己。**本站的版本照用**，但在自�
 
 - **`pubDate` 取自 issue 的 `created_at`**，不是你寫的日期。想控發佈日就控開 issue 的時間。
 - `slug` 沒寫會從標題推導 —— **中文標題推出來是空字串**，會 fallback 成 `post-<issue 編號>`。
-  一定要自己寫，英文小寫連字號，同專案沿用前綴（`futari-`、`wildcard-`、`vanishwhisper-`）。
+  一定要自己寫，英文小寫連字號，同專案沿用前綴（`futari-`、`wildcard-`、`vanishwhisper-`、`marsdawn-`）。
 - `tags` 沒寫才會退回讀 `tag:` label。寫 frontmatter 比較好控。
 - workflow 只寫 `title` / `pubDate` / `tags` / `draft`。`description` 與 `image` 全站 0 篇在用。
 - build 失敗就不發佈，workflow 會在 issue 留言。
