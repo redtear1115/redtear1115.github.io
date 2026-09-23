@@ -1,5 +1,5 @@
 ---
-title: "[Draft] 同一個問題陰了我三次，因為我一直沒把「這個時間戳算誰的」寫下來"
+title: "同一個問題陰了我三次，因為我一直沒把「這個時間戳算誰的」寫下來"
 pubDate: "2026-09-20"
 tags: ["futari", "architecture", "database", "postmortem"]
 draft: false
