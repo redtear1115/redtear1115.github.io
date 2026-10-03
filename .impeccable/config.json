@@ -1,0 +1,14 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "instrument serif",
+        "createdAt": "2026-10-03T16:24:02.038Z",
+        "reason": "user confirmed 2026-10-04: keep Instrument Serif for the Latin hero/page display type"
+      }
+    ]
+  }
+}
