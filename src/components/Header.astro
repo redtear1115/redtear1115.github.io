@@ -1,11 +1,18 @@
 ---
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const links = [
+  { href: '/blog', label: 'blog' },
+  { href: '/search', label: 'search' },
+  { href: '/about', label: 'about' },
+  { href: '/rss.xml', label: 'rss' },
+];
+const isCurrent = (href: string) => path === href || (href === '/blog' && path.startsWith('/blog/'));
 ---
 <header class="site-header">
-  <a href="/" class="site-name">southern<span class="site-name-accent">_light</span></a>
-  <nav>
-    <a href="/search">search</a>
-    <a href="/blog">blog</a>
-    <a href="/about">about</a>
-    <a href="/rss.xml">rss</a>
+  <a href="/" class="site-name" aria-label="southern_light — 回首頁">southern<span class="site-name-accent">_light</span></a>
+  <nav aria-label="主選單">
+    {links.map((l) => (
+      <a href={l.href} aria-current={isCurrent(l.href) ? 'page' : undefined}>{l.label}</a>
+    ))}
   </nav>
 </header>

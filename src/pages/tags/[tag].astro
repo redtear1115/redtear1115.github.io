@@ -29,8 +29,11 @@ interface Props {
 const { tag, posts } = Astro.props;
 ---
 <BaseLayout title={`#${tag} — Southern Light`} description={`Posts tagged #${tag}`}>
-  <h2 class="section-title">#{tag}</h2>
+  <header class="page-head">
+    <p class="eyebrow">// tag</p>
+    <h1>#{tag} <span class="page-count">{posts.length}</span></h1>
+  </header>
   <ul class="post-list">
-    {posts.map((post) => <PostCard post={post} />)}
+    {posts.map((post) => <PostCard post={post} fullDate />)}
   </ul>
 </BaseLayout>

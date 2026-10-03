@@ -12,7 +12,10 @@
     "@astrojs/mdx": "^3.1.0",
     "@astrojs/rss": "^4.0.18",
     "@astrojs/sitemap": "3.6.0",
-    "astro": "^4.16.0"
+    "@fontsource/instrument-serif": "^5.3.0",
+    "@fontsource/jetbrains-mono": "^5.3.0",
+    "astro": "^4.16.0",
+    "budoux": "^0.9.3"
   },
   "devDependencies": {
     "pagefind": "^1.5.2",

@@ -1,10 +1,9 @@
 ---
-import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostCard from '../../components/PostCard.astro';
+import { allPosts, kpScale } from '../../lib/posts';
 
-const posts = (await getCollection('blog', ({ data }) => !data.draft))
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const posts = await allPosts();
 
 // Group posts by month (YYYY-MM). Posts within a group are already newest-first,
 // and the YYYY-MM keys sort lexicographically = chronologically.
@@ -18,15 +17,32 @@ for (const post of posts) {
 const months = [...byMonth.entries()].sort((a, b) => (a[0] < b[0] ? 1 : -1));
 ---
 <BaseLayout title="Blog — Southern Light" description="All posts.">
-  <h2 class="section-title">All posts · {posts.length}</h2>
-  {months.map(([month, monthPosts]) => (
-    <section class="archive-group">
-      <h3 class="archive-heading">
-        {month}<span class="archive-count">{monthPosts.length}</span>
-      </h3>
-      <ul class="post-list">
-        {monthPosts.map((post) => <PostCard post={post} />)}
-      </ul>
-    </section>
-  ))}
+  <header class="page-head">
+    <p class="eyebrow">// archive</p>
+    <h1>All posts <span class="page-count">{posts.length}</span></h1>
+  </header>
+
+  <nav class="month-jump" aria-label="跳到月份">
+    {months.map(([month, monthPosts]) => (
+      <a href={`#m-${month}`}>{month}<span class="month-jump-n">{monthPosts.length}</span></a>
+    ))}
+  </nav>
+
+  {months.map(([month, monthPosts]) => {
+    const kp = kpScale(monthPosts.length);
+    return (
+      <section class="archive-group" aria-labelledby={`m-${month}`}>
+        <h2 class="archive-heading" id={`m-${month}`}>
+          <span class="archive-month">{month}</span>
+          <span class="archive-count">{monthPosts.length} posts</span>
+          <span class="kp-meter" role="img" aria-label={`Kp ${kp}`}>
+            {Array.from({ length: 9 }, (_, i) => <span class:list={['kp-pip', { on: i < kp }]}></span>)}
+          </span>
+        </h2>
+        <ul class="post-list">
+          {monthPosts.map((post) => <PostCard post={post} />)}
+        </ul>
+      </section>
+    );
+  })}
 </BaseLayout>

@@ -1,39 +1,60 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
----
-<BaseLayout title="About — Southern Light" description="About Ray Lee.">
-  <article class="prose">
-    <h1>About</h1>
-    <p>
-      Ray Lee. A builder in the AI era, based in Taiwan. Technical manager at
-      <a href="https://kdanmobile.com">KDAN</a> by day. I don't write every
-      line myself anymore — I design the systems, set the guardrails, and
-      orchestrate models to do the work, then own the taste, the architecture,
-      and the parts that still need a human hand.
-    </p>
-    <p>
-      Mostly TypeScript these days, plus whatever the side project needs. I
-      like shipping small products, tending systems until they grow their own
-      features, and figuring out where AI actually helps versus where it just
-      looks like it does.
-    </p>
-    <p>
-      This site is for notes on systems, tools, and side projects — the kind
-      of writing that helps me think more clearly and might be useful to
-      someone else later.
-    </p>
-    <h2>Contact</h2>
-    <ul>
-      <li>GitHub: <a href="https://github.com/redtear1115">redtear1115</a></li>
-      <li>Email: <a href="mailto:vfgcees@gmail.com">vfgcees@gmail.com</a></li>
-    </ul>
+import { allPosts, stations } from '../lib/posts';
 
-    <h2>鼓勵作者</h2>
-    <p>如果這裡的文章對你有幫助，歡迎請我喝杯咖啡，讓我有動力繼續寫下去。</p>
-    <p>
-      <a class="kofi-button" href="https://ko-fi.com/ray19841115" target="_blank" rel="noopener noreferrer">
-        ☕ Buy me a coffee on Ko-fi
-      </a>
-    </p>
-  </article>
+const projects = stations(await allPosts());
+---
+<BaseLayout title="About — Southern Light" description="About Ray Lee." layout="reading">
+  <header class="page-head">
+    <p class="eyebrow">// about</p>
+    <h1>About</h1>
+  </header>
+  <div class="post-wrap">
+    <aside class="toc-rail about-rail" aria-label="追蹤與專案">
+      <div class="toc about-card">
+        <p class="toc-title">// follow</p>
+        <ul class="about-links">
+          <li><a href="/rss.xml">RSS</a> <span class="about-hint">用任何 RSS reader 訂閱新文章</span></li>
+        </ul>
+        <p class="toc-title">// stations</p>
+        <ul class="about-links">
+          {projects.map((s) => <li><a href={`/tags/${s.tag}`}>{s.tag}</a> <span class="about-hint">{s.count} 篇</span></li>)}
+        </ul>
+      </div>
+    </aside>
+
+    <article class="prose">
+      <p class="lead">
+        Ray Lee. A builder in the AI era, based in Taiwan. Technical manager at
+        <a href="https://kdanmobile.com">KDAN</a> by day. I don't write every
+        line myself anymore — I design the systems, set the guardrails, and
+        orchestrate models to do the work, then own the taste, the architecture,
+        and the parts that still need a human hand.
+      </p>
+      <p>
+        Mostly TypeScript these days, plus whatever the side project needs. I
+        like shipping small products, tending systems until they grow their own
+        features, and figuring out where AI actually helps versus where it just
+        looks like it does.
+      </p>
+      <p>
+        This site is for notes on systems, tools, and side projects — the kind
+        of writing that helps me think more clearly and might be useful to
+        someone else later.
+      </p>
+      <h2>Contact</h2>
+      <ul>
+        <li>GitHub: <a href="https://github.com/redtear1115">redtear1115</a></li>
+        <li>Email: <a href="mailto:vfgcees@gmail.com">vfgcees@gmail.com</a></li>
+      </ul>
+
+      <h2>鼓勵作者</h2>
+      <p>如果這裡的文章對你有幫助，歡迎請我喝杯咖啡，讓我有動力繼續寫下去。</p>
+      <p>
+        <a class="kofi-button" href="https://ko-fi.com/ray19841115" target="_blank" rel="noopener noreferrer">
+          ☕ Buy me a coffee on Ko-fi
+        </a>
+      </p>
+    </article>
+  </div>
 </BaseLayout>

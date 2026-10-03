@@ -2,10 +2,15 @@
 const year = new Date().getFullYear();
 ---
 <footer class="site-footer">
-  <span>© {year} Ray Lee</span>
-  <span>
-    <a href="https://github.com/redtear1115">github</a>
-    <span class="footer-sep">·</span>
-    <a href="https://ko-fi.com/ray19841115" target="_blank" rel="noopener noreferrer">ko-fi</a>
-  </span>
+  <p class="footer-note"><span class="footer-star" aria-hidden="true">✦</span> 從南方寫下來的筆記</p>
+  <div class="footer-row">
+    <span>© {year} Ray Lee</span>
+    <nav aria-label="外部連結">
+      <a href="https://github.com/redtear1115">github</a>
+      <span class="footer-sep" aria-hidden="true">·</span>
+      <a href="https://ko-fi.com/ray19841115" target="_blank" rel="noopener noreferrer">ko-fi</a>
+      <span class="footer-sep" aria-hidden="true">·</span>
+      <a href="/rss.xml">rss</a>
+    </nav>
+  </div>
 </footer>

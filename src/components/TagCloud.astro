@@ -1,7 +1,13 @@
 ---
-import { getCollection } from 'astro:content';
+import { allPosts } from '../lib/posts';
 
-const posts = await getCollection('blog', ({ data }) => !data.draft);
+interface Props {
+  /** Cap the cloud (home page keeps it short; /blog and tag pages show every tag). */
+  limit?: number;
+}
+
+const { limit } = Astro.props;
+const posts = await allPosts();
 
 const counts = new Map<string, number>();
 for (const post of posts) {
@@ -17,10 +23,12 @@ function sizeClass(count: number): string {
   return 'size-sm';
 }
 
-const tags = [...counts.entries()].sort((a, b) => b[1] - a[1]);
+const all = [...counts.entries()].sort((a, b) => b[1] - a[1]);
+const tags = limit ? all.slice(0, limit) : all;
+const hidden = all.length - tags.length;
 ---
 
-<aside class="page-sidebar">
+<aside class="page-sidebar" aria-label="標籤">
   <div class="sidebar-panel">
     <div class="sidebar-title">// tags</div>
     <div class="tag-cloud">
@@ -30,5 +38,6 @@ const tags = [...counts.entries()].sort((a, b) => b[1] - a[1]);
         </a>
       ))}
     </div>
+    {hidden > 0 && <a class="tag-all" href="/blog">全部 {all.length} 個標籤 <span aria-hidden="true">→</span></a>}
   </div>
 </aside>

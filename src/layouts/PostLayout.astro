@@ -1,5 +1,6 @@
 ---
 import BaseLayout from './BaseLayout.astro';
+import Phrased from '../components/Phrased.astro';
 
 interface Props {
   title: string;
@@ -10,10 +11,12 @@ interface Props {
   tags: string[];
   prev?: { slug: string; title: string };
   next?: { slug: string; title: string };
+  related?: { slug: string; title: string; date: string }[];
+  toc?: { slug: string; text: string }[];
   readingTime?: number;
 }
 
-const { title, description, image, lang, pubDate, tags, prev, next, readingTime } = Astro.props;
+const { title, description, image, lang, pubDate, tags, prev, next, related = [], toc = [], readingTime } = Astro.props;
 const dateStr = pubDate.toISOString().slice(0, 10);
 
 const jsonLd = {
@@ -37,31 +40,126 @@ const jsonLd = {
   },
 };
 ---
-<BaseLayout title={`${title} — Southern Light`} description={description} image={image} lang={lang}>
+<BaseLayout title={`${title} — Southern Light`} description={description} image={image} lang={lang} layout="reading">
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   </Fragment>
-  <article data-pagefind-body>
-    <header class="post-header">
-      <h1 data-pagefind-meta="title">{title}</h1>
-      <div class="meta">
-        <time datetime={dateStr}>{dateStr}</time>
-        {readingTime && <span>~{readingTime} min</span>}
-        {tags.map((tag) => <a class="tag-chip size-lg" href={`/tags/${tag}`}>#{tag}</a>)}
+  <div class="read-progress" aria-hidden="true"></div>
+  <nav class="crumbs" aria-label="麵包屑">
+    <a href="/blog">← 所有文章</a>
+  </nav>
+  <div class="post-wrap">
+    {toc.length >= 3 && (
+      <aside class="toc-rail" aria-label="本文目錄">
+        <nav class="toc">
+          <p class="toc-title">// on this page</p>
+          <ol>
+            {toc.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}
+          </ol>
+        </nav>
+      </aside>
+    )}
+    <article data-pagefind-body>
+      <header class="post-header">
+        <h1 data-pagefind-meta="title"><Phrased text={title} /></h1>
+        <div class="meta">
+          <time datetime={dateStr}>{dateStr}</time>
+          {readingTime && <span class="reading-time">約 {readingTime} 分鐘</span>}
+        </div>
+        <div class="post-tags">
+          {tags.map((tag) => <a class="tag-chip size-lg" href={`/tags/${tag}`}>#{tag}</a>)}
+        </div>
+      </header>
+      <div class="prose">
+        <slot />
       </div>
-    </header>
-    <div class="prose">
-      <slot />
-    </div>
-  </article>
+    </article>
+  </div>
+
+  {related.length > 0 && (
+    <section class="related" aria-labelledby="related-title">
+      <h2 class="section-title" id="related-title">同主題的文章</h2>
+      <ul>
+        {related.map((r) => (
+          <li>
+            <a href={`/blog/${r.slug}`}>
+              <time datetime={r.date}>{r.date}</time>
+              <span><Phrased text={r.title} /></span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
   {(prev || next) && (
-    <nav class="post-nav">
-      <div class="post-nav-prev">
-        {prev && <a href={`/blog/${prev.slug}`}>← {prev.title}</a>}
-      </div>
-      <div class="post-nav-next">
-        {next && <a href={`/blog/${next.slug}`}>{next.title} →</a>}
-      </div>
+    <nav class="post-nav" aria-label="上下篇">
+      {prev ? (
+        <a class="post-nav-prev" href={`/blog/${prev.slug}`}>
+          <span class="post-nav-label">← 上一篇</span>
+          <span class="post-nav-title"><Phrased text={prev.title} /></span>
+        </a>
+      ) : <span></span>}
+      {next ? (
+        <a class="post-nav-next" href={`/blog/${next.slug}`}>
+          <span class="post-nav-label">下一篇 →</span>
+          <span class="post-nav-title"><Phrased text={next.title} /></span>
+        </a>
+      ) : <span></span>}
     </nav>
   )}
+
+  <script>
+    // Code blocks: language label + copy button. Table of contents: mark the section being read.
+    const status = document.createElement('span');
+    status.className = 'sr-only';
+    status.setAttribute('role', 'status');
+    document.body.append(status);
+    document.querySelectorAll<HTMLPreElement>('.prose pre').forEach((pre) => {
+      const lang = pre.dataset.language;
+      const bar = document.createElement('div');
+      bar.className = 'code-bar';
+      if (lang && lang !== 'plaintext') {
+        const l = document.createElement('span');
+        l.className = 'code-lang';
+        l.textContent = lang;
+        bar.append(l);
+      }
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'code-copy';
+      btn.textContent = '複製';
+      btn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(pre.textContent ?? '');
+          btn.textContent = '已複製 ✓';
+          status.textContent = '程式碼已複製到剪貼簿';
+        } catch {
+          btn.textContent = '複製失敗';
+          status.textContent = '複製失敗';
+        }
+        setTimeout(() => (btn.textContent = '複製'), 1800);
+      });
+      bar.append(btn);
+      pre.parentElement?.insertBefore(bar, pre);
+      pre.classList.add('has-bar');
+    });
+
+    const links = [...document.querySelectorAll<HTMLAnchorElement>('.toc a')];
+    if (links.length && 'IntersectionObserver' in window) {
+      const byId = new Map(links.map((a) => [decodeURIComponent(a.hash.slice(1)), a]));
+      const heads = [...byId.keys()].map((id) => document.getElementById(id)).filter(Boolean) as HTMLElement[];
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            if (!e.isIntersecting) continue;
+            links.forEach((a) => a.removeAttribute('aria-current'));
+            byId.get(e.target.id)?.setAttribute('aria-current', 'true');
+          }
+        },
+        { rootMargin: '0px 0px -70% 0px' },
+      );
+      heads.forEach((h) => io.observe(h));
+    }
+  </script>
 </BaseLayout>

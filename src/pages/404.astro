@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Phrased from '../components/Phrased.astro';
+import { allPosts } from '../lib/posts';
+
+const [latest] = await allPosts();
+---
+<BaseLayout title="404 — Southern Light" description="找不到這一頁。" layout="reading">
+  <header class="page-head">
+    <p class="eyebrow">// 404</p>
+    <h1>No aurora <em>here</em></h1>
+  </header>
+  <div class="prose">
+    <p class="lead">這片天空沒有極光：這個網址沒有對應的頁面，可能是連結寫錯，或是文章換了位置。</p>
+    <p class="lost-links">
+      <a class="kofi-button" href={`/blog/${latest.slug}`}>讀最新一篇：<Phrased text={latest.data.title} /></a>
+    </p>
+    <p class="lost-links">
+      <a href="/blog">所有文章 →</a>
+      <a href="/search">搜尋 →</a>
+      <a href="/">回首頁 →</a>
+    </p>
+  </div>
+</BaseLayout>

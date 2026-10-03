@@ -3,20 +3,29 @@ import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import TagCloud from '../components/TagCloud.astro';
+import { allPosts, recentActivity } from '../lib/posts';
 
 interface Props {
   title: string;
   description?: string;
   image?: string;
   lang?: string;
+  /** `wide` = main column + tag sidebar; `reading` = one centred reading column. */
+  layout?: 'wide' | 'reading';
 }
 
-const { title, description, image, lang = 'zh-TW' } = Astro.props;
+const { title, description, image, lang = 'zh-TW', layout = 'wide' } = Astro.props;
+
+// The sky is brighter when the blog has been busy: Kp (0-9) of the last 30 days sets how
+// bright the aurora peaks. Capped at the contrast-tested maximum (0.55 / 0.42).
+const { kp } = recentActivity(await allPosts());
+const peakGreen = (0.3 + (kp / 9) * 0.25).toFixed(3);
+const peakPurple = (0.22 + (kp / 9) * 0.2).toFixed(3);
 ---
 <!doctype html>
-<html lang={lang}>
+<html lang={lang} style={`--aurora-peak-green:${peakGreen};--aurora-peak-purple:${peakPurple};--kp:${kp}`}>
   <head>
-    <BaseHead title={title} description={description} image={image} />
+    <BaseHead title={title} description={description} image={image} preloadSerif={layout === 'wide' || Astro.url.pathname.startsWith('/about')} />
     <slot name="head" />
     <script>
       // Sync aurora animations to wall-clock time so page navigation doesn't restart them.
@@ -30,54 +39,82 @@ const { title, description, image, lang = 'zh-TW' } = Astro.props;
       })();
     </script>
   </head>
-  <body>
-    <!-- Aurora bands (fixed, behind content) -->
-    <div class="aurora-wrap" aria-hidden="true">
-      <div class="aurora-band aurora-green"></div>
-      <div class="aurora-band aurora-purple"></div>
+  <body data-layout={layout}>
+    <a class="skip-link" href="#main">跳到內容</a>
+
+    <!-- Sky: stars + aurora curtains (fixed, behind content) -->
+    <div class="sky" aria-hidden="true">
+      <div class="aurora-wrap">
+        <div class="aurora-band aurora-green"></div>
+        <div class="aurora-band aurora-purple"></div>
+      </div>
+      <!-- Horizon: an ice shelf with the aurora's reflection on the water below it -->
+      <div class="horizon">
+        <div class="horizon-glow"></div>
+        <svg class="horizon-ice" viewBox="0 0 1440 220" preserveAspectRatio="none" focusable="false">
+          <polygon class="ice-far" points="0,220 0,150 70,128 130,142 210,104 290,138 360,118 450,146 540,112 620,140 700,98 790,132 880,114 960,144 1050,108 1140,136 1230,118 1320,142 1440,120 1440,220" />
+          <polygon class="ice-near" points="0,220 0,184 90,170 170,186 260,160 340,182 430,168 520,190 610,172 700,186 800,164 900,184 1000,170 1090,190 1190,166 1290,184 1370,172 1440,186 1440,220" />
+        </svg>
+      </div>
     </div>
 
     <Header />
     <div class="site-wrapper">
-      <div class="page-layout">
-        <main class="page-main">
+      <div class={`page-layout page-layout--${layout}`}>
+        <main id="main" class="page-main">
           <slot />
         </main>
-        <TagCloud />
+        {layout === 'wide' && <TagCloud limit={Astro.url.pathname === '/' ? 12 : undefined} />}
       </div>
     </div>
     <Footer />
 
-    <script is:inline src="https://storage.ko-fi.com/cdn/scripts/overlay-widget.js"></script>
     <script is:inline>
-      kofiWidgetOverlay.draw('ray19841115', {
-        type: 'floating-chat',
-        'floating-chat.donateButton.text': '請我喝杯咖啡',
-        'floating-chat.donateButton.background-color': '#5ba3d9',
-        'floating-chat.donateButton.text-color': '#0a0e1a'
-      });
-
-      // Source attribution: fire GA event on widget click, plus best-effort UTM
-      // injection into Ko-fi's hidden iframe so their GA picks up the source too.
+      // Ko-fi's floating widget is third-party and heavy: load it after the page is
+      // interactive so it never competes with the first paint.
       (function () {
-        const SOURCE = 'southern-light';
-        const UTM = '&utm_source=' + SOURCE + '&utm_medium=kofi_widget';
+        var SOURCE = 'southern-light';
+        var UTM = '&utm_source=' + SOURCE + '&utm_medium=kofi_widget';
 
+        function patch() {
+          // The floating-chat iframe has no src (Ko-fi writes into it), so match by id/class too.
+          document.querySelectorAll('iframe[src*="ko-fi.com"], iframe[id^="kofi-wo-container"], iframe[class*="floatingchat"]').forEach(function (iframe) {
+            if (!iframe.title) iframe.title = 'Ko-fi 贊助小工具';
+            var src = iframe.getAttribute('src');
+            if (src && src.indexOf('ko-fi.com') !== -1 && src.indexOf('utm_source') === -1) iframe.src = src + UTM;
+          });
+        }
+
+        function boot() {
+          var s = document.createElement('script');
+          s.src = 'https://storage.ko-fi.com/cdn/scripts/overlay-widget.js';
+          s.async = true;
+          s.onload = function () {
+            kofiWidgetOverlay.draw('ray19841115', {
+              type: 'floating-chat',
+              'floating-chat.donateButton.text': '請我喝杯咖啡',
+              'floating-chat.donateButton.background-color': '#5ba3d9',
+              'floating-chat.donateButton.text-color': '#0a0e1a'
+            });
+            new MutationObserver(patch).observe(document.body, { childList: true, subtree: true });
+            patch();
+          };
+          document.body.appendChild(s);
+        }
+
+        // Source attribution: fire GA event on widget click.
         document.addEventListener('click', function (e) {
           if (e.target.closest('[class*="kofi"], [id*="kofi"]') && typeof gtag === 'function') {
             gtag('event', 'kofi_widget_click', { source: SOURCE });
           }
         });
 
-        const patch = function () {
-          document.querySelectorAll('iframe[src*="ko-fi.com"]').forEach(function (iframe) {
-            if (!iframe.src.includes('utm_source')) {
-              iframe.src = iframe.src + UTM;
-            }
-          });
-        };
-        new MutationObserver(patch).observe(document.body, { childList: true, subtree: true });
-        patch();
+        function later() {
+          if ('requestIdleCallback' in window) requestIdleCallback(boot, { timeout: 4000 });
+          else setTimeout(boot, 2000);
+        }
+        if (document.readyState === 'complete') later();
+        else window.addEventListener('load', later);
       })();
     </script>
   </body>

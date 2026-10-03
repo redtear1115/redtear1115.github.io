@@ -1,11 +1,16 @@
 ---
-import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PostCard from '../components/PostCard.astro';
+import Phrased from '../components/Phrased.astro';
+import { allPosts, stations, recentActivity, excerpt } from '../lib/posts';
 
-const posts = (await getCollection('blog', ({ data }) => !data.draft))
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-  .slice(0, 5);
+const posts = await allPosts();
+const [latest, ...rest] = posts;
+const recent = rest.slice(0, 5);
+const latestDate = latest.data.pubDate.toISOString().slice(0, 10);
+const latestExcerpt = latest.data.description ?? excerpt(latest.body);
+const posts30 = recentActivity(posts);
+const projects = stations(posts);
 
 const personJsonLd = {
   '@context': 'https://schema.org',
@@ -22,21 +27,58 @@ const personJsonLd = {
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(personJsonLd)} />
   </Fragment>
-  <section class="hero">
-    <h1>Ray Lee</h1>
-    <p>Technical Manager at KDAN.</p>
-    <p>Building small products in the AI era — mostly TypeScript.</p>
-    <p>Writing about systems, tools, and side projects.</p>
+
+  <section class="hero" aria-labelledby="hero-name">
+    <p class="eyebrow">// notes from the south</p>
+    <h1 id="hero-name">Ray <em>Lee</em></h1>
+    <p class="hero-lede">Technical Manager at KDAN. Building small products in the AI era — mostly TypeScript.</p>
+    <p class="hero-sub">Writing about systems, tools, and side projects.</p>
     <div class="links">
       <a href="https://github.com/redtear1115">GitHub</a>
       <a href="mailto:vfgcees@gmail.com">Email</a>
+      <a href="/about">About</a>
     </div>
+    <p class="kp-line" title="天空的亮度跟著最近 30 天寫了幾篇文章走">
+      <span class="kp-meter" aria-hidden="true">
+        {Array.from({ length: 9 }, (_, i) => <span class:list={['kp-pip', { on: i < posts30.kp }]}></span>)}
+      </span>
+      <span>Kp {posts30.kp} · 近 30 天 {posts30.count} 篇 — 越常寫，極光越亮</span>
+    </p>
   </section>
 
-  <section>
-    <h2 class="section-title">Recent posts</h2>
-    <ul class="post-list">
-      {posts.map((post) => <PostCard post={post} />)}
+  <section class="latest" aria-labelledby="latest-title">
+    <h2 class="section-title">Latest</h2>
+    <a class="latest-card" href={`/blog/${latest.slug}`}>
+      <time datetime={latestDate}>{latestDate}</time>
+      <span class="latest-title" id="latest-title"><Phrased text={latest.data.title} /></span>
+      {latestExcerpt && <span class="latest-excerpt"><Phrased text={latestExcerpt} /></span>}
+      <span class="latest-tags" aria-hidden="true">
+        {latest.data.tags.slice(0, 4).map((tag) => <span>#{tag}</span>)}
+      </span>
+      <span class="latest-cta">開始閱讀 <span aria-hidden="true">→</span></span>
+    </a>
+  </section>
+
+  <section class="stations" aria-labelledby="stations-title">
+    <h2 class="section-title" id="stations-title">Stations</h2>
+    <ul class="station-list">
+      {projects.map((s) => (
+        <li>
+          <a class="station" href={`/tags/${s.tag}`}>
+            <span class="station-name">{s.tag}</span>
+            <span class="station-count">{s.count} 篇</span>
+            <span class="station-last">最近 {s.latest.toISOString().slice(5, 10)}</span>
+          </a>
+        </li>
+      ))}
     </ul>
+  </section>
+
+  <section aria-labelledby="recent-title">
+    <h2 class="section-title" id="recent-title">Recent posts</h2>
+    <ul class="post-list">
+      {recent.map((post) => <PostCard post={post} fullDate />)}
+    </ul>
+    <p class="more"><a href="/blog">所有文章 · {posts.length} <span aria-hidden="true">→</span></a></p>
   </section>
 </BaseLayout>

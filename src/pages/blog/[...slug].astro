@@ -1,6 +1,7 @@
 ---
-import { getCollection, type CollectionEntry } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
 import PostLayout from '../../layouts/PostLayout.astro';
+import { allPosts, related as relatedPosts, excerpt } from '../../lib/posts';
 
 function estimateReadingTime(text: string): number {
   const cjk = (text.match(/[　-鿿가-힯豈-﫿]/g) ?? []).length;
@@ -8,24 +9,8 @@ function estimateReadingTime(text: string): number {
   return Math.max(1, Math.ceil((cjk + words) / 300));
 }
 
-function extractDescription(body: string): string {
-  const cleaned = body
-    .replace(/```[\s\S]*?```/g, '')        // 移除 code block
-    .replace(/`[^`]+`/g, '')               // 移除 inline code
-    .replace(/^#{1,6}\s+.+$/gm, '')        // 移除標題
-    .replace(/!\[.*?\]\(.*?\)/g, '')       // 移除圖片
-    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // 連結 → 純文字
-    .replace(/[*_]{1,3}([^*_\n]+)[*_]{1,3}/g, '$1') // 粗體/斜體
-    .replace(/^[-*+>]\s+/gm, '')           // 移除列表符號 / blockquote
-    .replace(/^\d+\.\s+/gm, '');           // 移除有序列表
-
-  const first = cleaned.split(/\n\n+/).map(p => p.trim().replace(/\n/g, ' ')).find(p => p.length > 10) ?? '';
-  return first.length > 160 ? first.slice(0, 157) + '…' : first;
-}
-
 export async function getStaticPaths() {
-  const posts = (await getCollection('blog', ({ data }) => !data.draft))
-    .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+  const posts = await allPosts();
 
   return posts.map((post, index) => ({
     params: { slug: post.slug },
@@ -37,6 +22,7 @@ export async function getStaticPaths() {
       next: posts[index - 1]
         ? { slug: posts[index - 1].slug, title: posts[index - 1].data.title }
         : undefined,
+      related: relatedPosts(post, posts).map((p) => ({ slug: p.slug, title: p.data.title, date: p.data.pubDate.toISOString().slice(0, 10) })),
     },
   }));
 }
@@ -45,14 +31,16 @@ interface Props {
   post: CollectionEntry<'blog'>;
   prev?: { slug: string; title: string };
   next?: { slug: string; title: string };
+  related: { slug: string; title: string; date: string }[];
 }
 
-const { post, prev, next } = Astro.props;
-const { Content } = await post.render();
+const { post, prev, next, related } = Astro.props;
+const { Content, headings } = await post.render();
 const { title, pubDate, tags, description, image, lang } = post.data;
 const readingTime = estimateReadingTime(post.body);
-const resolvedDescription = description ?? extractDescription(post.body);
+const resolvedDescription = description ?? excerpt(post.body, 160, 157); // same cut as before the redesign (meta description)
+const toc = headings.filter((h) => h.depth === 2).map((h) => ({ slug: h.slug, text: h.text }));
 ---
-<PostLayout title={title} pubDate={pubDate} tags={tags} prev={prev} next={next} readingTime={readingTime} description={resolvedDescription} image={image} lang={lang}>
+<PostLayout title={title} pubDate={pubDate} tags={tags} prev={prev} next={next} related={related} toc={toc} readingTime={readingTime} description={resolvedDescription} image={image} lang={lang}>
   <Content />
 </PostLayout>

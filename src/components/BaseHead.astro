@@ -1,13 +1,20 @@
 ---
 import '../styles/global.css';
+// Self-hosted, latin-only subsets (CJK falls back to the system CJK face).
+// ?url gives the same hashed asset the @font-face in global.css points at,
+// so the preload is reused instead of fetched twice. Only the display serif is
+// preloaded, and only on pages whose heading uses it: article text is mostly CJK,
+// so preloading Inter would just spend bytes on the critical path.
+import serifUrl from '@fontsource/instrument-serif/files/instrument-serif-latin-400-normal.woff2?url';
 
 interface Props {
   title: string;
   description?: string;
   image?: string;
+  preloadSerif?: boolean;
 }
 
-const { title, description = 'Notes on systems, tools, and side projects.', image } = Astro.props;
+const { title, description = 'Notes on systems, tools, and side projects.', image, preloadSerif = false } = Astro.props;
 const ogImage = new URL(image ?? '/og-image.png', Astro.site);
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
@@ -15,6 +22,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="generator" content={Astro.generator} />
 <meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#050a16" />
 
 <title>{title}</title>
 <meta name="description" content={description} />
@@ -33,12 +41,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={ogImage} />
 
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link
-  rel="stylesheet"
-  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
-/>
+{preloadSerif && <link rel="preload" href={serifUrl} as="font" type="font/woff2" crossorigin />}
 
 <!-- Google Analytics 4 -->
 <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-YHXFBMRQ3S"></script>
