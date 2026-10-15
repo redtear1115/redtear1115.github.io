@@ -1,0 +1,73 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const works = [
+  {
+    name: 'Futari',
+    tagline: '兩個人，一本帳。',
+    body: '給一起生活的兩個人用的家計簿。房租、餐費、小孩的花費一起記，可以對半，也可以照比例分。帳之外，也記家裡一起照顧的愛物：房子、車、保險，還有孩子、寵物、植物。',
+    meta: 'iPhone App・網頁版・免費',
+    cta: { label: '開始一起記帳', href: 'https://futari.southern-light.dev/' },
+    posts: [
+      { title: '預產期不是生日，系統不該先開口恭喜', href: '/blog/futari-unborn-not-a-birthday/' },
+      { title: '信任這件事，我拒絕把它寫成說明書', href: '/blog/futari-trust-not-a-whitepaper/' },
+    ],
+  },
+  {
+    name: 'MarsDawn',
+    tagline: '讀懂 agent 寫給你的東西。',
+    body: 'Mac 上的 Markdown 編輯器，左邊寫、右邊即時預覽，流程圖也畫得出來。agent 寫完的文件，選起不對的那幾行，一鍵連同檔名和行號複製回去給它改。',
+    meta: '只支援 Mac・免費試用 14 天',
+    cta: { label: '到 Mac App Store 下載', href: 'https://apps.apple.com/us/app/marsdawn-markdown-editor/id6812925073?mt=12' },
+    extra: { label: '官網', href: 'https://marsdawn.southern-light.dev/' },
+    posts: [
+      { title: '我醒來的時候，站在一個自己還沒讀懂的 App 裡', href: '/blog/marsdawn-waking-up-inside/' },
+      { title: '另存新檔是鎖住之後唯一的出口，存出來卻是 0 bytes', href: '/blog/marsdawn-save-as-wrote-nothing/' },
+      { title: '結束碼是 0，那一輪其實一顆測試都沒跑', href: '/blog/marsdawn-exit-zero-ran-nothing/' },
+    ],
+  },
+  {
+    name: '文字陀螺',
+    tagline: '千字文的每個字，都是一顆陀螺。',
+    body: '字的筆畫就是陀螺的形狀，筆畫多寡和重心決定它轉多久、撞多重。從「天地玄黃」一路收集到「焉哉乎也」，玩著就認得 999 個字。兩支手機面對面就能對戰。',
+    meta: 'iPhone・iPad・免費・沒有廣告',
+    cta: { label: '到 App Store 下載', href: 'https://apps.apple.com/hk/app/%E6%96%87%E5%AD%97%E9%99%80%E8%9E%BA/id6820187703' },
+    posts: [],
+  },
+  {
+    name: '心與浮雲閒',
+    tagline: '一個古風歌唱家族的活動站。',
+    body: '把家族每一屆活動的報名、抽歌、交件和抽獎整理成一頁，歷屆紀錄和大家交的歌也都收在這裡。',
+    meta: '網站',
+    cta: { label: '去看看', href: 'https://fuyun.southern-light.dev/' },
+    posts: [],
+  },
+];
+---
+<BaseLayout title="Works — Southern Light" description="Ray Lee 做的產品：Futari、MarsDawn、文字陀螺、心與浮雲閒。" layout="reading">
+  <header class="page-head">
+    <p class="eyebrow">// works</p>
+    <h1>Works</h1>
+  </header>
+  <article class="prose">
+    <p class="lead">這些是我跟 AI agent 一起做出來、現在還在養的東西。可以直接用，也可以看它們是怎麼做出來的。</p>
+    {works.map((w) => (
+      <section class="work">
+        <h2>{w.name}</h2>
+        <p><strong>{w.tagline}</strong></p>
+        <p>{w.body}</p>
+        <p class="work-meta">{w.meta}</p>
+        <p>
+          <a class="kofi-button" href={w.cta.href} target="_blank" rel="noopener noreferrer">{w.cta.label}</a>
+          {w.extra && <> <a href={w.extra.href} target="_blank" rel="noopener noreferrer">{w.extra.label}</a></>}
+        </p>
+        {w.posts.length > 0 && (
+          <>
+            <p>它是怎麼做出來的：</p>
+            <ul>{w.posts.map((p) => <li><a href={p.href}>{p.title}</a></li>)}</ul>
+          </>
+        )}
+      </section>
+    ))}
+  </article>
+</BaseLayout>
