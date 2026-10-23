@@ -43,11 +43,20 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 {preloadSerif && <link rel="preload" href={serifUrl} as="font" type="font/woff2" crossorigin />}
 
-<!-- Google Analytics 4 -->
-<script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-YHXFBMRQ3S"></script>
+<!-- Google Analytics 4: only on the live site. `astro dev` / `astro preview`
+     (localhost) used to send every local page view into the GA property this
+     ID shares with Futari and others. gtag() stays defined everywhere so the
+     Ko-fi click handler in BaseLayout keeps working; off the live host it only
+     fills dataLayer. If the domain changes, update the check or GA goes to 0. -->
 <script is:inline>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-YHXFBMRQ3S');
+  if (location.hostname === 'southern-light.dev') {
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=G-YHXFBMRQ3S';
+    document.head.appendChild(s);
+    gtag('js', new Date());
+    gtag('config', 'G-YHXFBMRQ3S');
+  }
 </script>
