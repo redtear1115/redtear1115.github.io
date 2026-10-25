@@ -37,7 +37,7 @@ jobs:
             const title = (issue.title || '').trim();
             const rawBody = (issue.body || '').replace(/\r\n/g, '\n');
             const createdAt = new Date(issue.created_at);
-            const pubDate = createdAt.toISOString().slice(0, 10);
+            let pubDate = createdAt.toISOString().slice(0, 10);
 
             // Parse frontmatter block from issue body if present
             let bodyContent = rawBody;
@@ -58,6 +58,9 @@ jobs:
               // Parse slug
               const slugMatch = fmBlock.match(/^slug:\s*(.+)$/m);
               if (slugMatch) frontmatterSlug = slugMatch[1].trim().replace(/^["']|["']$/g, '');
+              // Parse pubDate (YYYY-MM-DD); falls back to the issue's creation date
+              const dateMatch = fmBlock.match(/^pubDate:\s*["']?(\d{4}-\d{2}-\d{2})["']?\s*$/m);
+              if (dateMatch && !Number.isNaN(Date.parse(dateMatch[1]))) pubDate = dateMatch[1];
             }
 
             // Merge: frontmatter tags take priority, label tags fill the rest
