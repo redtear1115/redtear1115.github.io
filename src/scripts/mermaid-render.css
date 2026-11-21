@@ -1,0 +1,30 @@
+.mermaid-block {
+  margin: 1.75rem 0;
+}
+
+.mermaid-block.is-rendered .mermaid-figure {
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  padding: 1rem;
+  background: var(--code-bg, var(--surface));
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.mermaid-figure:focus-visible {
+  outline: 2px solid var(--accent-hover);
+}
+
+.mermaid-figure svg {
+  display: block;
+  max-width: none;
+  height: auto;
+  margin: 0 auto;
+}
+
+.mermaid-block .mermaid-error {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  margin: 0 0 .5rem;
+}
